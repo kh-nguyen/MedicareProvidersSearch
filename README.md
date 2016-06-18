@@ -18,3 +18,4 @@ HCPCSCodes -
 Build a data importer to take .cvs raw data files and update the data already in the database
 
 #Screenshots
+![ScreenShot 1](https://github.com/kh-nguyen/MedicareProvidersSearch/raw/master/MedicareProvidersSearch/Screenshot.png)
