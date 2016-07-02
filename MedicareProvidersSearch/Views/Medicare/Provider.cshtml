@@ -1,0 +1,266 @@
+﻿@{
+    Layout = null;
+}
+
+<div></div>
+<form accordion="{ heightStyle: 'content', collapsible: true, active: false }" ng-show="provider" data-model="@Newtonsoft.Json.JsonConvert.SerializeObject(Model)">
+    <h3>Medicare National Provider Detail<span class="fa fa-info pull-right"></span></h3>
+    <div>
+        <div class="row">
+            <div class="form-group">
+                <span ng-show="provider.Entity_Type_Code == 1"><i class="fa fa-user-md fa-lg" aria-hidden="true"></i>&nbsp;<strong class="medicare-provider-name">{{provider.Provider_First_Name}}<span ng-show="provider.Provider_Middle_Name">&nbsp;{{provider.Provider_Middle_Name}}</span>&nbsp;{{provider.Provider_Last_Name__Legal_Name_}}<span ng-show="provider.Provider_Name_Suffix_Text">&nbsp;{{provider.Provider_Name_Suffix_Text}}</span>&nbsp;{{provider.Provider_Credential_Text}}</strong></span>
+                <span ng-show="provider.Entity_Type_Code == 2"><i class="fa fa-hospital-o fa-lg" aria-hidden="true"></i>&nbsp;<strong class="medicare-provider-name" ng-bind="provider.Provider_Organization_Name__Legal_Business_Name_"></strong></span>
+                <span class="pull-right" title="Unique professional ID assigned by NPPES"><strong>NPI</strong>:&nbsp;<span ng-bind="provider.NPI"></span></span>
+                <span class="pull-right" ng-show="provider.Entity_Type_Code == 1"><strong>Gender</strong>:&nbsp;<span ng-bind="provider.Provider_Gender_Code == 'M' ? 'Male' : ( provider.Provider_Gender_Code == 'F' ? 'Female' : provider.Provider_Gender_Code )"></span>&nbsp;</span>
+                <span class="pull-right"><strong>Last Updated</strong>:&nbsp;<span date-formatter ng-bind="provider.Last_Update_Date"></span>&nbsp;</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <table class="table table-condensed">
+                <thead><tr><th>Name</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>Status</td>
+                        <td>
+                            <span ng-show="!provider.NPI_Deactivation_Date">Active</span>
+                            <span ng-show="provider.NPI_Deactivation_Date">
+                                De-activated, Date:&nbsp;
+                                <span date-formatter ng-bind="provider.NPI_Deactivation_Date"></span>
+                                <span ng-show="provider.NPI_Deactivation_Reason_Code">
+                                    , Reason Code:&nbsp;
+                                    <span ng-bind="provider.NPI_Deactivation_Reason_Code"></span>
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr><td>Enumeration Date</td><td date-formatter ng-bind="provider.Provider_Enumeration_Date"></td></tr>
+                    <tr>
+                        <td>Identifiers</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="provider.NPI">
+                                        <td>NPI</td>
+                                        <td><span ng-bind="provider.NPI"></span>&nbsp;-&nbsp;<span ng-bind="provider.Entity_Type_Code == 1 ? 'Individual' : 'Organization'"></span></td>
+                                    </tr>
+                                    <tr ng-show="provider.PAC_ID">
+                                        <td>PAC ID</td>
+                                        <td ng-bind="provider.PAC_ID"></td>
+                                    </tr>
+                                    <tr ng-show="provider.Professional_Enrollment_ID">
+                                        <td>Professional Enrollment ID</td>
+                                        <td ng-bind="provider.Professional_Enrollment_ID"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr ng-show="provider.Entity_Type_Code == 1"><td>Sole Proprietor</td><td ng-bind="provider.Is_Sole_Proprietor == 'N' ? 'No' : 'Yes'"></td></tr>
+                    <tr ng-show="provider.Entity_Type_Code == 1">
+                        <td>Group Practice</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Organization Legal Name</th>
+                                        <th>Group Practice PAC ID</th>
+                                        <th># of Group Practice Members</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="provider.Organization_legal_name">
+                                        <td ng-bind="provider.Organization_legal_name"></td>
+                                        <td ng-bind="provider.Group_Practice_PAC_ID"></td>
+                                        <td ng-bind="provider.Number_of_Group_Practice_members"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mailing Address</td>
+                        <td>
+                            <div class="form-group">
+                                <div ng-bind="provider.Provider_First_Line_Business_Mailing_Address"></div>
+                                <div ng-show="provider.Provider_Second_Line_Business_Mailing_Address" ng-bind="provider.Provider_Second_Line_Business_Mailing_Address"></div>
+                                <div><span ng-bind="provider.Provider_Business_Mailing_Address_City_Name"></span>&nbsp;<span ng-bind="provider.Provider_Business_Mailing_Address_State_Name"></span>&nbsp;<span nine-digit-zipcode-formatter ng-bind="provider.Provider_Business_Mailing_Address_Postal_Code"></span></div>
+                                <div country-code-to-name-formatter ng-show="provider.Provider_Business_Mailing_Address_Country_Code__If_outside_US_" ng-bind="provider.Provider_Business_Mailing_Address_Country_Code__If_outside_US_"></div>
+                            </div>
+                            <div>
+                                <span ng-show="provider.Provider_Business_Mailing_Address_Telephone_Number">Phone:&nbsp;<span ten-digit-phone-formatter ng-bind="provider.Provider_Business_Mailing_Address_Telephone_Number"></span></span>
+                                <span ng-show="provider.Provider_Business_Mailing_Address_Telephone_Number && provider.Provider_Business_Mailing_Address_Fax_Number">&nbsp;|&nbsp;</span>
+                                <span ng-show="provider.Provider_Business_Mailing_Address_Fax_Number">Fax:&nbsp;<span ten-digit-phone-formatter ng-bind="provider.Provider_Business_Mailing_Address_Fax_Number"></span></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Primary Practice Address</td>
+                        <td>
+                            <div class="form-group">
+                                <div ng-bind="provider.Provider_First_Line_Business_Practice_Location_Address"></div>
+                                <div ng-show="provider.Provider_Second_Line_Business_Practice_Location_Address" ng-bind="provider.Provider_Second_Line_Business_Practice_Location_Address"></div>
+                                <div><span ng-bind="provider.Provider_Business_Practice_Location_Address_City_Name"></span>&nbsp;<span ng-bind="provider.Provider_Business_Practice_Location_Address_State_Name"></span>&nbsp;<span nine-digit-zipcode-formatter ng-bind="provider.Provider_Business_Practice_Location_Address_Postal_Code"></span></div>
+                                <div country-code-to-name-formatter ng-show="provider.Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_" ng-bind="provider.Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_"></div>
+                            </div>
+                            <div>
+                                <span ng-show="provider.Provider_Business_Practice_Location_Address_Telephone_Number">Phone:&nbsp;<span ten-digit-phone-formatter ng-bind="provider.Provider_Business_Practice_Location_Address_Telephone_Number"></span></span>
+                                <span ng-show="provider.Provider_Business_Practice_Location_Address_Telephone_Number && provider.Provider_Business_Practice_Location_Address_Fax_Number">&nbsp;|&nbsp;</span>
+                                <span ng-show="provider.Provider_Business_Practice_Location_Address_Fax_Number">Fax:&nbsp;<span ten-digit-phone-formatter ng-bind="provider.Provider_Business_Practice_Location_Address_Fax_Number"></span></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-show="provider.Entity_Type_Code == 2">
+                        <td>Authorized Official Information</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Title</th>
+                                        <th>Phone</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{provider.Authorized_Official_First_Name}}<span ng-show="provider.Authorized_Official_Middle_Name">&nbsp;{{provider.Authorized_Official_Middle_Name}}</span>&nbsp;{{provider.Authorized_Official_Last_Name}}<span ng-show="provider.Authorized_Official_Name_Suffix_Text">&nbsp;{{provider.Authorized_Official_Name_Suffix_Text}}</span>&nbsp;{{provider.Authorized_Official_Credential_Text}}</td>
+                                        <td ng-bind="provider.Authorized_Official_Title_or_Position"></td>
+                                        <td ten-digit-phone-formatter ng-bind="provider.Authorized_Official_Telephone_Number"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr ng-show="provider.Entity_Type_Code == 1">
+                        <td>Education</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>School Name</th>
+                                        <th>Graduation Year</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="provider.Medical_school_name">
+                                        <td>Medical School</td>
+                                        <td ng-bind="provider.Medical_school_name"></td>
+                                        <td ng-bind="provider.Graduation_year"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr ng-show="provider.Entity_Type_Code == 1">
+                        <td>Specialties</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Primary</th>
+                                        <th>Secondaries</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td ng-bind="provider.Primary_specialty"></td>
+                                        <td ng-bind="provider.All_secondary_specialties"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr ng-show="provider.Entity_Type_Code == 1">
+                        <td>Affiliated Hospitals</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>CCN</th>
+                                        <th>Hospital Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 1; i <= 5; ++i) {
+                                    <tr ng-show="provider.Claims_based_hospital_affiliation_CCN_@i">
+                                        <td ng-bind="provider.Claims_based_hospital_affiliation_CCN_@i"></td>
+                                        <td ng-bind="provider.Claims_based_hospital_affiliation_LBN_@i"></td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Taxonomy</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Primary Taxonomy</th>
+                                        <th>Selected Taxonomy</th>
+                                        <th>State</th>
+                                        <th>License Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 1; i <= 15; ++i) {
+                                    <tr ng-show="provider.Healthcare_Provider_Taxonomy_Code_@i">
+                                        <td ng-bind="provider.Healthcare_Provider_Primary_Taxonomy_Switch_@i"></td>
+                                        <td ng-bind="provider.Healthcare_Provider_Taxonomy_Code_@i"></td>
+                                        <td ng-bind="provider.Provider_License_Number_State_Code_@i"></td>
+                                        <td ng-bind="provider.Provider_License_Number_@i"></td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Other Identifiers</td>
+                        <td>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Issuer</th>
+                                        <th>State</th>
+                                        <th>Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 1; i <= 50; ++i) {
+                                    <tr ng-show="provider.Other_Provider_Identifier_@i">
+                                        <td ng-bind="provider.Other_Provider_Identifier_Type_Code_@i"></td>
+                                        <td ng-bind="provider.Other_Provider_Identifier_Issuer_@i"></td>
+                                        <td ng-bind="provider.Other_Provider_Identifier_State_@i"></td>
+                                        <td ng-bind="provider.Other_Provider_Identifier_@i"></td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <table medicare-provider-aggregates data-url="@Url.Action("Aggregates", new { ID = Model == null ? 0 : Model.NPI })"></table>
+            </div>
+
+            <div class="form-group">
+                <table medicare-provider-utilization-payments data-url="@Url.Action("UtilizationAndPayments", new { ID = Model == null ? 0 : Model.NPI })"></table>
+            </div>
+
+            <div ng-show="provider.Group_Practice_PAC_ID">
+                <table medicare-provider-group-practice-members data-url="@Url.Action("GroupPracticeMembers", new { ID = Model == null ? 0 : Model.NPI })"></table>
+            </div>
+        </div>
+    </div>
+</form>

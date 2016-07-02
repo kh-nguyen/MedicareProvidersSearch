@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Medicare Providers List";
+
+    dynamic model = new {
+        search = new { years = ViewBag.searchYears }
+    };
+}
+
+<div></div>
+<div class="site-width">
+    <div class="content-wrapper col-xs-12">
+        <div ng-controller="ProvidersController" data-model="@Newtonsoft.Json.JsonConvert.SerializeObject(model)">
+            <h2>Providers and other health care professionals currently enrolled in Medicare</h2>
+
+            <form class="form-inline form-group">
+                <div class="form-group">
+                    <label for="search_hcpcs_code"><abbr title="Healthcare Common Procedure Coding System">HCPCS</abbr>&nbsp;code:</label>&nbsp;
+                    <input hcpcs-code-select ng-model="search.parameters.hcpcs" class="form-control medicare-search-input-text" placeholder="any" />
+                </div>&nbsp;
+
+                <div class="form-group">
+                    <label for="search_in_year">in</label>&nbsp;
+                    <select class="form-control medicare-search-input-text"
+                            ng-model="search.parameters.year"
+                            ng-options="year for year in search.years">
+                        <option value="">any</option>
+                    </select>&nbsp;
+                    <label for="search_in_year">year</label>
+                </div>&nbsp;
+
+                <div class="form-group">
+                    <label for="search_within_miles">within</label>&nbsp;
+                    <input ng-model="search.parameters.miles" class="form-control medicare-search-input-text" placeholder="any" />&nbsp;
+                    <label for="search_within_miles">miles</label>
+                </div>&nbsp;
+
+                <div class="form-group">
+                    <label for="search_zipcode">of</label>&nbsp;
+                    <input ng-model="search.parameters.zipcode" class="form-control medicare-search-input-text" placeholder="any" />&nbsp;
+                    <label for="search_zipcode">zipcode</label>&nbsp;
+                </div>&nbsp;
+
+                <button type="submit" ng-click="search.submit()" class="btn btn-default" title="Click to search">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </form>
+
+            <table id="providers-table" jqgrid-stay-top
+                   data-url="@Url.Action("Providers")"
+                   data-saveurl="@Url.Action("ProvidersSave")"></table>
+            <div id="providers-table-pager"></div>
+
+            <div class="container-fluid form-group">
+                <div class="row row-no-padding">
+                    <div class="col-xs-12 col-md-6">
+                        <table id="providers-table-saved-searches"></table>
+                        <div id="providers-table-saved-searches-pager"></div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-6">
+                        <table id="providers-table-search-histories"></table>
+                        <div id="providers-table-search-histories-pager"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="provider-detail">
+                <hr />
+
+                @Html.Action("Provider", new { ID = 0 })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    @Styles.Render("~/bundles/jqgrid.css/plugins/ui.multiselect.css")
+    @Styles.Render("~/bundles/jqgrid.css")
+    @Styles.Render("~/bundles/pnotify/css")
+    @Styles.Render("~/bundles/timepicker/css")
+}
+
+@section externalScripts {
+    <script src="//www.google.com/jsapi" type="text/javascript"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqgrid.js/plugins/ui.multiselect.js")
+    @Scripts.Render("~/bundles/jqgrid.js")
+    @Scripts.Render("~/bundles/pnotify/js")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/tocktimer")
+    @Scripts.Render("~/bundles/timepicker/js")
+    @Scripts.Render("~/bundles/timeago.js")
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/account/js")
+}
