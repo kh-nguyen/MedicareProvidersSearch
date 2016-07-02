@@ -1,8 +1,11 @@
 # MedicareProvidersSearch
 A tool to search for providers and other health care professionals currently enrolled in Medicare
 
-#Data Sources
-Please import the data to a MS SQL server with database named 'Medicare' in the following order:
+#Install
+Use Schemas\MSSQL.sql file to install the database schema to a MS SQL server
+
+#Public Data Sources
+Please import the data to the MS SQL server with database named 'Medicare' in the following order:
 
 #Required:
 MedicareProviders - http://download.cms.gov/nppes/NPI_Files.html <br/>
