@@ -1,5 +1,5 @@
-﻿using MedicareProvidersSearch.Models;
-using ServiceStack;
+﻿using ServiceStack;
+using System.Databases.Medicare;
 using System.Infrastructure;
 using System.Linq;
 using System.Models.jqGrid.Helpers;
@@ -111,24 +111,26 @@ namespace System.Controllers
         }
 
         [HttpPost]
-        public JsonNetResult GroupPracticeMembers(int ID, jqGridParamModel grid) {
+        public JsonNetResult GroupPracticeMembers(int? ID, string PACID, jqGridParamModel grid) {
             // turn off change tracking for high performance
             medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
 
             using (var scope = Scope.New(IsolationLevel.ReadUncommitted)) {
-                var groupPracticeID = medicareDatabase.MedicareExtendedProviders
-                    .Where(x => x.NPI == ID)
-                    .Select(x => x.Group_Practice_PAC_ID)
-                    .FirstOrDefault();
+                if (String.IsNullOrEmpty(PACID) && ID > 0) {
+                    PACID = medicareDatabase.MedicareExtendedPhysicians
+                        .Where(x => x.NPI == ID)
+                        .Select(x => x.Group_Practice_PAC_ID)
+                        .FirstOrDefault();
+                }
 
                 // returns an empty object if there is no group practice
-                if (String.IsNullOrEmpty(groupPracticeID)) {
+                if (String.IsNullOrEmpty(PACID)) {
                     return this.JsonEx(new { });
                 }
 
                 // get the list of colleagues with same group practice ID excluding the current NPI
                 var query = medicareDatabase.MedicareExtendedProviders
-                    .Where(x => x.Group_Practice_PAC_ID == groupPracticeID);
+                    .Where(x => x.Group_Practice_PAC_ID == PACID);
 
                 var result = jqGridResponseDefaultModel.getDefaultResponse(query, grid);
 

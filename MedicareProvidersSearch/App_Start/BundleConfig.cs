@@ -33,10 +33,10 @@ namespace MedicareProvidersSearch
             new string [] { "vader", "theme_90_black_matte.png", "Vader" }
         };
 
-        const string JQUERY_VERSION = "2.2.2";
-        const string JQUERY_UI_VERSION = "1.11.4";
-        const string JQGRID_VERSION = "4.12.1";
-        const string BOOTSTRAP_VERSION = "3.3.6";
+        const string JQUERY_VERSION = "2.2.4";
+        const string JQUERY_UI_VERSION = "1.12.0";
+        const string JQGRID_VERSION = "4.13.4";
+        const string BOOTSTRAP_VERSION = "3.3.7";
         const string FONT_AWESOME_VERSION = "4.5.0";
         const string ANGULARJS_VERSION = "1.5.2";
         const string MOMENTJS_VERSION = "2.11.2";

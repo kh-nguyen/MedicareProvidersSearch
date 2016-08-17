@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d9df06b1a3604536912f398ab4cfedc7" Name="Diagram1" >
+        <EntityTypeShape EntityType="MedicareModel.HCPCSCode" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="MedicareModel.ZipCode" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="MedicareModel.jqGridSavedSearchHistory" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="MedicareModel.MedicareProvidersUtilizationAndPayment" Width="1.5" PointX="3" PointY="22.875" />
+        <EntityTypeShape EntityType="MedicareModel.Physician" Width="1.5" PointX="3" PointY="27.5" />
+        <EntityTypeShape EntityType="MedicareModel.TaxonomyCode" Width="1.5" PointX="2.75" PointY="4.75" />
+        <EntityTypeShape EntityType="MedicareModel.MedicareProvider" Width="1.5" PointX="0.75" PointY="4.125" />
+        <EntityTypeShape EntityType="MedicareModel.MedicareProvidersAggregate" Width="1.5" PointX="3" PointY="38.125" />
+        <EntityTypeShape EntityType="MedicareModel.MedicareExtendedPhysician" Width="1.5" PointX="4.75" PointY="4.75" />
+        <EntityTypeShape EntityType="MedicareModel.MedicareExtendedProvider" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="MedicareModel.MedicareExtendedProvidersAggregate" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="MedicareModel.MedicareExtendedUtilizationAndPayment" Width="1.5" PointX="10.75" PointY="0.75" />
+        <AssociationConnector Association="MedicareModel.FK_MedicareProvidersAggregates_MedicareProviders" />
+        <AssociationConnector Association="MedicareModel.FK_MedicareProvidersUtilizationAndPayments_MedicareProviders" />
+        <AssociationConnector Association="MedicareModel.FK_Physicians_MedicareProviders" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

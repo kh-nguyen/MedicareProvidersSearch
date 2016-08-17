@@ -7,19 +7,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MedicareProvidersSearch.Models
+namespace System.Databases.Medicare
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class jqGridSavedSearchHistory
+    public partial class TaxonomyCode
     {
-        public int ID { get; set; }
-        public string SearchType { get; set; }
-        public int ContactID { get; set; }
-        public string Name { get; set; }
-        public string Search { get; set; }
-        public string Filter { get; set; }
-        public Nullable<System.DateTime> CreationTime { get; set; }
+        public string Code { get; set; }
+        public string Grouping { get; set; }
+        public string Classification { get; set; }
+        public string Specialization { get; set; }
+        public string Definition { get; set; }
+        public string Notes { get; set; }
     }
 }

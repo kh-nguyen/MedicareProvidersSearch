@@ -7,12 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MedicareProvidersSearch.Models
+namespace System.Databases.Medicare
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class MedicareExtendedUtilizationAndPayment
+    public partial class MedicareProvidersUtilizationAndPayment
     {
         public int npi { get; set; }
         public int year { get; set; }
@@ -28,8 +28,7 @@ namespace MedicareProvidersSearch.Models
         public Nullable<double> average_medicare_payment_amt { get; set; }
         public Nullable<double> stdev_medicare_payment_amt { get; set; }
         public Nullable<double> average_medicare_standard_amt { get; set; }
-        public string ShortDescription { get; set; }
-        public string Description { get; set; }
-        public string DrugIndicator { get; set; }
+    
+        public virtual MedicareProvider MedicareProvider { get; set; }
     }
 }

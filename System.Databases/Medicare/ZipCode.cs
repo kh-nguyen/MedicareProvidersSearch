@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MedicareProvidersSearch.Models
+namespace System.Databases.Medicare
 {
     using System;
     using System.Collections.Generic;

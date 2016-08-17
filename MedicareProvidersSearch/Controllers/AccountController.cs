@@ -1,7 +1,7 @@
 ﻿using System.Infrastructure;
 using System.Web.Mvc;
 using System.Linq;
-using MedicareProvidersSearch.Models;
+using System.Databases.Medicare;
 
 namespace System.Controllers
 {

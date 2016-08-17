@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicareProvidersSearch", "MedicareProvidersSearch\MedicareProvidersSearch.csproj", "{1950A550-A44E-46FE-8112-F0307785593C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Databases", "System.Databases\System.Databases.csproj", "{09325D44-F433-459E-BFC1-ABA709BC0F83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Import", "Import\Import.csproj", "{D6751671-C943-4D8F-A020-811B5707BD40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{1950A550-A44E-46FE-8112-F0307785593C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1950A550-A44E-46FE-8112-F0307785593C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1950A550-A44E-46FE-8112-F0307785593C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09325D44-F433-459E-BFC1-ABA709BC0F83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09325D44-F433-459E-BFC1-ABA709BC0F83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09325D44-F433-459E-BFC1-ABA709BC0F83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09325D44-F433-459E-BFC1-ABA709BC0F83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6751671-C943-4D8F-A020-811B5707BD40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6751671-C943-4D8F-A020-811B5707BD40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6751671-C943-4D8F-A020-811B5707BD40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6751671-C943-4D8F-A020-811B5707BD40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

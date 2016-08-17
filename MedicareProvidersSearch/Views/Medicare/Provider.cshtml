@@ -2,7 +2,7 @@
     Layout = null;
 }
 
-<form accordion="{ heightStyle: 'content', collapsible: true, active: false }" ng-show="provider" data-model="@Newtonsoft.Json.JsonConvert.SerializeObject(Model)">
+<form accordion="{ heightStyle: 'content' }" ng-show="provider" data-model="@Newtonsoft.Json.JsonConvert.SerializeObject(Model)">
     <h3>Medicare National Provider Detail<span class="fa fa-info pull-right"></span></h3>
     <div>
         <div class="row">
@@ -213,7 +213,13 @@
                                     @for (var i = 1; i <= 15; ++i) {
                                     <tr ng-show="provider.Healthcare_Provider_Taxonomy_Code_@i">
                                         <td ng-bind="provider.Healthcare_Provider_Primary_Taxonomy_Switch_@i"></td>
-                                        <td ng-bind="provider.Healthcare_Provider_Taxonomy_Code_@i"></td>
+                                        <td ng-attr-title="{{provider.Healthcare_Provider_Taxonomy_Code_Definition_@i}}">
+                                            <span ng-bind="provider.Healthcare_Provider_Taxonomy_Code_@i"></span>
+                                            <span ng-show="provider.Healthcare_Provider_Taxonomy_Code_Classification_@i">&nbsp;-&nbsp;</span>
+                                            <span ng-bind="provider.Healthcare_Provider_Taxonomy_Code_Classification_@i"></span>
+                                            <span ng-show="provider.Healthcare_Provider_Taxonomy_Code_Specialization_@i">&nbsp;-&nbsp;</span>
+                                            <span ng-bind="provider.Healthcare_Provider_Taxonomy_Code_Specialization_@i"></span>
+                                        </td>
                                         <td ng-bind="provider.Provider_License_Number_State_Code_@i"></td>
                                         <td ng-bind="provider.Provider_License_Number_@i"></td>
                                     </tr>

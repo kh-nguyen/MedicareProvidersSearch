@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MedicareProvidersSearch.Models
+namespace System.Databases.Medicare
 {
     using System;
     using System.Data.Entity;
@@ -27,9 +27,15 @@ namespace MedicareProvidersSearch.Models
     
         public virtual DbSet<HCPCSCode> HCPCSCodes { get; set; }
         public virtual DbSet<ZipCode> ZipCodes { get; set; }
+        public virtual DbSet<jqGridSavedSearchHistory> jqGridSavedSearchHistories { get; set; }
+        public virtual DbSet<MedicareProvidersUtilizationAndPayment> MedicareProvidersUtilizationAndPayments { get; set; }
+        public virtual DbSet<Physician> Physicians { get; set; }
+        public virtual DbSet<TaxonomyCode> TaxonomyCodes { get; set; }
+        public virtual DbSet<MedicareProvider> MedicareProviders { get; set; }
+        public virtual DbSet<MedicareProvidersAggregate> MedicareProvidersAggregates { get; set; }
+        public virtual DbSet<MedicareExtendedPhysician> MedicareExtendedPhysicians { get; set; }
         public virtual DbSet<MedicareExtendedProvider> MedicareExtendedProviders { get; set; }
         public virtual DbSet<MedicareExtendedProvidersAggregate> MedicareExtendedProvidersAggregates { get; set; }
         public virtual DbSet<MedicareExtendedUtilizationAndPayment> MedicareExtendedUtilizationAndPayments { get; set; }
-        public virtual DbSet<jqGridSavedSearchHistory> jqGridSavedSearchHistories { get; set; }
     }
 }

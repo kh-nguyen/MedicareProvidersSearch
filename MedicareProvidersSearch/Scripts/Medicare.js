@@ -333,6 +333,9 @@
             postData: { filters: { groupOp: "AND", rules: [] } },
             colNames: [
                 'NPI'
+                , 'ID'
+                , 'Contact ID'
+                , 'Institution ID'
                 , 'Entity Type Code'
                 , 'Replacement NPI'
                 , 'Employer Identification Number (EIN)'
@@ -383,62 +386,107 @@
                 , 'Authorized Official Credential Text'
                 , 'Authorized Official Telephone Number'
                 , 'Healthcare Provider Taxonomy Code_1'
+                , 'Healthcare Provider Taxonomy Code_Classification_1'
+                , 'Healthcare Provider Taxonomy Code_Specialization_1'
+                , 'Healthcare Provider Taxonomy Code_Definition_1'
                 , 'Provider License Number_1'
                 , 'Provider License Number State Code_1'
                 , 'Healthcare Provider Primary Taxonomy Switch_1'
                 , 'Healthcare Provider Taxonomy Code_2'
+                , 'Healthcare Provider Taxonomy Code_Classification_2'
+                , 'Healthcare Provider Taxonomy Code_Specialization_2'
+                , 'Healthcare Provider Taxonomy Code_Definition_2'
                 , 'Provider License Number_2'
                 , 'Provider License Number State Code_2'
                 , 'Healthcare Provider Primary Taxonomy Switch_2'
                 , 'Healthcare Provider Taxonomy Code_3'
+                , 'Healthcare Provider Taxonomy Code_Classification_3'
+                , 'Healthcare Provider Taxonomy Code_Specialization_3'
+                , 'Healthcare Provider Taxonomy Code_Definition_3'
                 , 'Provider License Number_3'
                 , 'Provider License Number State Code_3'
                 , 'Healthcare Provider Primary Taxonomy Switch_3'
                 , 'Healthcare Provider Taxonomy Code_4'
+                , 'Healthcare Provider Taxonomy Code_Classification_4'
+                , 'Healthcare Provider Taxonomy Code_Specialization_4'
+                , 'Healthcare Provider Taxonomy Code_Definition_4'
                 , 'Provider License Number_4'
                 , 'Provider License Number State Code_4'
                 , 'Healthcare Provider Primary Taxonomy Switch_4'
                 , 'Healthcare Provider Taxonomy Code_5'
+                , 'Healthcare Provider Taxonomy Code_Classification_5'
+                , 'Healthcare Provider Taxonomy Code_Specialization_5'
+                , 'Healthcare Provider Taxonomy Code_Definition_5'
                 , 'Provider License Number_5'
                 , 'Provider License Number State Code_5'
                 , 'Healthcare Provider Primary Taxonomy Switch_5'
                 , 'Healthcare Provider Taxonomy Code_6'
+                , 'Healthcare Provider Taxonomy Code_Classification_6'
+                , 'Healthcare Provider Taxonomy Code_Specialization_6'
+                , 'Healthcare Provider Taxonomy Code_Definition_6'
                 , 'Provider License Number_6'
                 , 'Provider License Number State Code_6'
                 , 'Healthcare Provider Primary Taxonomy Switch_6'
                 , 'Healthcare Provider Taxonomy Code_7'
+                , 'Healthcare Provider Taxonomy Code_Classification_7'
+                , 'Healthcare Provider Taxonomy Code_Specialization_7'
+                , 'Healthcare Provider Taxonomy Code_Definition_7'
                 , 'Provider License Number_7'
                 , 'Provider License Number State Code_7'
                 , 'Healthcare Provider Primary Taxonomy Switch_7'
                 , 'Healthcare Provider Taxonomy Code_8'
+                , 'Healthcare Provider Taxonomy Code_Classification_8'
+                , 'Healthcare Provider Taxonomy Code_Specialization_8'
+                , 'Healthcare Provider Taxonomy Code_Definition_8'
                 , 'Provider License Number_8'
                 , 'Provider License Number State Code_8'
                 , 'Healthcare Provider Primary Taxonomy Switch_8'
                 , 'Healthcare Provider Taxonomy Code_9'
+                , 'Healthcare Provider Taxonomy Code_Classification_9'
+                , 'Healthcare Provider Taxonomy Code_Specialization_9'
+                , 'Healthcare Provider Taxonomy Code_Definition_9'
                 , 'Provider License Number_9'
                 , 'Provider License Number State Code_9'
                 , 'Healthcare Provider Primary Taxonomy Switch_9'
                 , 'Healthcare Provider Taxonomy Code_10'
+                , 'Healthcare Provider Taxonomy Code_Classification_10'
+                , 'Healthcare Provider Taxonomy Code_Specialization_10'
+                , 'Healthcare Provider Taxonomy Code_Definition_10'
                 , 'Provider License Number_10'
                 , 'Provider License Number State Code_10'
                 , 'Healthcare Provider Primary Taxonomy Switch_10'
                 , 'Healthcare Provider Taxonomy Code_11'
+                , 'Healthcare Provider Taxonomy Code_Classification_11'
+                , 'Healthcare Provider Taxonomy Code_Specialization_11'
+                , 'Healthcare Provider Taxonomy Code_Definition_11'
                 , 'Provider License Number_11'
                 , 'Provider License Number State Code_11'
                 , 'Healthcare Provider Primary Taxonomy Switch_11'
                 , 'Healthcare Provider Taxonomy Code_12'
+                , 'Healthcare Provider Taxonomy Code_Classification_12'
+                , 'Healthcare Provider Taxonomy Code_Specialization_12'
+                , 'Healthcare Provider Taxonomy Code_Definition_12'
                 , 'Provider License Number_12'
                 , 'Provider License Number State Code_12'
                 , 'Healthcare Provider Primary Taxonomy Switch_12'
                 , 'Healthcare Provider Taxonomy Code_13'
+                , 'Healthcare Provider Taxonomy Code_Classification_13'
+                , 'Healthcare Provider Taxonomy Code_Specialization_13'
+                , 'Healthcare Provider Taxonomy Code_Definition_13'
                 , 'Provider License Number_13'
                 , 'Provider License Number State Code_13'
                 , 'Healthcare Provider Primary Taxonomy Switch_13'
                 , 'Healthcare Provider Taxonomy Code_14'
+                , 'Healthcare Provider Taxonomy Code_Classification_14'
+                , 'Healthcare Provider Taxonomy Code_Specialization_14'
+                , 'Healthcare Provider Taxonomy Code_Definition_14'
                 , 'Provider License Number_14'
                 , 'Provider License Number State Code_14'
                 , 'Healthcare Provider Primary Taxonomy Switch_14'
                 , 'Healthcare Provider Taxonomy Code_15'
+                , 'Healthcare Provider Taxonomy Code_Classification_15'
+                , 'Healthcare Provider Taxonomy Code_Specialization_15'
+                , 'Healthcare Provider Taxonomy Code_Definition_15'
                 , 'Provider License Number_15'
                 , 'Provider License Number State Code_15'
                 , 'Healthcare Provider Primary Taxonomy Switch_15'
@@ -660,8 +708,8 @@
                 , 'Healthcare Provider Taxonomy Group_12'
                 , 'Healthcare Provider Taxonomy Group_13'
                 , 'Healthcare Provider Taxonomy Group_14'
-                , 'Healthcare Provider Taxonomy Group_15'
-                , 'PAC ID',
+                , 'Healthcare Provider Taxonomy Group_15',
+                'PAC ID',
                 'Professional Enrollment ID',
                 'Medical school name',
                 'Graduation year',
@@ -675,6 +723,7 @@
                 'Organization DBA name',
                 'Group Practice PAC ID',
                 'Number of Group Practice members',
+                'Phone Number',
                 'Claims based hospital affiliation CCN 1',
                 'Claims based hospital affiliation LBN 1',
                 'Claims based hospital affiliation CCN 2',
@@ -692,7 +741,10 @@
             ],
             colModel: [
                 { name: 'NPI', width: 70, key: true, fixed: true, search: true, searchtype: 'integer', searchoptions: { sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                { name: 'Entity_Type_Code', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'ID', width: 70, fixed: true, search: false, editable: false, formatter: System.medicareProviderIdFormatter },
+                { name: 'ContactID', width: 50, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge', 'nu', 'nn'] }, editable: false, hidden: true },
+                { name: 'InstitutionID', width: 50, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge', 'nu', 'nn'] }, editable: false, hidden: true },
+                { name: 'Entity_Type_Code', width: 10, search: true, stype: "select", searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'nu', 'nn'], value: ':;2:Organization;1:Individual' }, editable: false, hidden: true },
                 { name: 'Replacement_NPI', width: 70, fixed: true, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Employer_Identification_Number__EIN_', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Organization_Name__Legal_Business_Name_', width: 70, search: true, searchoptions: { searchhidden: true }, editable: false },
@@ -742,62 +794,107 @@
                 { name: 'Authorized_Official_Credential_Text', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Authorized_Official_Telephone_Number', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_3', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_3', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_3', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_3', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_3', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_3', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_3', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_5', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_5', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_5', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_5', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_5', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_5', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_5', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_6', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_6', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_6', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_6', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_6', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_6', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_6', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_7', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_7', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_7', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_7', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_7', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_7', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_7', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_8', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_8', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_8', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_8', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_8', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_8', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_8', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_9', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_9', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_9', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_9', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_9', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_9', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_9', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_10', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_10', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_10', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_10', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_10', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_10', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_10', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_11', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_11', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_11', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_11', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_11', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_11', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_11', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_12', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_12', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_12', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_12', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_12', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_12', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_12', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_13', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_13', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_13', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_13', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_13', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_13', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_13', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_14', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_14', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_14', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_14', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_14', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_14', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_14', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Taxonomy_Code_15', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Classification_15', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Specialization_15', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Healthcare_Provider_Taxonomy_Code_Definition_15', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_15', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_License_Number_State_Code_15', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Healthcare_Provider_Primary_Taxonomy_Switch_15', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
@@ -1036,6 +1133,7 @@
                 { name: 'Organization_DBA_name', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Group_Practice_PAC_ID', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Number_of_Group_Practice_members', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Phone_Number', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Claims_based_hospital_affiliation_CCN_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Claims_based_hospital_affiliation_LBN_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Claims_based_hospital_affiliation_CCN_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
@@ -1660,19 +1758,19 @@
                 $('<div/>').attr('ID', pagerName).insertAfter($table);
 
                 // initialize default options
-                if (typeof options === 'undefined') { options = []; }
+                if (typeof options === 'undefined') { options = {}; }
 
-                var $caption = '<i class="fa fa-users"></i>&nbsp;'
+                options.caption = '<i class="fa fa-users"></i>&nbsp;'
                     + (typeof (options.caption) !== 'undefined'
                     ? options.caption : 'Group Practice Members');
 
-                $table.jqGrid({
-                    caption: $caption,
+                $table.jqGrid($.extend({
                     url: $table.data('url'),
                     datatype: "json",
                     prmNames: { id: "npi" },
                     colNames: [
                         'NPI'
+                        , 'Contact ID'
                         , 'Prefix'
                         , 'First Name'
                         , 'Middle Name'
@@ -1682,6 +1780,9 @@
                         , 'Gender'
                         , 'PAC ID'
                         , 'Professional Enrollment ID'
+                        , 'Phone Number'
+                        , 'Provider Business Mailing Address Telephone Number'
+                        , 'Provider Business Practice Location Address Telephone Number'
                         , 'Medical school name'
                         , 'Graduation year'
                         , 'Primary specialty'
@@ -1692,18 +1793,22 @@
                         , 'All secondary specialties'
                     ],
                     colModel: [
-                        { name: 'NPI', width: 70, key: true, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'Provider_Name_Prefix_Text', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                        { name: 'NPI', width: 70, key: true, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, formatter: System.medicareProviderIdFormatter },
+                        { name: 'ContactID', width: 50, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge', 'nu', 'nn'] }, editable: false, hidden: true, formatter: System.medicareProviderIdFormatter },
+                        { name: 'Provider_Name_Prefix_Text', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                         { name: 'Provider_First_Name', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false },
                         { name: 'Provider_Middle_Name', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false },
                         { name: 'Provider_Last_Name__Legal_Name_', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false },
-                        { name: 'Provider_Name_Suffix_Text', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                        { name: 'Provider_Name_Suffix_Text', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                         { name: 'Provider_Credential_Text', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false },
                         { name: 'Provider_Gender_Code', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false },
                         { name: 'PAC_ID', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                         { name: 'Professional_Enrollment_ID', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                        { name: 'Phone_Number', width: 30, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: false },
+                        { name: 'Provider_Business_Mailing_Address_Telephone_Number', width: 30, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                        { name: 'Provider_Business_Practice_Location_Address_Telephone_Number', width: 30, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                         { name: 'Medical_school_name', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false },
-                        { name: 'Graduation_year', width: 30, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                        { name: 'Graduation_year', width: 15, align: 'right', search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
                         { name: 'Primary_specialty', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false },
                         { name: 'Secondary_specialty_1', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                         { name: 'Secondary_specialty_2', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
@@ -1711,7 +1816,7 @@
                         { name: 'Secondary_specialty_4', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                         { name: 'All_secondary_specialties', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false }
                     ],
-                    rowNum: 10,
+                    rowNum: 100,
                     rowList: [10, 20, 30, 50, 75, 100, 200, 500, 1000],
                     pager: '#' + pagerName,
                     sortname: 'Provider_Last_Name__Legal_Name_',
@@ -1751,7 +1856,7 @@
                             }).trigger("reloadGrid");
                         });
                     }
-                }).jqGrid('navGrid', '#' + pagerName,
+                }, options)).jqGrid('navGrid', '#' + pagerName,
                     { search: true, view: true, del: false, add: false, edit: false },
                     {}, // default settings for edit
                     {}, // default settings for add
@@ -1776,4 +1881,17 @@
         };
     }]);
 
+    System.medicareProviderIdFormatter = function (cellvalue, options, rowObject) {
+        if (rowObject.ContactID != null && $.isFunction(System.getAccountDetailLink)) {
+            return System.getAccountDetailLink(rowObject.ContactID, cellvalue);
+        } else if (rowObject.InstitutionID != null && $.isFunction(System.getInstitutionDetailLink)) {
+            return System.getInstitutionDetailLink(rowObject.InstitutionID, cellvalue);
+        }
+
+        if (cellvalue) {
+            return cellvalue;
+        }
+
+        return '';
+    }
 }());

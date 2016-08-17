@@ -1,11 +1,11 @@
 # MedicareProvidersSearch
-A tool to search for providers and other health care professionals currently enrolled in Medicare
+This is a tool to search for providers and other health care professionals currently enrolled in Medicare. It can be used to see whether a medical procedure is popular in a certain area,  who are using it and how much it costs.
 
 #Install
-Use Schemas\MSSQL.sql file to install the database schema to a MS SQL server
+Use Schemas\MSSQL.sql file to install the database schema to a MS SQL Server Express 2012. You also need to modify the Web.config and/or App.config to update the database connection string for your computer.
 
 #Public Data Sources
-Please import the data to the MS SQL server with database named 'Medicare' in the following order:
+Please import the data to the MS SQL server using the included 'Import' program in the following order:
 
 #Required:
 MedicareProviders - http://download.cms.gov/nppes/NPI_Files.html <br/>
@@ -16,9 +16,7 @@ ZipCodes - (choose Centroids) http://www.nber.org/data/zip-code-distance-databas
 
 #Optional:
 HCPCSCodes - 
-
-#To do:
-Build a data importer to take .cvs raw data files and update the data already in the database
+TaxonomyCodes - http://www.nucc.org/index.php?option=com_content&view=article&id=107&Itemid=50
 
 #Screenshots
 ![ScreenShot 1](https://github.com/kh-nguyen/MedicareProvidersSearch/raw/master/MedicareProvidersSearch/Screenshot.png)

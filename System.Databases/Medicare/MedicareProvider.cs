@@ -7,13 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MedicareProvidersSearch.Models
+namespace System.Databases.Medicare
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class MedicareExtendedProvider
+    public partial class MedicareProvider
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public MedicareProvider()
+        {
+            this.MedicareProvidersAggregates = new HashSet<MedicareProvidersAggregate>();
+            this.MedicareProvidersUtilizationAndPayments = new HashSet<MedicareProvidersUtilizationAndPayment>();
+        }
+    
         public int NPI { get; set; }
         public Nullable<short> Entity_Type_Code { get; set; }
         public Nullable<int> Replacement_NPI { get; set; }
@@ -344,35 +351,11 @@ namespace MedicareProvidersSearch.Models
         public string Healthcare_Provider_Taxonomy_Group_14 { get; set; }
         public string Healthcare_Provider_Taxonomy_Group_15 { get; set; }
         public Nullable<int> us_business_practice_location_zip_code_5 { get; set; }
-        public string PAC_ID { get; set; }
-        public string Professional_Enrollment_ID { get; set; }
-        public string Medical_school_name { get; set; }
-        public Nullable<short> Graduation_year { get; set; }
-        public string Primary_specialty { get; set; }
-        public string Secondary_specialty_1 { get; set; }
-        public string Secondary_specialty_2 { get; set; }
-        public string Secondary_specialty_3 { get; set; }
-        public string Secondary_specialty_4 { get; set; }
-        public string All_secondary_specialties { get; set; }
-        public string Organization_legal_name { get; set; }
-        public string Organization_DBA_name { get; set; }
-        public string Group_Practice_PAC_ID { get; set; }
-        public Nullable<short> Number_of_Group_Practice_members { get; set; }
-        public Nullable<int> Claims_based_hospital_affiliation_CCN_1 { get; set; }
-        public string Claims_based_hospital_affiliation_LBN_1 { get; set; }
-        public Nullable<int> Claims_based_hospital_affiliation_CCN_2 { get; set; }
-        public string Claims_based_hospital_affiliation_LBN_2 { get; set; }
-        public Nullable<int> Claims_based_hospital_affiliation_CCN_3 { get; set; }
-        public string Claims_based_hospital_affiliation_LBN_3 { get; set; }
-        public Nullable<int> Claims_based_hospital_affiliation_CCN_4 { get; set; }
-        public string Claims_based_hospital_affiliation_LBN_4 { get; set; }
-        public Nullable<int> Claims_based_hospital_affiliation_CCN_5 { get; set; }
-        public string Claims_based_hospital_affiliation_LBN_5 { get; set; }
-        public string Professional_accepts_Medicare_Assignment { get; set; }
-        public string Participating_in_eRx { get; set; }
-        public string Participating_in_PQRS { get; set; }
-        public string Participating_in_EHR { get; set; }
-        public string Received_PQRS_Maintenance_of_Certification_Program_Incentive { get; set; }
-        public string Participated_in_Million_Hearts { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MedicareProvidersAggregate> MedicareProvidersAggregates { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MedicareProvidersUtilizationAndPayment> MedicareProvidersUtilizationAndPayments { get; set; }
+        public virtual Physician Physician { get; set; }
     }
 }
