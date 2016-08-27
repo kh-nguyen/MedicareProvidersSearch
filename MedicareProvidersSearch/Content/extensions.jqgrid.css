@@ -83,3 +83,9 @@
     color: #0066cc;
     text-decoration: none;
 }
+
+/* jqGrid, hide the 'Query' button
+----------------------------------------------------------*/
+.ui-jqdialog a[id$='_query'] {
+    display: none;
+}

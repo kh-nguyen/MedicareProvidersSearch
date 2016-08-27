@@ -8,65 +8,79 @@
 
 <div class="site-width">
     <div class="content-wrapper col-xs-12">
-        <div ng-controller="ProvidersController" data-model="@Newtonsoft.Json.JsonConvert.SerializeObject(model)">
-            <h2>Providers and other health care professionals currently enrolled in Medicare</h2>
+        <h2>Providers and other health care professionals currently enrolled in Medicare</h2>
 
-            <form class="form-inline form-group">
-                <div class="form-group">
-                    <label for="search_hcpcs_code"><abbr title="Healthcare Common Procedure Coding System">HCPCS</abbr>&nbsp;code:</label>&nbsp;
-                    <input hcpcs-code-select ng-model="search.parameters.hcpcs" class="form-control medicare-search-input-text" placeholder="any" />
-                </div>&nbsp;
+        <div jq-tabs="{ active: 0 }" class="ui-tabs ui-widget ui-widget-content ui-corner-all ui-tabs-collapsible">
+            <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+                <li class="ui-state-default ui-corner-top"><a href="#medicare-providers" class="ui-tabs-anchor"><i class="fa fa-users"></i>&nbsp;Providers</a></li>
+                <li class="ui-state-default ui-corner-top"><a href="#medicare-utilization-payments" class="ui-tabs-anchor"><i class="fa fa-cogs"></i>&nbsp;Utilization and Payments</a></li>
+                <li class="ui-state-default ui-corner-top"><a href="#medicare-provider-aggregates" class="ui-tabs-anchor"><i class="fa fa-usd"></i>&nbsp;Payment Aggregates</a></li>
+            </ul>
+            <div id="medicare-providers"
+                 class="row ui-tabs-panel ui-widget-content"
+                 ng-controller="ProvidersController"
+                 data-model="@Newtonsoft.Json.JsonConvert.SerializeObject(model)">
+                <form class="form-inline form-group">
+                    <div class="form-group">
+                        <label for="search_hcpcs_code"><abbr title="Healthcare Common Procedure Coding System">HCPCS</abbr>&nbsp;code:</label>&nbsp;
+                        <input hcpcs-code-select ng-model="search.parameters.hcpcs" class="form-control medicare-search-input-text" placeholder="any" />
+                    </div>&nbsp;
 
-                <div class="form-group">
-                    <label for="search_in_year">in</label>&nbsp;
-                    <select class="form-control medicare-search-input-text"
-                            ng-model="search.parameters.year"
-                            ng-options="year for year in search.years">
-                        <option value="">any</option>
-                    </select>&nbsp;
-                    <label for="search_in_year">year</label>
-                </div>&nbsp;
+                    <div class="form-group">
+                        <label for="search_in_year">in</label>&nbsp;
+                        <select class="form-control medicare-search-input-text"
+                                ng-model="search.parameters.year"
+                                ng-options="year for year in search.years">
+                            <option value="">any</option>
+                        </select>&nbsp;
+                        <label for="search_in_year">year</label>
+                    </div>&nbsp;
 
-                <div class="form-group">
-                    <label for="search_within_miles">within</label>&nbsp;
-                    <input ng-model="search.parameters.miles" class="form-control medicare-search-input-text" placeholder="any" />&nbsp;
-                    <label for="search_within_miles">miles</label>
-                </div>&nbsp;
+                    <div class="form-group">
+                        <label for="search_within_miles">within</label>&nbsp;
+                        <input ng-model="search.parameters.miles" class="form-control medicare-search-input-text" placeholder="any" />&nbsp;
+                        <label for="search_within_miles">miles</label>
+                    </div>&nbsp;
 
-                <div class="form-group">
-                    <label for="search_zipcode">of</label>&nbsp;
-                    <input ng-model="search.parameters.zipcode" class="form-control medicare-search-input-text" placeholder="any" />&nbsp;
-                    <label for="search_zipcode">zipcode</label>&nbsp;
-                </div>&nbsp;
+                    <div class="form-group">
+                        <label for="search_zipcode">of</label>&nbsp;
+                        <input ng-model="search.parameters.zipcode" class="form-control medicare-search-input-text" placeholder="any" />&nbsp;
+                        <label for="search_zipcode">zipcode</label>&nbsp;
+                    </div>&nbsp;
 
-                <button type="submit" ng-click="search.submit()" class="btn btn-default" title="Click to search">
-                    <span class="glyphicon glyphicon-search"></span>
-                </button>
-            </form>
+                    <button type="submit" ng-click="search.submit()" class="btn btn-default" title="Click to search">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </form>
 
-            <table id="providers-table" jqgrid-stay-top
-                   data-url="@Url.Action("Providers")"
-                   data-saveurl="@Url.Action("ProvidersSave")"></table>
-            <div id="providers-table-pager"></div>
+                <table id="providers-table" jqgrid-stay-top data-url="@Url.Action("Providers")"></table>
+                <div id="providers-table-pager"></div>
 
-            <div class="container-fluid form-group">
-                <div class="row row-no-padding">
-                    <div class="col-xs-12 col-md-6">
-                        <table id="providers-table-saved-searches"></table>
-                        <div id="providers-table-saved-searches-pager"></div>
-                    </div>
+                <div class="col-xs-12 col-md-6 padding-zero">
+                    <table id="providers-table-saved-searches"></table>
+                    <div id="providers-table-saved-searches-pager"></div>
+                </div>
 
-                    <div class="col-xs-12 col-md-6">
-                        <table id="providers-table-search-histories"></table>
-                        <div id="providers-table-search-histories-pager"></div>
-                    </div>
+                <div class="col-xs-12 col-md-6 padding-zero">
+                    <table id="providers-table-search-histories"></table>
+                    <div id="providers-table-search-histories-pager"></div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div id="provider-detail">
+                    <hr />
+
+                    @Html.Action("Provider", new { ID = 0 })
                 </div>
             </div>
-
-            <div id="provider-detail">
-                <hr />
-
-                @Html.Action("Provider", new { ID = 0 })
+            <div id="medicare-utilization-payments" class="row ui-tabs-panel ui-widget-content">
+                <table medicare-provider-utilization-payments="{ showSearchHistories: true, showSearchDialog: true, colModel: [{name: 'npi', hidden: false}] }"
+                       data-url="@Url.Action("UtilizationAndPayments")"></table>
+            </div>
+            <div id="medicare-provider-aggregates" class="row ui-tabs-panel ui-widget-content">
+                <table medicare-provider-aggregates="{ showSearchHistories: true, showSearchDialog: true, colModel: [{name: 'npi', hidden: false}] }"
+                       data-url="@Url.Action("Aggregates")"></table>
             </div>
         </div>
     </div>

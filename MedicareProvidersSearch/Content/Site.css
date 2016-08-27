@@ -22,3 +22,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.medicare-search-input-text {
+    width: 80px !important;
+}
+
+.medicare-provider-name {
+    font-size: larger;
+}

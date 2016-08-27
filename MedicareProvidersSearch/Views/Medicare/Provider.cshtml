@@ -7,7 +7,7 @@
     <div>
         <div class="row">
             <div class="form-group">
-                <span ng-show="provider.Entity_Type_Code == 1"><i class="fa fa-user-md fa-lg" aria-hidden="true"></i>&nbsp;<strong class="medicare-provider-name">{{provider.Provider_First_Name}}<span ng-show="provider.Provider_Middle_Name">&nbsp;{{provider.Provider_Middle_Name}}</span>&nbsp;{{provider.Provider_Last_Name__Legal_Name_}}<span ng-show="provider.Provider_Name_Suffix_Text">&nbsp;{{provider.Provider_Name_Suffix_Text}}</span>&nbsp;{{provider.Provider_Credential_Text}}</strong></span>
+                <span ng-show="provider.Entity_Type_Code == 1"><i class="fa fa-user-md fa-lg" aria-hidden="true"></i>&nbsp;<strong class="medicare-provider-name"><span ng-bind="provider.Provider_First_Name"></span><span ng-show="provider.Provider_Middle_Name">&nbsp;<span ng-bind="provider.Provider_Middle_Name"></span></span>&nbsp;<span ng-bind="provider.Provider_Last_Name__Legal_Name_"></span><span ng-show="provider.Provider_Name_Suffix_Text">&nbsp;<span ng-bind="provider.Provider_Name_Suffix_Text"></span></span>&nbsp;<span ng-bind="provider.Provider_Credential_Text"></span></strong></span>
                 <span ng-show="provider.Entity_Type_Code == 2"><i class="fa fa-hospital-o fa-lg" aria-hidden="true"></i>&nbsp;<strong class="medicare-provider-name" ng-bind="provider.Provider_Organization_Name__Legal_Business_Name_"></strong></span>
                 <span class="pull-right" title="Unique professional ID assigned by NPPES"><strong>NPI</strong>:&nbsp;<span ng-bind="provider.NPI"></span></span>
                 <span class="pull-right" ng-show="provider.Entity_Type_Code == 1"><strong>Gender</strong>:&nbsp;<span ng-bind="provider.Provider_Gender_Code == 'M' ? 'Male' : ( provider.Provider_Gender_Code == 'F' ? 'Female' : provider.Provider_Gender_Code )"></span>&nbsp;</span>
@@ -128,7 +128,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>{{provider.Authorized_Official_First_Name}}<span ng-show="provider.Authorized_Official_Middle_Name">&nbsp;{{provider.Authorized_Official_Middle_Name}}</span>&nbsp;{{provider.Authorized_Official_Last_Name}}<span ng-show="provider.Authorized_Official_Name_Suffix_Text">&nbsp;{{provider.Authorized_Official_Name_Suffix_Text}}</span>&nbsp;{{provider.Authorized_Official_Credential_Text}}</td>
+                                        <td><span ng-bind="provider.Authorized_Official_First_Name"></span><span ng-show="provider.Authorized_Official_Middle_Name">&nbsp;<span ng-bind="provider.Authorized_Official_Middle_Name"></span></span>&nbsp;<span ng-bind="provider.Authorized_Official_Last_Name"></span><span ng-show="provider.Authorized_Official_Name_Suffix_Text">&nbsp;<span ng-bind="provider.Authorized_Official_Name_Suffix_Text"></span></span>&nbsp;<span ng-bind="provider.Authorized_Official_Credential_Text"></span></td>
                                         <td ng-bind="provider.Authorized_Official_Title_or_Position"></td>
                                         <td ten-digit-phone-formatter ng-bind="provider.Authorized_Official_Telephone_Number"></td>
                                     </tr>
@@ -256,15 +256,18 @@
             </table>
 
             <div class="form-group">
-                <table medicare-provider-aggregates data-url="@Url.Action("Aggregates", new { ID = Model == null ? 0 : Model.NPI })"></table>
+                <table medicare-provider-aggregates
+                       data-url="@Url.Action("Aggregates", new { ID = Model == null ? 0 : Model.NPI })"></table>
             </div>
 
             <div class="form-group">
-                <table medicare-provider-utilization-payments data-url="@Url.Action("UtilizationAndPayments", new { ID = Model == null ? 0 : Model.NPI })"></table>
+                <table medicare-provider-utilization-payments
+                       data-url="@Url.Action("UtilizationAndPayments", new { ID = Model == null ? 0 : Model.NPI })"></table>
             </div>
 
             <div ng-show="provider.Group_Practice_PAC_ID">
-                <table medicare-provider-group-practice-members data-url="@Url.Action("GroupPracticeMembers", new { ID = Model == null ? 0 : Model.NPI })"></table>
+                <table medicare-provider-group-practice-members
+                       data-url="@Url.Action("GroupPracticeMembers", new { ID = Model == null ? 0 : Model.NPI })"></table>
             </div>
         </div>
     </div>

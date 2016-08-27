@@ -32,7 +32,7 @@ namespace System.Controllers
         }
 
         [HttpPost]
-        public JsonNetResult Providers(jqGridParamModel grid,
+        public JsonNetResult Providers(jqGridParamModel grid, bool? save,
             SearchUtilizationAndPayments searchUtilizationAndPayments) {
             // turn off change tracking for high performance
             medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
@@ -44,30 +44,16 @@ namespace System.Controllers
                     query = searchUtilizationAndPayments.apply(medicareDatabase, query);
                 }
 
+                if (save ?? false) {
+                    Save(query, grid, "Providers.csv");
+
+                    return null;
+                }
+
                 var result = jqGridResponseDefaultModel.getDefaultResponse(query, grid);
 
                 //convert to JSON and return to client
                 return this.JsonEx(result);
-            }
-        }
-
-        [HttpPost]
-        public void ProvidersSave(jqGridParamModel grid) {
-            // turn off change tracking for high performance
-            medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
-
-            using (var scope = Scope.New(IsolationLevel.ReadUncommitted)) {
-                var query = medicareDatabase.MedicareExtendedProviders.AsQueryable();
-
-                query = jqGridResponseDefaultModel.getFilteringAndSorting(query, grid);
-
-                string filename = "result.csv";
-                httpContext.Response.ContentType = "text/csv";
-                httpContext.Response.AddHeader("Content-Disposition", httpContext.getContentDisposition(filename));
-                httpContext.Response.Clear();
-
-                httpContext.Response.Write(query.ToCsv());
-                httpContext.Response.End();
             }
         }
 
@@ -79,13 +65,23 @@ namespace System.Controllers
         }
 
         [HttpPost]
-        public JsonNetResult Aggregates(int ID, jqGridParamModel grid) {
+        public JsonNetResult Aggregates(jqGridParamModel grid, int? ID, bool? save) {
             // turn off change tracking for high performance
             medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
 
             using (var scope = Scope.New(IsolationLevel.ReadUncommitted)) {
-                var query = medicareDatabase.MedicareExtendedProvidersAggregates
-                    .Where(x => x.npi == ID).AsQueryable();
+                var query = medicareDatabase.MedicareExtendedProvidersAggregates.AsQueryable();
+
+                if (ID > 0)
+                    query = query.Where(x => x.npi == ID);
+                else if (ID == 0)
+                    return this.JsonEx(new { });
+
+                if (save ?? false) {
+                    Save(query, grid, "Aggregates.csv");
+
+                    return null;
+                }
 
                 var result = jqGridResponseDefaultModel.getDefaultResponse(query, grid);
 
@@ -95,13 +91,23 @@ namespace System.Controllers
         }
 
         [HttpPost]
-        public JsonNetResult UtilizationAndPayments(int ID, jqGridParamModel grid) {
+        public JsonNetResult UtilizationAndPayments(jqGridParamModel grid, int? ID, bool? save) {
             // turn off change tracking for high performance
             medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
 
             using (var scope = Scope.New(IsolationLevel.ReadUncommitted)) {
-                var query = medicareDatabase.MedicareExtendedUtilizationAndPayments
-                    .Where(x => x.npi == ID).AsQueryable();
+                var query = medicareDatabase.MedicareExtendedUtilizationAndPayments.AsQueryable();
+
+                if (ID > 0)
+                    query = query.Where(x => x.npi == ID);
+                else if (ID == 0)
+                    return this.JsonEx(new { });
+
+                if (save ?? false) {
+                    Save(query, grid, "UtilizationAndPayments.csv");
+
+                    return null;
+                }
 
                 var result = jqGridResponseDefaultModel.getDefaultResponse(query, grid);
 
@@ -111,7 +117,7 @@ namespace System.Controllers
         }
 
         [HttpPost]
-        public JsonNetResult GroupPracticeMembers(int? ID, string PACID, jqGridParamModel grid) {
+        public JsonNetResult GroupPracticeMembers(jqGridParamModel grid, int? ID, string PACID, bool? save) {
             // turn off change tracking for high performance
             medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
 
@@ -132,11 +138,28 @@ namespace System.Controllers
                 var query = medicareDatabase.MedicareExtendedProviders
                     .Where(x => x.Group_Practice_PAC_ID == PACID);
 
+                if (save ?? false) {
+                    Save(query, grid, "GroupPracticeMembers.csv");
+
+                    return null;
+                }
+
                 var result = jqGridResponseDefaultModel.getDefaultResponse(query, grid);
 
                 //convert to JSON and return to client
                 return this.JsonEx(result);
             }
+        }
+
+        private void Save<T>(IQueryable<T> query, jqGridParamModel grid, string fileName) {
+            query = jqGridResponseDefaultModel.getFilteringAndSorting(query, grid);
+
+            httpContext.Response.ContentType = "text/csv";
+            httpContext.Response.AddHeader("Content-Disposition", httpContext.getContentDisposition(fileName));
+            httpContext.Response.Clear();
+
+            httpContext.Response.Write(query.ToCsv());
+            httpContext.Response.End();
         }
 
         public class SearchUtilizationAndPayments

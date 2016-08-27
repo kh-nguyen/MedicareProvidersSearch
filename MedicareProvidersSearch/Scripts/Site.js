@@ -217,6 +217,89 @@ if (!System) {
                 }
             };
         })
+        .directive('jqTabs', ['$compile', '$timeout', function ($compile, $timeout) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attributes) {
+                    var options = scope.$eval(attributes.jqTabs);
+
+                    options = $.extend({
+                        active: false,
+                        collapsible: true, // required for the active to be false
+                        beforeLoad: function (event, ui) {
+                            //------------------------------------------------------
+                            // Prevent ajax tabs from reload
+                            if (ui.tab.data("loaded")) {
+                                event.preventDefault();
+                                return;
+                            }
+
+                            // support iframe panel
+                            if (ui.tab.data('panel') === 'iframe') {
+                                var iframe = [];
+                                iframe.push('<iframe seamless src="');
+                                iframe.push(ui.tab.find('a').attr('href'));
+                                iframe.push('" />');
+                                ui.panel.html(iframe.join(''));
+                                event.preventDefault();
+                                ui.tab.data("loaded", true);
+                                return;
+                            }
+
+                            ui.jqXHR.success(function () {
+                                ui.tab.data("loaded", true);
+                            });
+                            //------------------------------------------------------
+                        },
+                        load: function (event, ui) {
+                            $timeout(function () {
+                                $compile($(ui.panel).contents())(scope);
+                            });
+                        },
+                        beforeActivate: function (event, ui) {
+                            // support goto link
+                            if (ui.newTab.data('panel') === 'href') {
+                                location.href = $('a', ui.newTab).data('href');
+                                return false;
+                            }
+
+                            var parent_path = ui.newTab.closest('.ui-tabs-panel').data('href');
+                            var path = (typeof parent_path === 'undefined' ? "#" : parent_path) + '/' + ui.newTab.index();
+
+                            location.href = path;
+
+                            // store the tab selection as an attribute of the tab
+                            // so that child tabs can use it to reconstruct its selection.
+                            ui.newPanel.data("href", path);
+
+                            return true;
+                        },
+                        activate: function (event, ui) {
+                            // trigger resize to make sure the jqGrids
+                            // are expanded to full width when switch tabs
+                            $(window).trigger('resize');
+
+                            var $panel = ui.newPanel;
+
+                            if ($panel.is(":empty")) {
+                                $panel.append('<i class="fa fa-spinner fa-spin fa-lg"></i>');
+                            } else {
+                                // show the tab if the panel contains a tab
+                                var tabs = ui.newPanel.children().first();
+                                if (tabs.hasClass('ui-tabs')) {
+                                    tabs.tabs("option", "active", 0);
+                                }
+                            }
+                        }
+                    }, options);
+
+                    // turn the element into a jQuery tab
+                    element.tabs(options)
+                    // make the tab not collapsible after activation
+                    .tabs("option", "collapsible", false);
+                }
+            };
+        }])
         .directive('accordion', ['$compile', '$timeout', function ($compile, $timeout) {
             return {
                 restrict: 'A',
@@ -436,16 +519,54 @@ if (!System) {
         }
     };
 
+    System.getCountryDictionary = function () {
+        if (jQuery.isEmptyObject(System.CountryDictionary)) {
+            System.getJqGridCountryList();
+        }
+
+        return System.CountryDictionary;
+    };
+
+    System.getJqGridCountryList = function () {
+        if (System.jqGridCountryList.length === 0) {
+            System.CountriesData = [{ "TLD": "AF", "CountryName": "Afghanistan" }, { "TLD": "AL", "CountryName": "Albania" }, { "TLD": "DZ", "CountryName": "Algeria" }, { "TLD": "AS", "CountryName": "American Samoa" }, { "TLD": "AD", "CountryName": "Andorra" }, { "TLD": "AO", "CountryName": "Angola" }, { "TLD": "AI", "CountryName": "Anguilla" }, { "TLD": "AQ", "CountryName": "Antarctica" }, { "TLD": "AG", "CountryName": "Antigua and Barbuda" }, { "TLD": "AR", "CountryName": "Argentina" }, { "TLD": "AM", "CountryName": "Armenia" }, { "TLD": "AW", "CountryName": "Aruba" }, { "TLD": "AU", "CountryName": "Australia" }, { "TLD": "AT", "CountryName": "Austria" }, { "TLD": "AZ", "CountryName": "Azerbaijan" }, { "TLD": "BS", "CountryName": "Bahamas" }, { "TLD": "BH", "CountryName": "Bahrain" }, { "TLD": "BD", "CountryName": "Bangladesh" }, { "TLD": "BB", "CountryName": "Barbados" }, { "TLD": "BY", "CountryName": "Belarus" }, { "TLD": "BE", "CountryName": "Belgium" }, { "TLD": "BZ", "CountryName": "Belize" }, { "TLD": "BJ", "CountryName": "Benin" }, { "TLD": "BM", "CountryName": "Bermuda" }, { "TLD": "BT", "CountryName": "Bhutan" }, { "TLD": "BO", "CountryName": "Bolivia" }, { "TLD": "BA", "CountryName": "Bosnia and Herzegovina" }, { "TLD": "BW", "CountryName": "Botswana" }, { "TLD": "BV", "CountryName": "Bouvet Island" }, { "TLD": "BR", "CountryName": "Brazil" }, { "TLD": "IO", "CountryName": "British Indian Ocean Territory" }, { "TLD": "VG", "CountryName": "British Virgin Islands" }, { "TLD": "BN", "CountryName": "Brunei Darussalam" }, { "TLD": "BG", "CountryName": "Bulgaria" }, { "TLD": "BF", "CountryName": "Burkina Faso" }, { "TLD": "MM", "CountryName": "Burma" }, { "TLD": "BI", "CountryName": "Burundi" }, { "TLD": "KH", "CountryName": "Cambodia" }, { "TLD": "CM", "CountryName": "Cameroon" }, { "TLD": "CA", "CountryName": "Canada" }, { "TLD": "CV", "CountryName": "Cape Verde" }, { "TLD": "KY", "CountryName": "Cayman Islands" }, { "TLD": "CF", "CountryName": "Central African Republic" }, { "TLD": "TD", "CountryName": "Chad" }, { "TLD": "CL", "CountryName": "Chile" }, { "TLD": "CN", "CountryName": "China" }, { "TLD": "CX", "CountryName": "Christmas Island" }, { "TLD": "CC", "CountryName": "Cocos (Keeling) Islands" }, { "TLD": "CO", "CountryName": "Colombia" }, { "TLD": "KM", "CountryName": "Comoros" }, { "TLD": "CD", "CountryName": "Congo, Democratic Republic of the" }, { "TLD": "CG", "CountryName": "Congo, Republic of the" }, { "TLD": "CK", "CountryName": "Cook Islands" }, { "TLD": "CR", "CountryName": "Costa Rica" }, { "TLD": "CI", "CountryName": "Cote d'Ivoire" }, { "TLD": "HR", "CountryName": "Croatia" }, { "TLD": "CU", "CountryName": "Cuba" }, { "TLD": "CY", "CountryName": "Cyprus" }, { "TLD": "CZ", "CountryName": "Czech Republic" }, { "TLD": "DK", "CountryName": "Denmark" }, { "TLD": "DJ", "CountryName": "Djibouti" }, { "TLD": "DM", "CountryName": "Dominica" }, { "TLD": "DO", "CountryName": "Dominican Republic" }, { "TLD": "TP", "CountryName": "East Timor" }, { "TLD": "EC", "CountryName": "Ecuador" }, { "TLD": "EG", "CountryName": "Egypt" }, { "TLD": "SV", "CountryName": "El Salvador" }, { "TLD": "GQ", "CountryName": "Equatorial Guinea" }, { "TLD": "ER", "CountryName": "Eritrea" }, { "TLD": "EE", "CountryName": "Estonia" }, { "TLD": "ET", "CountryName": "Ethiopia" }, { "TLD": "FK", "CountryName": "Falkland Islands (Islas Malvinas)" }, { "TLD": "FO", "CountryName": "Faroe Islands" }, { "TLD": "FJ", "CountryName": "Fiji" }, { "TLD": "FI", "CountryName": "Finland" }, { "TLD": "FR", "CountryName": "France" }, { "TLD": "FX", "CountryName": "France, Metropolitan" }, { "TLD": "GF", "CountryName": "French Guiana" }, { "TLD": "PF", "CountryName": "French Polynesia" }, { "TLD": "TF", "CountryName": "French Southern and Antarctic Lands" }, { "TLD": "GA", "CountryName": "Gabon" }, { "TLD": "GE", "CountryName": "Georgia" }, { "TLD": "DE", "CountryName": "Germany" }, { "TLD": "GH", "CountryName": "Ghana" }, { "TLD": "GI", "CountryName": "Gibraltar" }, { "TLD": "GR", "CountryName": "Greece" }, { "TLD": "GL", "CountryName": "Greenland" }, { "TLD": "GD", "CountryName": "Grenada" }, { "TLD": "GP", "CountryName": "Guadeloupe" }, { "TLD": "GU", "CountryName": "Guam" }, { "TLD": "GT", "CountryName": "Guatemala" }, { "TLD": "GG", "CountryName": "Guernsey" }, { "TLD": "GN", "CountryName": "Guinea" }, { "TLD": "GW", "CountryName": "Guinea-Bissau" }, { "TLD": "GY", "CountryName": "Guyana" }, { "TLD": "HT", "CountryName": "Haiti" }, { "TLD": "HM", "CountryName": "Heard Island and McDonald Islands" }, { "TLD": "VA", "CountryName": "Holy See (Vatican City)" }, { "TLD": "HN", "CountryName": "Honduras" }, { "TLD": "HK", "CountryName": "Hong Kong (SAR)" }, { "TLD": "HU", "CountryName": "Hungary" }, { "TLD": "IS", "CountryName": "Iceland" }, { "TLD": "IN", "CountryName": "India" }, { "TLD": "ID", "CountryName": "Indonesia" }, { "TLD": "IR", "CountryName": "Iran" }, { "TLD": "IQ", "CountryName": "Iraq" }, { "TLD": "IE", "CountryName": "Ireland" }, { "TLD": "IL", "CountryName": "Israel" }, { "TLD": "IT", "CountryName": "Italy" }, { "TLD": "JM", "CountryName": "Jamaica" }, { "TLD": "JP", "CountryName": "Japan" }, { "TLD": "JE", "CountryName": "Jersey" }, { "TLD": "JO", "CountryName": "Jordan" }, { "TLD": "KZ", "CountryName": "Kazakhstan" }, { "TLD": "KE", "CountryName": "Kenya" }, { "TLD": "KI", "CountryName": "Kiribati" }, { "TLD": "KP", "CountryName": "Korea, North" }, { "TLD": "KR", "CountryName": "Korea, Republic of" }, { "TLD": "KW", "CountryName": "Kuwait" }, { "TLD": "KG", "CountryName": "Kyrgyzstan" }, { "TLD": "LA", "CountryName": "Laos" }, { "TLD": "LV", "CountryName": "Latvia" }, { "TLD": "LB", "CountryName": "Lebanon" }, { "TLD": "LS", "CountryName": "Lesotho" }, { "TLD": "LR", "CountryName": "Liberia" }, { "TLD": "LY", "CountryName": "Libya" }, { "TLD": "LI", "CountryName": "Liechtenstein" }, { "TLD": "LT", "CountryName": "Lithuania" }, { "TLD": "LU", "CountryName": "Luxembourg" }, { "TLD": "MO", "CountryName": "Macao" }, { "TLD": "MK", "CountryName": "Macedonia, The Former Yugoslav Republic of" }, { "TLD": "MG", "CountryName": "Madagascar" }, { "TLD": "MW", "CountryName": "Malawi" }, { "TLD": "MY", "CountryName": "Malaysia" }, { "TLD": "MV", "CountryName": "Maldives" }, { "TLD": "ML", "CountryName": "Mali" }, { "TLD": "MT", "CountryName": "Malta" }, { "TLD": "IM", "CountryName": "Man, Isle of" }, { "TLD": "MH", "CountryName": "Marshall Islands" }, { "TLD": "MQ", "CountryName": "Martinique" }, { "TLD": "MR", "CountryName": "Mauritania" }, { "TLD": "MU", "CountryName": "Mauritius" }, { "TLD": "YT", "CountryName": "Mayotte" }, { "TLD": "MX", "CountryName": "Mexico" }, { "TLD": "FM", "CountryName": "Micronesia, Federated States of" }, { "TLD": "MD", "CountryName": "Moldova" }, { "TLD": "MC", "CountryName": "Monaco" }, { "TLD": "MN", "CountryName": "Mongolia" }, { "TLD": "ME", "CountryName": "Montenegro" }, { "TLD": "MS", "CountryName": "Montserrat" }, { "TLD": "MA", "CountryName": "Morocco" }, { "TLD": "MZ", "CountryName": "Mozambique" }, { "TLD": "NA", "CountryName": "Namibia" }, { "TLD": "NR", "CountryName": "Nauru" }, { "TLD": "NP", "CountryName": "Nepal" }, { "TLD": "NL", "CountryName": "Netherlands" }, { "TLD": "AN", "CountryName": "Netherlands Antilles" }, { "TLD": "NC", "CountryName": "New Caledonia" }, { "TLD": "NZ", "CountryName": "New Zealand" }, { "TLD": "NI", "CountryName": "Nicaragua" }, { "TLD": "NE", "CountryName": "Niger" }, { "TLD": "NG", "CountryName": "Nigeria" }, { "TLD": "NU", "CountryName": "Niue" }, { "TLD": "NF", "CountryName": "Norfolk Island" }, { "TLD": "MP", "CountryName": "Northern Mariana Islands" }, { "TLD": "NO", "CountryName": "Norway" }, { "TLD": "OM", "CountryName": "Oman" }, { "TLD": "PK", "CountryName": "Pakistan" }, { "TLD": "PW", "CountryName": "Palau" }, { "TLD": "PS", "CountryName": "Palestinian Territory, Occupied" }, { "TLD": "PA", "CountryName": "Panama" }, { "TLD": "PG", "CountryName": "Papua New Guinea" }, { "TLD": "PY", "CountryName": "Paraguay" }, { "TLD": "PE", "CountryName": "Peru" }, { "TLD": "PH", "CountryName": "Philippines" }, { "TLD": "PN", "CountryName": "Pitcairn Islands" }, { "TLD": "PL", "CountryName": "Poland" }, { "TLD": "PT", "CountryName": "Portugal" }, { "TLD": "PR", "CountryName": "Puerto Rico" }, { "TLD": "QA", "CountryName": "Qatar" }, { "TLD": "RE", "CountryName": "Réunion" }, { "TLD": "RO", "CountryName": "Romania" }, { "TLD": "RU", "CountryName": "Russia" }, { "TLD": "RW", "CountryName": "Rwanda" }, { "TLD": "SH", "CountryName": "Saint Helena" }, { "TLD": "KN", "CountryName": "Saint Kitts and Nevis" }, { "TLD": "LC", "CountryName": "Saint Lucia" }, { "TLD": "PM", "CountryName": "Saint Pierre and Miquelon" }, { "TLD": "VC", "CountryName": "Saint Vincent and the Grenadines" }, { "TLD": "WS", "CountryName": "Samoa" }, { "TLD": "SM", "CountryName": "San Marino" }, { "TLD": "ST", "CountryName": "São Tomé and Príncipe" }, { "TLD": "SA", "CountryName": "Saudi Arabia" }, { "TLD": "SN", "CountryName": "Senegal" }, { "TLD": "RS", "CountryName": "Serbia" }, { "TLD": "SC", "CountryName": "Seychelles" }, { "TLD": "SL", "CountryName": "Sierra Leone" }, { "TLD": "SG", "CountryName": "Singapore" }, { "TLD": "SK", "CountryName": "Slovakia" }, { "TLD": "SI", "CountryName": "Slovenia" }, { "TLD": "SB", "CountryName": "Solomon Islands" }, { "TLD": "SO", "CountryName": "Somalia" }, { "TLD": "ZA", "CountryName": "South Africa" }, { "TLD": "GS", "CountryName": "South Georgia and the South Sandwich Islands" }, { "TLD": "ES", "CountryName": "Spain" }, { "TLD": "LK", "CountryName": "Sri Lanka" }, { "TLD": "SD", "CountryName": "Sudan" }, { "TLD": "SR", "CountryName": "Suriname" }, { "TLD": "SJ", "CountryName": "Svalbard" }, { "TLD": "SZ", "CountryName": "Swaziland" }, { "TLD": "SE", "CountryName": "Sweden" }, { "TLD": "CH", "CountryName": "Switzerland" }, { "TLD": "SY", "CountryName": "Syria" }, { "TLD": "TW", "CountryName": "Taiwan" }, { "TLD": "TJ", "CountryName": "Tajikistan" }, { "TLD": "TZ", "CountryName": "Tanzania" }, { "TLD": "TH", "CountryName": "Thailand" }, { "TLD": "GM", "CountryName": "The Gambia" }, { "TLD": "TG", "CountryName": "Togo" }, { "TLD": "TK", "CountryName": "Tokelau" }, { "TLD": "TO", "CountryName": "Tonga" }, { "TLD": "TT", "CountryName": "Trinidad and Tobago" }, { "TLD": "TN", "CountryName": "Tunisia" }, { "TLD": "TR", "CountryName": "Turkey" }, { "TLD": "TM", "CountryName": "Turkmenistan" }, { "TLD": "TC", "CountryName": "Turks and Caicos Islands" }, { "TLD": "TV", "CountryName": "Tuvalu" }, { "TLD": "UG", "CountryName": "Uganda" }, { "TLD": "UA", "CountryName": "Ukraine" }, { "TLD": "AE", "CountryName": "United Arab Emirates" }, { "TLD": "UK", "CountryName": "United Kingdom" }, { "TLD": "US", "CountryName": "United States" }, { "TLD": "UM", "CountryName": "United States Minor Outlying Islands" }, { "TLD": "UY", "CountryName": "Uruguay" }, { "TLD": "UZ", "CountryName": "Uzbekistan" }, { "TLD": "VU", "CountryName": "Vanuatu" }, { "TLD": "VE", "CountryName": "Venezuela" }, { "TLD": "VN", "CountryName": "Vietnam" }, { "TLD": "VI", "CountryName": "Virgin Islands" }, { "TLD": "WF", "CountryName": "Wallis and Futuna" }, { "TLD": "EH", "CountryName": "Western Sahara" }, { "TLD": "YE", "CountryName": "Yemen" }, { "TLD": "YU", "CountryName": "Yugoslavia" }, { "TLD": "ZM", "CountryName": "Zambia" }, { "TLD": "ZW", "CountryName": "Zimbabwe" }];
+
+            // add US at the beginning of the list
+            System.CountriesData.splice(0, 0, {
+                TLD: 'US', CountryName: 'United States'
+            });
+
+            // reset the global dictionary
+            System.CountryDictionary = {};
+
+            var countryList = [];
+
+            $.each(System.CountriesData, function (i, item) {
+                countryList.push(item.TLD + ":" + item.CountryName);
+                System.CountryDictionary[item.TLD] = item.CountryName;
+            });
+
+            System.jqGridCountryList = ":;" + countryList.join(';');
+        }
+
+        return System.jqGridCountryList;
+    };
+
     System.jqGridSearchHistories = function (parameters) {
         var $self = this;
         var $searchHistoriesTableName = parameters.mainGridTableId + '-search-histories';
         var $savedSearchesTableName = parameters.mainGridTableId + '-saved-searches';
         var $table = $($searchHistoriesTableName);
-
-        // if there is no search table then exit
-        if ($table.length === 0) { return; }
-
         var $mainTable = $(parameters.mainGridTableId);
+
+        // if there is no search table then create one
+        if ($table.length === 0) {
+            $table = $('<table/>').attr('ID', $searchHistoriesTableName.substring(1));
+            var pager = $('<div/>').attr('ID', $searchHistoriesTableName.substring(1) + '-pager');
+            $('<div/>').addClass('col-xs-12 col-md-6 padding-zero')
+                .append($table).append(pager).insertAfter($mainTable);
+        }
+
         var fid = parameters.mainGridTableId.substring(1);
         var loadSearchBoxButtonClass = $searchHistoriesTableName.substring(1) + '-loadsearchbox';
         var saveSearchBoxButtonClass = $searchHistoriesTableName.substring(1) + '-savesearchbox';
@@ -662,44 +783,25 @@ if (!System) {
         };
     };
 
-    System.getCountryDictionary = function () {
-        if (jQuery.isEmptyObject(System.CountryDictionary)) {
-            System.getJqGridCountryList();
-        }
-
-        return System.CountryDictionary;
-    };
-
-    System.getJqGridCountryList = function () {
-        if (System.jqGridCountryList.length === 0) {
-            System.CountriesData = [{ "TLD": "AF", "CountryName": "Afghanistan" }, { "TLD": "AL", "CountryName": "Albania" }, { "TLD": "DZ", "CountryName": "Algeria" }, { "TLD": "AS", "CountryName": "American Samoa" }, { "TLD": "AD", "CountryName": "Andorra" }, { "TLD": "AO", "CountryName": "Angola" }, { "TLD": "AI", "CountryName": "Anguilla" }, { "TLD": "AQ", "CountryName": "Antarctica" }, { "TLD": "AG", "CountryName": "Antigua and Barbuda" }, { "TLD": "AR", "CountryName": "Argentina" }, { "TLD": "AM", "CountryName": "Armenia" }, { "TLD": "AW", "CountryName": "Aruba" }, { "TLD": "AU", "CountryName": "Australia" }, { "TLD": "AT", "CountryName": "Austria" }, { "TLD": "AZ", "CountryName": "Azerbaijan" }, { "TLD": "BS", "CountryName": "Bahamas" }, { "TLD": "BH", "CountryName": "Bahrain" }, { "TLD": "BD", "CountryName": "Bangladesh" }, { "TLD": "BB", "CountryName": "Barbados" }, { "TLD": "BY", "CountryName": "Belarus" }, { "TLD": "BE", "CountryName": "Belgium" }, { "TLD": "BZ", "CountryName": "Belize" }, { "TLD": "BJ", "CountryName": "Benin" }, { "TLD": "BM", "CountryName": "Bermuda" }, { "TLD": "BT", "CountryName": "Bhutan" }, { "TLD": "BO", "CountryName": "Bolivia" }, { "TLD": "BA", "CountryName": "Bosnia and Herzegovina" }, { "TLD": "BW", "CountryName": "Botswana" }, { "TLD": "BV", "CountryName": "Bouvet Island" }, { "TLD": "BR", "CountryName": "Brazil" }, { "TLD": "IO", "CountryName": "British Indian Ocean Territory" }, { "TLD": "VG", "CountryName": "British Virgin Islands" }, { "TLD": "BN", "CountryName": "Brunei Darussalam" }, { "TLD": "BG", "CountryName": "Bulgaria" }, { "TLD": "BF", "CountryName": "Burkina Faso" }, { "TLD": "MM", "CountryName": "Burma" }, { "TLD": "BI", "CountryName": "Burundi" }, { "TLD": "KH", "CountryName": "Cambodia" }, { "TLD": "CM", "CountryName": "Cameroon" }, { "TLD": "CA", "CountryName": "Canada" }, { "TLD": "CV", "CountryName": "Cape Verde" }, { "TLD": "KY", "CountryName": "Cayman Islands" }, { "TLD": "CF", "CountryName": "Central African Republic" }, { "TLD": "TD", "CountryName": "Chad" }, { "TLD": "CL", "CountryName": "Chile" }, { "TLD": "CN", "CountryName": "China" }, { "TLD": "CX", "CountryName": "Christmas Island" }, { "TLD": "CC", "CountryName": "Cocos (Keeling) Islands" }, { "TLD": "CO", "CountryName": "Colombia" }, { "TLD": "KM", "CountryName": "Comoros" }, { "TLD": "CD", "CountryName": "Congo, Democratic Republic of the" }, { "TLD": "CG", "CountryName": "Congo, Republic of the" }, { "TLD": "CK", "CountryName": "Cook Islands" }, { "TLD": "CR", "CountryName": "Costa Rica" }, { "TLD": "CI", "CountryName": "Cote d'Ivoire" }, { "TLD": "HR", "CountryName": "Croatia" }, { "TLD": "CU", "CountryName": "Cuba" }, { "TLD": "CY", "CountryName": "Cyprus" }, { "TLD": "CZ", "CountryName": "Czech Republic" }, { "TLD": "DK", "CountryName": "Denmark" }, { "TLD": "DJ", "CountryName": "Djibouti" }, { "TLD": "DM", "CountryName": "Dominica" }, { "TLD": "DO", "CountryName": "Dominican Republic" }, { "TLD": "TP", "CountryName": "East Timor" }, { "TLD": "EC", "CountryName": "Ecuador" }, { "TLD": "EG", "CountryName": "Egypt" }, { "TLD": "SV", "CountryName": "El Salvador" }, { "TLD": "GQ", "CountryName": "Equatorial Guinea" }, { "TLD": "ER", "CountryName": "Eritrea" }, { "TLD": "EE", "CountryName": "Estonia" }, { "TLD": "ET", "CountryName": "Ethiopia" }, { "TLD": "FK", "CountryName": "Falkland Islands (Islas Malvinas)" }, { "TLD": "FO", "CountryName": "Faroe Islands" }, { "TLD": "FJ", "CountryName": "Fiji" }, { "TLD": "FI", "CountryName": "Finland" }, { "TLD": "FR", "CountryName": "France" }, { "TLD": "FX", "CountryName": "France, Metropolitan" }, { "TLD": "GF", "CountryName": "French Guiana" }, { "TLD": "PF", "CountryName": "French Polynesia" }, { "TLD": "TF", "CountryName": "French Southern and Antarctic Lands" }, { "TLD": "GA", "CountryName": "Gabon" }, { "TLD": "GE", "CountryName": "Georgia" }, { "TLD": "DE", "CountryName": "Germany" }, { "TLD": "GH", "CountryName": "Ghana" }, { "TLD": "GI", "CountryName": "Gibraltar" }, { "TLD": "GR", "CountryName": "Greece" }, { "TLD": "GL", "CountryName": "Greenland" }, { "TLD": "GD", "CountryName": "Grenada" }, { "TLD": "GP", "CountryName": "Guadeloupe" }, { "TLD": "GU", "CountryName": "Guam" }, { "TLD": "GT", "CountryName": "Guatemala" }, { "TLD": "GG", "CountryName": "Guernsey" }, { "TLD": "GN", "CountryName": "Guinea" }, { "TLD": "GW", "CountryName": "Guinea-Bissau" }, { "TLD": "GY", "CountryName": "Guyana" }, { "TLD": "HT", "CountryName": "Haiti" }, { "TLD": "HM", "CountryName": "Heard Island and McDonald Islands" }, { "TLD": "VA", "CountryName": "Holy See (Vatican City)" }, { "TLD": "HN", "CountryName": "Honduras" }, { "TLD": "HK", "CountryName": "Hong Kong (SAR)" }, { "TLD": "HU", "CountryName": "Hungary" }, { "TLD": "IS", "CountryName": "Iceland" }, { "TLD": "IN", "CountryName": "India" }, { "TLD": "ID", "CountryName": "Indonesia" }, { "TLD": "IR", "CountryName": "Iran" }, { "TLD": "IQ", "CountryName": "Iraq" }, { "TLD": "IE", "CountryName": "Ireland" }, { "TLD": "IL", "CountryName": "Israel" }, { "TLD": "IT", "CountryName": "Italy" }, { "TLD": "JM", "CountryName": "Jamaica" }, { "TLD": "JP", "CountryName": "Japan" }, { "TLD": "JE", "CountryName": "Jersey" }, { "TLD": "JO", "CountryName": "Jordan" }, { "TLD": "KZ", "CountryName": "Kazakhstan" }, { "TLD": "KE", "CountryName": "Kenya" }, { "TLD": "KI", "CountryName": "Kiribati" }, { "TLD": "KP", "CountryName": "Korea, North" }, { "TLD": "KR", "CountryName": "Korea, Republic of" }, { "TLD": "KW", "CountryName": "Kuwait" }, { "TLD": "KG", "CountryName": "Kyrgyzstan" }, { "TLD": "LA", "CountryName": "Laos" }, { "TLD": "LV", "CountryName": "Latvia" }, { "TLD": "LB", "CountryName": "Lebanon" }, { "TLD": "LS", "CountryName": "Lesotho" }, { "TLD": "LR", "CountryName": "Liberia" }, { "TLD": "LY", "CountryName": "Libya" }, { "TLD": "LI", "CountryName": "Liechtenstein" }, { "TLD": "LT", "CountryName": "Lithuania" }, { "TLD": "LU", "CountryName": "Luxembourg" }, { "TLD": "MO", "CountryName": "Macao" }, { "TLD": "MK", "CountryName": "Macedonia, The Former Yugoslav Republic of" }, { "TLD": "MG", "CountryName": "Madagascar" }, { "TLD": "MW", "CountryName": "Malawi" }, { "TLD": "MY", "CountryName": "Malaysia" }, { "TLD": "MV", "CountryName": "Maldives" }, { "TLD": "ML", "CountryName": "Mali" }, { "TLD": "MT", "CountryName": "Malta" }, { "TLD": "IM", "CountryName": "Man, Isle of" }, { "TLD": "MH", "CountryName": "Marshall Islands" }, { "TLD": "MQ", "CountryName": "Martinique" }, { "TLD": "MR", "CountryName": "Mauritania" }, { "TLD": "MU", "CountryName": "Mauritius" }, { "TLD": "YT", "CountryName": "Mayotte" }, { "TLD": "MX", "CountryName": "Mexico" }, { "TLD": "FM", "CountryName": "Micronesia, Federated States of" }, { "TLD": "MD", "CountryName": "Moldova" }, { "TLD": "MC", "CountryName": "Monaco" }, { "TLD": "MN", "CountryName": "Mongolia" }, { "TLD": "ME", "CountryName": "Montenegro" }, { "TLD": "MS", "CountryName": "Montserrat" }, { "TLD": "MA", "CountryName": "Morocco" }, { "TLD": "MZ", "CountryName": "Mozambique" }, { "TLD": "NA", "CountryName": "Namibia" }, { "TLD": "NR", "CountryName": "Nauru" }, { "TLD": "NP", "CountryName": "Nepal" }, { "TLD": "NL", "CountryName": "Netherlands" }, { "TLD": "AN", "CountryName": "Netherlands Antilles" }, { "TLD": "NC", "CountryName": "New Caledonia" }, { "TLD": "NZ", "CountryName": "New Zealand" }, { "TLD": "NI", "CountryName": "Nicaragua" }, { "TLD": "NE", "CountryName": "Niger" }, { "TLD": "NG", "CountryName": "Nigeria" }, { "TLD": "NU", "CountryName": "Niue" }, { "TLD": "NF", "CountryName": "Norfolk Island" }, { "TLD": "MP", "CountryName": "Northern Mariana Islands" }, { "TLD": "NO", "CountryName": "Norway" }, { "TLD": "OM", "CountryName": "Oman" }, { "TLD": "PK", "CountryName": "Pakistan" }, { "TLD": "PW", "CountryName": "Palau" }, { "TLD": "PS", "CountryName": "Palestinian Territory, Occupied" }, { "TLD": "PA", "CountryName": "Panama" }, { "TLD": "PG", "CountryName": "Papua New Guinea" }, { "TLD": "PY", "CountryName": "Paraguay" }, { "TLD": "PE", "CountryName": "Peru" }, { "TLD": "PH", "CountryName": "Philippines" }, { "TLD": "PN", "CountryName": "Pitcairn Islands" }, { "TLD": "PL", "CountryName": "Poland" }, { "TLD": "PT", "CountryName": "Portugal" }, { "TLD": "PR", "CountryName": "Puerto Rico" }, { "TLD": "QA", "CountryName": "Qatar" }, { "TLD": "RE", "CountryName": "Réunion" }, { "TLD": "RO", "CountryName": "Romania" }, { "TLD": "RU", "CountryName": "Russia" }, { "TLD": "RW", "CountryName": "Rwanda" }, { "TLD": "SH", "CountryName": "Saint Helena" }, { "TLD": "KN", "CountryName": "Saint Kitts and Nevis" }, { "TLD": "LC", "CountryName": "Saint Lucia" }, { "TLD": "PM", "CountryName": "Saint Pierre and Miquelon" }, { "TLD": "VC", "CountryName": "Saint Vincent and the Grenadines" }, { "TLD": "WS", "CountryName": "Samoa" }, { "TLD": "SM", "CountryName": "San Marino" }, { "TLD": "ST", "CountryName": "São Tomé and Príncipe" }, { "TLD": "SA", "CountryName": "Saudi Arabia" }, { "TLD": "SN", "CountryName": "Senegal" }, { "TLD": "RS", "CountryName": "Serbia" }, { "TLD": "SC", "CountryName": "Seychelles" }, { "TLD": "SL", "CountryName": "Sierra Leone" }, { "TLD": "SG", "CountryName": "Singapore" }, { "TLD": "SK", "CountryName": "Slovakia" }, { "TLD": "SI", "CountryName": "Slovenia" }, { "TLD": "SB", "CountryName": "Solomon Islands" }, { "TLD": "SO", "CountryName": "Somalia" }, { "TLD": "ZA", "CountryName": "South Africa" }, { "TLD": "GS", "CountryName": "South Georgia and the South Sandwich Islands" }, { "TLD": "ES", "CountryName": "Spain" }, { "TLD": "LK", "CountryName": "Sri Lanka" }, { "TLD": "SD", "CountryName": "Sudan" }, { "TLD": "SR", "CountryName": "Suriname" }, { "TLD": "SJ", "CountryName": "Svalbard" }, { "TLD": "SZ", "CountryName": "Swaziland" }, { "TLD": "SE", "CountryName": "Sweden" }, { "TLD": "CH", "CountryName": "Switzerland" }, { "TLD": "SY", "CountryName": "Syria" }, { "TLD": "TW", "CountryName": "Taiwan" }, { "TLD": "TJ", "CountryName": "Tajikistan" }, { "TLD": "TZ", "CountryName": "Tanzania" }, { "TLD": "TH", "CountryName": "Thailand" }, { "TLD": "GM", "CountryName": "The Gambia" }, { "TLD": "TG", "CountryName": "Togo" }, { "TLD": "TK", "CountryName": "Tokelau" }, { "TLD": "TO", "CountryName": "Tonga" }, { "TLD": "TT", "CountryName": "Trinidad and Tobago" }, { "TLD": "TN", "CountryName": "Tunisia" }, { "TLD": "TR", "CountryName": "Turkey" }, { "TLD": "TM", "CountryName": "Turkmenistan" }, { "TLD": "TC", "CountryName": "Turks and Caicos Islands" }, { "TLD": "TV", "CountryName": "Tuvalu" }, { "TLD": "UG", "CountryName": "Uganda" }, { "TLD": "UA", "CountryName": "Ukraine" }, { "TLD": "AE", "CountryName": "United Arab Emirates" }, { "TLD": "UK", "CountryName": "United Kingdom" }, { "TLD": "US", "CountryName": "United States" }, { "TLD": "UM", "CountryName": "United States Minor Outlying Islands" }, { "TLD": "UY", "CountryName": "Uruguay" }, { "TLD": "UZ", "CountryName": "Uzbekistan" }, { "TLD": "VU", "CountryName": "Vanuatu" }, { "TLD": "VE", "CountryName": "Venezuela" }, { "TLD": "VN", "CountryName": "Vietnam" }, { "TLD": "VI", "CountryName": "Virgin Islands" }, { "TLD": "WF", "CountryName": "Wallis and Futuna" }, { "TLD": "EH", "CountryName": "Western Sahara" }, { "TLD": "YE", "CountryName": "Yemen" }, { "TLD": "YU", "CountryName": "Yugoslavia" }, { "TLD": "ZM", "CountryName": "Zambia" }, { "TLD": "ZW", "CountryName": "Zimbabwe" }];
-
-            // add US at the beginning of the list
-            System.CountriesData.splice(0, 0, {
-                TLD: 'US', CountryName: 'United States'
-            });
-
-            // reset the global dictionary
-            System.CountryDictionary = {};
-
-            var countryList = [];
-
-            $.each(System.CountriesData, function (i, item) {
-                countryList.push(item.TLD + ":" + item.CountryName);
-                System.CountryDictionary[item.TLD] = item.CountryName;
-            });
-
-            System.jqGridCountryList = ":;" + countryList.join(';');
-        }
-
-        return System.jqGridCountryList;
-    };
-
     System.jqGridLoadSearchSaved = function (parameters) {
+        var $mainTable = $(parameters.mainGridTableId);
+
+        if (typeof parameters.tableid === 'undefined') {
+            parameters.tableid = parameters.mainGridTableId + "-saved-searches";
+        }
+
         var $table = $(parameters.tableid);
+
+        // if there is no search table then create one
+        if ($table.length === 0) {
+            $table = $('<table/>').attr('ID', parameters.tableid.substring(1));
+            var pager = $('<div/>').attr('ID', parameters.tableid.substring(1) + '-pager');
+            $('<div/>').addClass('col-xs-12 col-md-6 padding-zero')
+                .append($table).append(pager).insertAfter($mainTable);
+        }
+
         var fid = parameters.mainGridTableId.substring(1);
         var loadSearchBoxButtonClass = parameters.tableid.substring(1) + '-loadsearchbox';
-        var $mainTable = $(parameters.mainGridTableId);
         var showAllContacts = false;
 
         var $hiddengrid = typeof (parameters.hiddengrid)
@@ -786,22 +888,7 @@ if (!System) {
             editParams: { aftersavefunc: function () { $table.trigger("reloadGrid"); } }
         });
 
-        $table.jqGrid('navButtonAdd', parameters.tableid + '-pager', { // Add the column selector button
-            caption: "",
-            title: "Show/Hide Columns",
-            buttonicon: "ui-icon-bookmark",
-            onClickButton: function () {
-                jQuery(this).jqGrid('columnChooser', {
-                    width: 500,
-                    msel_opts: { dividerLocation: 0.5 },
-                    done: function () {
-                        /* resize to fit the columns */
-                        $(window).trigger('resize');
-                    }
-                });
-            },
-            position: "last"
-        });
+        $table.jqGrid('navButtonAdd', parameters.tableid + '-pager', System.jqGridDefaultColumnChooserOptions);
 
         function displayLoadButton(cellvalue, options, rowObject) {
             var result = [];
@@ -815,6 +902,81 @@ if (!System) {
             result.push('</ul>');
 
             return result.join('');
+        }
+    };
+
+    System.jqGridDefaultColumnChooserOptions = {
+        caption: "",
+        title: "Show/Hide Columns",
+        buttonicon: "ui-icon-calculator",
+        onClickButton: function () {
+            jQuery(this).jqGrid('columnChooser', {
+                width: 550,
+                height: $(window).height(),
+                msel_opts: { dividerLocation: 0.5 },
+                dialog_opts: {
+                    maxHeight: $(window).height(),
+                    open: function () {
+                        $(this).dialog('option', 'maxHeight', $(window).height());
+                    }
+                },
+                modal: true
+            });
+
+            var actions = $("#colchooser_" + $.jgrid.jqID(this.id) + ' div.available>div.actions');
+            actions.prepend('<label style="float:left;position:relative;margin-left:0.6em;top:0.6em">Search:</label>');
+            actions.find('input').css({ 'margin-top': '0.6em' });
+        },
+        position: "last"
+    };
+
+    System.directPOST = function (url, data, method) {
+        if (url && data) {
+            //convert the data object into input HTML fields
+            var inputs = [];
+            var convertToInput = function (key, keyStr, obj) {
+                if (typeof obj === 'undefined') {
+                    return;
+                } else if (typeof obj === "object") {
+                    for (var innerKey in obj) {
+                        if (obj.hasOwnProperty(innerKey)) {
+                            var innerKeyStr = '';
+                            if (keyStr === '') {
+                                innerKeyStr = innerKey.toString();
+                            } else {
+                                innerKeyStr = keyStr + "[" + innerKey.toString() + "]";
+                            }
+                            convertToInput(innerKey, innerKeyStr, obj[innerKey]);
+                        }
+                    }
+                    return;
+                } else if ($.isArray(obj)) {
+                    obj.forEach(function (item) {
+                        convertToInput(key, keyStr + "[]", item);
+                    });
+                    return;
+                }
+
+                inputs.push("<input type='hidden' name='");
+                inputs.push(keyStr);
+                inputs.push("' value='");
+                inputs.push(obj);
+                inputs.push("' />");
+            };
+            convertToInput(null, '', data);
+
+            //compose the form
+            var form = [];
+            form.push('<form action="');
+            form.push(url);
+            form.push('" method="');
+            form.push(method || 'post');
+            form.push('">');
+            form.push(inputs.join(''));
+            form.push('</form>');
+
+            //send request
+            jQuery(form.join('')).appendTo('body').submit().remove();
         }
     };
 

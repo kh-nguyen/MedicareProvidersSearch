@@ -5,6 +5,7 @@
     ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
         var parameters = { tableid: "#physicians-table" };
         var $table = $(parameters.tableid);
+        var pagerName = parameters.tableid + '-pager';
         var $caption = '<i class="fa fa-users"></i>&nbsp;'
             + (typeof (parameters.caption) !== 'undefined'
             ? parameters.caption : 'National Physicians List');
@@ -149,7 +150,7 @@
             ],
             rowNum: 10,
             rowList: [10, 20, 30, 50, 75, 100, 200, 500, 1000],
-            pager: parameters.tableid + '-pager',
+            pager: pagerName,
             sortname: 'NPI',
             viewrecords: true,
             sortorder: "desc",
@@ -211,7 +212,7 @@
                 // resize the grid when window's resize event triggers
                 $.jgrid.resizeOnWindowResizeEvent($(this));
             }
-        }).jqGrid('navGrid', parameters.tableid + '-pager',
+        }).jqGrid('navGrid', pagerName,
             { search: true, view: true, del: false, add: false, edit: false },
             {}, // default settings for edit
             {}, // default settings for add
@@ -224,14 +225,7 @@
                 overlay: false
             }, // search options
             { width: 'auto' } /* view parameters*/
-        ).jqGrid('navButtonAdd', parameters.tableid + '-pager', {
-            caption: "",
-            title: "Show/Hide Columns",
-            buttonicon: "ui-icon-bookmark",
-            onClickButton: function () {
-                jQuery(this).jqGrid('columnChooser');
-            }
-        })
+        ).jqGrid('navButtonAdd', pagerName, System.jqGridDefaultColumnChooserOptions)
         .jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' })
         .jqGrid('searchGrid', searchOptions); // create the searching dialog
 
@@ -260,6 +254,8 @@
 
         var parameters = { tableid: "#providers-table" };
         var $table = $(parameters.tableid);
+        var pagerName = parameters.tableid + '-pager';
+
         var $caption = '<i class="fa fa-users"></i>&nbsp;'
             + (typeof (parameters.caption) !== 'undefined'
             ? parameters.caption : 'Medicare Providers List');
@@ -319,7 +315,6 @@
         });
 
         new System.jqGridLoadSearchSaved({
-            tableid: parameters.tableid + "-saved-searches",
             mainGridTableId: parameters.tableid,
             mainGridSearchOptions: searchOptions,
             loadSearchBoxButton: true
@@ -768,16 +763,16 @@
                 { name: 'Provider_Second_Line_Business_Mailing_Address', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Business_Mailing_Address_City_Name', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false },
                 { name: 'Provider_Business_Mailing_Address_State_Name', width: 15, search: true, searchoptions: { searchhidden: true }, editable: false },
-                { name: 'Provider_Business_Mailing_Address_Postal_Code', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                { name: 'Provider_Business_Mailing_Address_Country_Code__If_outside_US_', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Provider_Business_Mailing_Address_Postal_Code', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Provider_Business_Mailing_Address_Country_Code__If_outside_US_', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Business_Mailing_Address_Telephone_Number', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Business_Mailing_Address_Fax_Number', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_First_Line_Business_Practice_Location_Address', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Second_Line_Business_Practice_Location_Address', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Business_Practice_Location_Address_City_Name', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Business_Practice_Location_Address_State_Name', width: 15, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                { name: 'Provider_Business_Practice_Location_Address_Postal_Code', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                { name: 'Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Provider_Business_Practice_Location_Address_Postal_Code', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                { name: 'Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_', width: 25, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Business_Practice_Location_Address_Telephone_Number', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Business_Practice_Location_Address_Fax_Number', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
                 { name: 'Provider_Enumeration_Date', width: 50, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
@@ -1152,7 +1147,7 @@
             ],
             rowNum: 10,
             rowList: [10, 20, 30, 50, 75, 100, 200, 500, 1000],
-            pager: parameters.tableid + '-pager',
+            pager: pagerName,
             sortname: 'NPI',
             viewrecords: true,
             sortorder: "desc",
@@ -1271,41 +1266,27 @@
                     $('form', $providerDetail).accordion("option", "active", 0);
                 });
             }
-        }).jqGrid('navGrid', parameters.tableid + '-pager',
+        }).jqGrid('navGrid', pagerName,
             { search: false, view: true, del: false, add: false, edit: false },
             {}, // default settings for edit
             {}, // default settings for add
             {}, // delete instead that del:false we need this
-            {
-                multipleSearch: true,
-                multipleGroup: true,
-                recreateFilter: true,
-                showQuery: true,
-                overlay: false
-            }, // search options
+            {}, // search options
             { width: 'auto' } /* view parameters*/
-        ).jqGrid('navButtonAdd', parameters.tableid + '-pager', {
-            caption: "",
-            title: "Show/Hide Columns",
-            buttonicon: "ui-icon-bookmark",
-            onClickButton: function () {
-                jQuery(this).jqGrid('columnChooser');
-            }
-        })
+        ).jqGrid('navButtonAdd', pagerName, System.jqGridDefaultColumnChooserOptions)
         .jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' })
         .jqGrid('searchGrid', searchOptions); // create the searching dialog
 
-        if (typeof ($table.data('saveurl')) !== 'undefined') {
-            $table.jqGrid('navButtonAdd', parameters.tableid + '-pager', {
-                caption: "",
-                title: "Export to a CSV file",
-                buttonicon: "ui-icon-disk",
-                onClickButton: function () {
-                    System.directPOST($table.data('saveurl'), $postData);
-                },
-                position: "last"
-            });
-        }
+        $table.jqGrid('navButtonAdd', pagerName, {
+            caption: "",
+            title: "Export to a CSV file",
+            buttonicon: "ui-icon-disk",
+            onClickButton: function () {
+                System.directPOST($table.getGridParam('url'),
+                    $.extend({ save: true }, $postData));
+            },
+            position: "last"
+        });
 
         $scope.search.submit = function () {
             $table.jqGrid('setGridParam', { search: true }).trigger('reloadGrid', [{ page: 1 }]);
@@ -1398,150 +1379,249 @@
         return {
             restrict: 'A',
             link: function (scope, element, attr) {
-                var tableName = "medicare-provider-aggregates-" + System.nextUniqueID();
+                var tableName = "#medicare-provider-aggregates-" + System.nextUniqueID();
                 var pagerName = tableName + '-pager';
                 var options = scope.$eval(attr.medicareProviderAggregates);
                 var $table = $(element);
 
-                $table.attr('ID', tableName);
+                $table.attr('ID', tableName.substring(1));
 
                 // create the pager element
-                $('<div/>').attr('ID', pagerName).insertAfter($table);
+                $('<div/>').attr('ID', pagerName.substring(1)).insertAfter($table);
 
                 // initialize default options
-                if (typeof options === 'undefined') { options = []; }
+                if (typeof options === 'undefined') { options = {}; }
 
                 var $caption = '<i class="fa fa-usd"></i>&nbsp;'
                     + (typeof (options.caption) !== 'undefined'
                     ? options.caption : 'Medicare Payment Aggregates');
+
+                var searchOptions = {
+                    multipleSearch: true,
+                    multipleGroup: true,
+                    recreateFilter: true,
+                    showQuery: true,
+                    overlay: false,
+                    drag: false,
+                    resize: false,
+                    afterShowSearch: function () {
+                        $.jgrid.placeSearchDialogAboveGrid({
+                            tableid: tableName,
+                            searchOnEnter: true,
+                        });
+                    }
+                };
+
+                if (options.showSearchHistories) {
+                    // should be done before the main grid so that the
+                    // searchOptions' events can be hooked up properly.
+                    new System.jqGridSearchHistories({
+                        mainGridTableId: tableName,
+                        mainGridSearchOptions: searchOptions,
+                        loadSearchBoxButton: true,
+                        saveSearchBoxButton: true
+                    });
+
+                    new System.jqGridLoadSearchSaved({
+                        mainGridTableId: tableName,
+                        mainGridSearchOptions: searchOptions,
+                        loadSearchBoxButton: true
+                    });
+                }
+
+                var colNames = [
+                    'npi'
+                    , 'year'
+                    , 'number_of_hcpcs'
+                    , 'total_services'
+                    , 'total_unique_benes'
+                    , 'total_submitted_chrg_amt'
+                    , 'total_medicare_allowed_amt'
+                    , 'total_medicare_payment_amt'
+                    , 'total_medicare_stnd_amt'
+                    , 'drug_suppress_indicator'
+                    , 'number_of_drug_hcpcs'
+                    , 'total_drug_services'
+                    , 'total_drug_unique_benes'
+                    , 'total_drug_submitted_chrg_amt'
+                    , 'total_drug_medicare_allowed_amt'
+                    , 'total_drug_medicare_payment_amt'
+                    , 'total_drug_medicare_stnd_amt'
+                    , 'med_suppress_indicator'
+                    , 'number_of_med_hcpcs'
+                    , 'total_med_services'
+                    , 'total_med_unique_benes'
+                    , 'total_med_submitted_chrg_amt'
+                    , 'total_med_medicare_allowed_amt'
+                    , 'total_med_medicare_payment_amt'
+                    , 'total_med_medicare_stnd_amt'
+                    , 'beneficiary_average_age'
+                    , 'beneficiary_age_less_65_count'
+                    , 'beneficiary_age_65_74_count'
+                    , 'beneficiary_age_75_84_count'
+                    , 'beneficiary_age_greater_84_count'
+                    , 'beneficiary_female_count'
+                    , 'beneficiary_male_count'
+                    , 'beneficiary_race_white_count'
+                    , 'beneficiary_race_black_count'
+                    , 'beneficiary_race_api_count'
+                    , 'beneficiary_race_hispanic_count'
+                    , 'beneficiary_race_natind_count'
+                    , 'beneficiary_race_other_count'
+                    , 'beneficiary_nondual_count'
+                    , 'beneficiary_dual_count'
+                    , 'beneficiary_cc_afib_percent'
+                    , 'beneficiary_cc_alzrdsd_percent'
+                    , 'beneficiary_cc_asthma_percent'
+                    , 'beneficiary_cc_cancer_percent'
+                    , 'beneficiary_cc_chf_percent'
+                    , 'beneficiary_cc_ckd_percent'
+                    , 'beneficiary_cc_copd_percent'
+                    , 'beneficiary_cc_depr_percent'
+                    , 'beneficiary_cc_diab_percent'
+                    , 'beneficiary_cc_hyperl_percent'
+                    , 'beneficiary_cc_hypert_percent'
+                    , 'beneficiary_cc_ihd_percent'
+                    , 'beneficiary_cc_ost_percent'
+                    , 'beneficiary_cc_raoa_percent'
+                    , 'beneficiary_cc_schiot_percent'
+                    , 'beneficiary_cc_strk_percent'
+                    , 'beneficiary_average_risk_score'
+	                , 'Entity Type Code'
+	                , 'Provider Organization Name (Legal Business Name)'
+	                , 'Provider Last Name (Legal Name)'
+	                , 'Provider First Name'
+	                , 'Provider Middle Name'
+	                , 'Provider Name Prefix Text'
+	                , 'Provider Name Suffix Text'
+	                , 'Provider Credential Text'
+	                , 'Provider First Line Business Mailing Address'
+	                , 'Provider Second Line Business Mailing Address'
+	                , 'Provider Business Mailing Address City Name'
+	                , 'Provider Business Mailing Address State Name'
+	                , 'Provider Business Mailing Address Postal Code'
+	                , 'Provider Business Mailing Address Country Code (If outside US)'
+	                , 'Provider Business Mailing Address Telephone Number'
+	                , 'Provider Business Mailing Address Fax Number'
+	                , 'Provider First Line Business Practice Location Address'
+	                , 'Provider Second Line Business Practice Location Address'
+	                , 'Provider Business Practice Location Address City Name'
+	                , 'Provider Business Practice Location Address State Name'
+	                , 'Provider Business Practice Location Address Postal Code'
+	                , 'Provider Business Practice Location Address Country Code (If outside US)'
+	                , 'Provider Business Practice Location Address Telephone Number'
+	                , 'Provider Business Practice Location Address Fax Number'
+	                , 'Primary specialty'
+	                , 'All secondary specialties'
+                ];
+
+                var colModel = [
+                    { name: 'npi', width: 70, key: true, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'year', width: 35, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'number_of_hcpcs', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'total_services', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'total_unique_benes', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'total_submitted_chrg_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_medicare_allowed_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_medicare_payment_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'total_medicare_stnd_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'drug_suppress_indicator', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'number_of_drug_hcpcs', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_drug_services', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'total_drug_unique_benes', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_drug_submitted_chrg_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_drug_medicare_allowed_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_drug_medicare_payment_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'total_drug_medicare_stnd_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'med_suppress_indicator', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'number_of_med_hcpcs', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_med_services', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'total_med_unique_benes', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'total_med_submitted_chrg_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'total_med_medicare_allowed_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'total_med_medicare_payment_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchoptions: { searchhidden: true }, editable: false },
+                    { name: 'total_med_medicare_stnd_amt', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_average_age', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_age_less_65_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_age_65_74_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_age_75_84_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_age_greater_84_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_female_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_male_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_race_white_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_race_black_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_race_api_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_race_hispanic_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_race_natind_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_race_other_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_nondual_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_dual_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_afib_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_alzrdsd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_asthma_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_cancer_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_chf_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_ckd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_copd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_depr_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_diab_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_hyperl_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_hypert_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_ihd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_ost_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_raoa_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_schiot_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_cc_strk_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'beneficiary_average_risk_score', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Entity_Type_Code', width: 5, search: true, stype: "select", searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'nu', 'nn'], value: ':;2:Organization;1:Individual' }, editable: false, hidden: true },
+                    { name: 'Provider_Organization_Name__Legal_Business_Name_', width: 70, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Last_Name__Legal_Name_', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_First_Name', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Middle_Name', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Name_Prefix_Text', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Name_Suffix_Text', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Credential_Text', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_First_Line_Business_Mailing_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Second_Line_Business_Mailing_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_City_Name', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_State_Name', width: 15, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Postal_Code', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Country_Code__If_outside_US_', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Telephone_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Fax_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_First_Line_Business_Practice_Location_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Second_Line_Business_Practice_Location_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_City_Name', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_State_Name', width: 15, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Postal_Code', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Telephone_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Fax_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Primary_specialty', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'All_secondary_specialties', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true }
+                ];
+
+                $.each(options.colModel, function (index, specifiedValue) {
+                    for (var i = 0; i < colModel.length; i++) {
+                        var originalValue = colModel[i];
+
+                        if (specifiedValue.name === originalValue.name) {
+                            $.extend(originalValue, specifiedValue);
+                        }
+                    }
+                });
 
                 $table.jqGrid({
                     caption: $caption,
                     url: $table.data('url'),
                     datatype: "json",
                     prmNames: { id: "npi" },
-                    colNames: [
-                        'npi'
-                        , 'year'
-                        , 'number_of_hcpcs'
-                        , 'total_services'
-                        , 'total_unique_benes'
-                        , 'total_submitted_chrg_amt'
-                        , 'total_medicare_allowed_amt'
-                        , 'total_medicare_payment_amt'
-                        , 'total_medicare_stnd_amt'
-                        , 'drug_suppress_indicator'
-                        , 'number_of_drug_hcpcs'
-                        , 'total_drug_services'
-                        , 'total_drug_unique_benes'
-                        , 'total_drug_submitted_chrg_amt'
-                        , 'total_drug_medicare_allowed_amt'
-                        , 'total_drug_medicare_payment_amt'
-                        , 'total_drug_medicare_stnd_amt'
-                        , 'med_suppress_indicator'
-                        , 'number_of_med_hcpcs'
-                        , 'total_med_services'
-                        , 'total_med_unique_benes'
-                        , 'total_med_submitted_chrg_amt'
-                        , 'total_med_medicare_allowed_amt'
-                        , 'total_med_medicare_payment_amt'
-                        , 'total_med_medicare_stnd_amt'
-                        , 'beneficiary_average_age'
-                        , 'beneficiary_age_less_65_count'
-                        , 'beneficiary_age_65_74_count'
-                        , 'beneficiary_age_75_84_count'
-                        , 'beneficiary_age_greater_84_count'
-                        , 'beneficiary_female_count'
-                        , 'beneficiary_male_count'
-                        , 'beneficiary_race_white_count'
-                        , 'beneficiary_race_black_count'
-                        , 'beneficiary_race_api_count'
-                        , 'beneficiary_race_hispanic_count'
-                        , 'beneficiary_race_natind_count'
-                        , 'beneficiary_race_other_count'
-                        , 'beneficiary_nondual_count'
-                        , 'beneficiary_dual_count'
-                        , 'beneficiary_cc_afib_percent'
-                        , 'beneficiary_cc_alzrdsd_percent'
-                        , 'beneficiary_cc_asthma_percent'
-                        , 'beneficiary_cc_cancer_percent'
-                        , 'beneficiary_cc_chf_percent'
-                        , 'beneficiary_cc_ckd_percent'
-                        , 'beneficiary_cc_copd_percent'
-                        , 'beneficiary_cc_depr_percent'
-                        , 'beneficiary_cc_diab_percent'
-                        , 'beneficiary_cc_hyperl_percent'
-                        , 'beneficiary_cc_hypert_percent'
-                        , 'beneficiary_cc_ihd_percent'
-                        , 'beneficiary_cc_ost_percent'
-                        , 'beneficiary_cc_raoa_percent'
-                        , 'beneficiary_cc_schiot_percent'
-                        , 'beneficiary_cc_strk_percent'
-                        , 'beneficiary_average_risk_score'
-                    ],
-                    colModel: [
-                        { name: 'npi', width: 70, key: true, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'year', width: 35, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'number_of_hcpcs', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'total_services', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'total_unique_benes', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'total_submitted_chrg_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_medicare_allowed_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_medicare_payment_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'total_medicare_stnd_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'drug_suppress_indicator', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'number_of_drug_hcpcs', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_drug_services', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'total_drug_unique_benes', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_drug_submitted_chrg_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_drug_medicare_allowed_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_drug_medicare_payment_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'total_drug_medicare_stnd_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'med_suppress_indicator', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'number_of_med_hcpcs', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_med_services', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'total_med_unique_benes', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'total_med_submitted_chrg_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'total_med_medicare_allowed_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'total_med_medicare_payment_amt', width: 10, formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, search: true, searchoptions: { searchhidden: true }, editable: false },
-                        { name: 'total_med_medicare_stnd_amt', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_average_age', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_age_less_65_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_age_65_74_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_age_75_84_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_age_greater_84_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_female_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_male_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_race_white_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_race_black_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_race_api_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_race_hispanic_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_race_natind_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_race_other_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_nondual_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_dual_count', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_afib_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_alzrdsd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_asthma_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_cancer_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_chf_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_ckd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_copd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_depr_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_diab_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_hyperl_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_hypert_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_ihd_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_ost_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_raoa_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_schiot_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_cc_strk_percent', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'beneficiary_average_risk_score', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true }
-                    ],
+                    colNames: colNames,
+                    colModel: colModel,
                     rowNum: 10,
                     rowList: [10, 20, 30, 50, 75, 100, 200, 500, 1000],
-                    pager: '#' + pagerName,
-                    sortname: 'year',
+                    pager: pagerName,
+                    sortname: 'number_of_hcpcs',
                     viewrecords: true,
                     sortorder: "desc",
                     autowidth: true,
@@ -1578,27 +1658,31 @@
                             }).trigger("reloadGrid");
                         });
                     }
-                }).jqGrid('navGrid', '#' + pagerName,
+                }).jqGrid('navGrid', pagerName,
                     { search: true, view: true, del: false, add: false, edit: false },
                     {}, // default settings for edit
                     {}, // default settings for add
                     {}, // delete instead that del:false we need this
-                    {
-                        multipleSearch: true,
-                        multipleGroup: true,
-                        recreateFilter: true,
-                        showQuery: true,
-                        overlay: false
-                    }, // search options
+                    searchOptions, // search options
                     { width: 'auto' } /* view parameters*/
-                ).jqGrid('navButtonAdd', '#' + pagerName, {
+                ).jqGrid('navButtonAdd', pagerName, System.jqGridDefaultColumnChooserOptions)
+                .jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+
+                $table.jqGrid('navButtonAdd', pagerName, {
                     caption: "",
-                    title: "Show/Hide Columns",
-                    buttonicon: "ui-icon-bookmark",
+                    title: "Export to a CSV file",
+                    buttonicon: "ui-icon-disk",
                     onClickButton: function () {
-                        jQuery(this).jqGrid('columnChooser');
-                    }
-                }).jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+                        System.directPOST($table.getGridParam('url'),
+                            $.extend({ save: true }, $table.getGridParam("postData")));
+                    },
+                    position: "last"
+                });
+
+                // create the searching dialog
+                if (options.showSearchDialog) {
+                    $table.jqGrid('searchGrid', searchOptions);
+                }
             }
         };
     }])
@@ -1606,69 +1690,168 @@
         return {
             restrict: 'A',
             link: function (scope, element, attr) {
-                var tableName = "medicare-provider-utilization-payments-" + System.nextUniqueID();
+                var tableName = "#medicare-provider-utilization-payments-" + System.nextUniqueID();
                 var pagerName = tableName + '-pager';
                 var options = scope.$eval(attr.medicareProviderUtilizationPayments);
                 var $table = $(element);
 
-                $table.attr('ID', tableName);
+                $table.attr('ID', tableName.substring(1));
 
                 // create the pager element
-                $('<div/>').attr('ID', pagerName).insertAfter($table);
+                $('<div/>').attr('ID', pagerName.substring(1)).insertAfter($table);
 
                 // initialize default options
-                if (typeof options === 'undefined') { options = []; }
+                if (typeof options === 'undefined') { options = {}; }
 
                 var $caption = '<i class="fa fa-cogs"></i>&nbsp;'
                     + (typeof (options.caption) !== 'undefined'
                     ? options.caption : 'Medicare Utilization and Payments');
+
+                var searchOptions = {
+                    multipleSearch: true,
+                    multipleGroup: true,
+                    recreateFilter: true,
+                    showQuery: true,
+                    overlay: false,
+                    drag: false,
+                    resize: false,
+                    afterShowSearch: function () {
+                        $.jgrid.placeSearchDialogAboveGrid({
+                            tableid: tableName,
+                            searchOnEnter: true,
+                        });
+                    }
+                };
+
+                if (options.showSearchHistories) {
+                    // should be done before the main grid so that the
+                    // searchOptions' events can be hooked up properly.
+                    new System.jqGridSearchHistories({
+                        mainGridTableId: tableName,
+                        mainGridSearchOptions: searchOptions,
+                        loadSearchBoxButton: true,
+                        saveSearchBoxButton: true
+                    });
+
+                    new System.jqGridLoadSearchSaved({
+                        mainGridTableId: tableName,
+                        mainGridSearchOptions: searchOptions,
+                        loadSearchBoxButton: true
+                    });
+                }
+
+                var colNames = [
+                    'npi',
+                    'year',
+                    'place_of_service',
+                    'hcpcs_code',
+                    'ShortDescription',
+                    'Description',
+                    'DrugIndicator',
+                    'line_srvc_cnt',
+                    'bene_unique_cnt',
+                    'bene_day_srvc_cnt',
+                    'average_medicare_allowed_amt',
+                    'stdev_medicare_allowed_amt',
+                    'average_submitted_chrg_amt',
+                    'stdev_submitted_chrg_amt',
+                    'average_medicare_payment_amt',
+                    'stdev_medicare_payment_amt',
+                    'average_medicare_standard_amt'
+                    , 'Entity Type Code'
+	                , 'Provider Organization Name (Legal Business Name)'
+	                , 'Provider Last Name (Legal Name)'
+	                , 'Provider First Name'
+	                , 'Provider Middle Name'
+	                , 'Provider Name Prefix Text'
+	                , 'Provider Name Suffix Text'
+	                , 'Provider Credential Text'
+	                , 'Provider First Line Business Mailing Address'
+	                , 'Provider Second Line Business Mailing Address'
+	                , 'Provider Business Mailing Address City Name'
+	                , 'Provider Business Mailing Address State Name'
+	                , 'Provider Business Mailing Address Postal Code'
+	                , 'Provider Business Mailing Address Country Code (If outside US)'
+	                , 'Provider Business Mailing Address Telephone Number'
+	                , 'Provider Business Mailing Address Fax Number'
+	                , 'Provider First Line Business Practice Location Address'
+	                , 'Provider Second Line Business Practice Location Address'
+	                , 'Provider Business Practice Location Address City Name'
+	                , 'Provider Business Practice Location Address State Name'
+	                , 'Provider Business Practice Location Address Postal Code'
+	                , 'Provider Business Practice Location Address Country Code (If outside US)'
+	                , 'Provider Business Practice Location Address Telephone Number'
+	                , 'Provider Business Practice Location Address Fax Number'
+	                , 'Primary specialty'
+	                , 'All secondary specialties'
+                ];
+
+                var colModel = [
+                    { name: 'npi', width: 70, key: true, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'year', width: 35, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'place_of_service', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'hcpcs_code', width: 30, search: true, searchoptions: { searchhidden: true }, editable: false, formatter: hcpcsCodeFormatter },
+                    { name: 'ShortDescription', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Description', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'DrugIndicator', width: 35, fixed: true, align: 'center', search: true, searchoptions: { searchhidden: true }, editable: false },
+                    { name: 'line_srvc_cnt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'bene_unique_cnt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'bene_day_srvc_cnt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'average_medicare_allowed_amt', formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'stdev_medicare_allowed_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'average_submitted_chrg_amt', formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'stdev_submitted_chrg_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'average_medicare_payment_amt', formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
+                    { name: 'stdev_medicare_payment_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'average_medicare_standard_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
+                    { name: 'Entity_Type_Code', width: 5, search: true, stype: "select", searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'nu', 'nn'], value: ':;2:Organization;1:Individual' }, editable: false, hidden: true },
+                    { name: 'Provider_Organization_Name__Legal_Business_Name_', width: 70, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Last_Name__Legal_Name_', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_First_Name', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Middle_Name', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Name_Prefix_Text', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Name_Suffix_Text', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Credential_Text', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_First_Line_Business_Mailing_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Second_Line_Business_Mailing_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_City_Name', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_State_Name', width: 15, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Postal_Code', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Country_Code__If_outside_US_', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Telephone_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Mailing_Address_Fax_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_First_Line_Business_Practice_Location_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Second_Line_Business_Practice_Location_Address', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_City_Name', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_State_Name', width: 15, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Postal_Code', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Telephone_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Provider_Business_Practice_Location_Address_Fax_Number', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'Primary_specialty', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
+                    { name: 'All_secondary_specialties', width: 20, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true }
+                ];
+
+                $.each(options.colModel, function (index, specifiedValue) {
+                    for (var i = 0; i < colModel.length; i++) {
+                        var originalValue = colModel[i];
+
+                        if (specifiedValue.name === originalValue.name) {
+                            $.extend(originalValue, specifiedValue);
+                        }
+                    }
+                });
 
                 $table.jqGrid({
                     caption: $caption,
                     url: $table.data('url'),
                     datatype: "json",
                     prmNames: { id: "npi" },
-                    colNames: [
-                        'npi',
-                        'year',
-                        'place_of_service',
-                        'hcpcs_code',
-                        'ShortDescription',
-                        'Description',
-                        'DrugIndicator',
-                        'line_srvc_cnt',
-                        'bene_unique_cnt',
-                        'bene_day_srvc_cnt',
-                        'average_medicare_allowed_amt',
-                        'stdev_medicare_allowed_amt',
-                        'average_submitted_chrg_amt',
-                        'stdev_submitted_chrg_amt',
-                        'average_medicare_payment_amt',
-                        'stdev_medicare_payment_amt',
-                        'average_medicare_standard_amt'
-                    ],
-                    colModel: [
-                        { name: 'npi', width: 70, key: true, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'year', width: 35, fixed: true, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'place_of_service', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'hcpcs_code', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, formatter: hcpcsCodeFormatter },
-                        { name: 'ShortDescription', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'Description', width: 10, search: true, searchoptions: { searchhidden: true }, editable: false, hidden: true },
-                        { name: 'DrugIndicator', width: 35, fixed: true, align: 'center', search: true, searchoptions: { searchhidden: true }, editable: false },
-                        { name: 'line_srvc_cnt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'bene_unique_cnt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'bene_day_srvc_cnt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'average_medicare_allowed_amt', formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'stdev_medicare_allowed_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'average_submitted_chrg_amt', formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'stdev_submitted_chrg_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'average_medicare_payment_amt', formatter: 'currency', formatoptions: { decimalSeparator: ".", thousandsSeparator: ",", decimalPlaces: 2, prefix: "$ " }, width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false },
-                        { name: 'stdev_medicare_payment_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true },
-                        { name: 'average_medicare_standard_amt', width: 10, search: true, searchtype: 'integer', searchoptions: { searchhidden: true, sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'] }, editable: false, hidden: true }
-                    ],
+                    colNames: colNames,
+                    colModel: colModel,
                     rowNum: 10,
                     rowList: [10, 20, 30, 50, 75, 100, 200, 500, 1000],
-                    pager: '#' + pagerName,
+                    pager: pagerName,
                     sortname: 'hcpcs_code',
                     viewrecords: true,
                     sortorder: "asc",
@@ -1706,27 +1889,31 @@
                             }).trigger("reloadGrid");
                         });
                     }
-                }).jqGrid('navGrid', '#' + pagerName,
+                }).jqGrid('navGrid', pagerName,
                     { search: true, view: true, del: false, add: false, edit: false },
                     {}, // default settings for edit
                     {}, // default settings for add
                     {}, // delete instead that del:false we need this
-                    {
-                        multipleSearch: true,
-                        multipleGroup: true,
-                        recreateFilter: true,
-                        showQuery: true,
-                        overlay: false
-                    }, // search options
+                    searchOptions, // search options
                     { width: 'auto' } /* view parameters*/
-                ).jqGrid('navButtonAdd', '#' + pagerName, {
+                ).jqGrid('navButtonAdd', pagerName, System.jqGridDefaultColumnChooserOptions)
+                .jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+
+                $table.jqGrid('navButtonAdd', pagerName, {
                     caption: "",
-                    title: "Show/Hide Columns",
-                    buttonicon: "ui-icon-bookmark",
+                    title: "Export to a CSV file",
+                    buttonicon: "ui-icon-disk",
                     onClickButton: function () {
-                        jQuery(this).jqGrid('columnChooser');
-                    }
-                }).jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+                        System.directPOST($table.getGridParam('url'),
+                            $.extend({ save: true }, $table.getGridParam("postData")));
+                    },
+                    position: "last"
+                });
+
+                // create the searching dialog
+                if (options.showSearchDialog) {
+                    $table.jqGrid('searchGrid', searchOptions);
+                }
 
                 function hcpcsCodeFormatter(cellvalue, options, rowObject) {
                     var result = [];
@@ -1747,15 +1934,15 @@
         return {
             restrict: 'A',
             link: function (scope, element, attr) {
-                var tableName = "medicare-provider-group-practice-members-" + System.nextUniqueID();
+                var tableName = "#medicare-provider-group-practice-members-" + System.nextUniqueID();
                 var pagerName = tableName + '-pager';
                 var options = scope.$eval(attr.medicareProviderGroupPracticeMembers);
                 var $table = $(element);
 
-                $table.attr('ID', tableName);
+                $table.attr('ID', tableName.substring(1));
 
                 // create the pager element
-                $('<div/>').attr('ID', pagerName).insertAfter($table);
+                $('<div/>').attr('ID', pagerName.substring(1)).insertAfter($table);
 
                 // initialize default options
                 if (typeof options === 'undefined') { options = {}; }
@@ -1818,7 +2005,7 @@
                     ],
                     rowNum: 100,
                     rowList: [10, 20, 30, 50, 75, 100, 200, 500, 1000],
-                    pager: '#' + pagerName,
+                    pager: pagerName,
                     sortname: 'Provider_Last_Name__Legal_Name_',
                     viewrecords: true,
                     sortorder: "asc",
@@ -1856,7 +2043,7 @@
                             }).trigger("reloadGrid");
                         });
                     }
-                }, options)).jqGrid('navGrid', '#' + pagerName,
+                }, options)).jqGrid('navGrid', pagerName,
                     { search: true, view: true, del: false, add: false, edit: false },
                     {}, // default settings for edit
                     {}, // default settings for add
@@ -1866,17 +2053,30 @@
                         multipleGroup: true,
                         recreateFilter: true,
                         showQuery: true,
-                        overlay: false
+                        overlay: false,
+                        drag: false,
+                        resize: false,
+                        afterShowSearch: function () {
+                            $.jgrid.placeSearchDialogAboveGrid({
+                                tableid: tableName,
+                                searchOnEnter: true,
+                            });
+                        }
                     }, // search options
                     { width: 'auto' } /* view parameters*/
-                ).jqGrid('navButtonAdd', '#' + pagerName, {
+                ).jqGrid('navButtonAdd', pagerName, System.jqGridDefaultColumnChooserOptions)
+                .jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+
+                $table.jqGrid('navButtonAdd', pagerName, {
                     caption: "",
-                    title: "Show/Hide Columns",
-                    buttonicon: "ui-icon-bookmark",
+                    title: "Export to a CSV file",
+                    buttonicon: "ui-icon-disk",
                     onClickButton: function () {
-                        jQuery(this).jqGrid('columnChooser');
-                    }
-                }).jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+                        System.directPOST($table.getGridParam('url'),
+                            $.extend({ save: true }, $table.getGridParam("postData")));
+                    },
+                    position: "last"
+                });
             }
         };
     }]);
