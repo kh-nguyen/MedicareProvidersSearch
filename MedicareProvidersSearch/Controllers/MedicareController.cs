@@ -6,9 +6,11 @@ using System.Models.jqGrid.Helpers;
 using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.SessionState;
 
 namespace System.Controllers
 {
+    [SessionState(SessionStateBehavior.ReadOnly)]
     public class MedicareController : Controller
     {
         private readonly MedicareEntities medicareDatabase;
@@ -120,6 +122,8 @@ namespace System.Controllers
         public JsonNetResult GroupPracticeMembers(jqGridParamModel grid, int? ID, string PACID, bool? save) {
             // turn off change tracking for high performance
             medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
+            // UseDatabaseNullSemantics should be set true to improve filter performance
+            medicareDatabase.Configuration.UseDatabaseNullSemantics = true;
 
             using (var scope = Scope.New(IsolationLevel.ReadUncommitted)) {
                 if (String.IsNullOrEmpty(PACID) && ID > 0) {
