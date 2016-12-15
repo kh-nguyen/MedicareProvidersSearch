@@ -21,5 +21,8 @@ ZipCodes - (choose Centroids) http://www.nber.org/data/zip-code-distance-databas
 HCPCSCodes -  <br/>
 TaxonomyCodes - http://www.nucc.org/index.php?option=com_content&view=article&id=107&Itemid=50
 
+#Donation:
+BitCoin - [1PMXuwXE3iQ2DZiwgKF48EqkpiEaWdMCWU](bitcoin:1PMXuwXE3iQ2DZiwgKF48EqkpiEaWdMCWU)
+
 #Screenshots
 ![ScreenShot 1](https://github.com/kh-nguyen/MedicareProvidersSearch/raw/master/MedicareProvidersSearch/Screenshot.png)
