@@ -564,8 +564,7 @@ namespace Import
                 if (!String.IsNullOrWhiteSpace(data[37])) physician.Professional_accepts_Medicare_Assignment = data[37].Trim();
                 //if (!String.IsNullOrWhiteSpace(data[38])) physician.Participating_in_eRx = data[38].Trim();
                 if (!String.IsNullOrWhiteSpace(data[39])) physician.Participating_in_EHR = data[39].Trim();
-                if (!String.IsNullOrWhiteSpace(data[40])) physician.Participating_in_PQRS = data[40].Trim();
-                if (!String.IsNullOrWhiteSpace(data[41])) physician.Participated_in_Million_Hearts = data[41].Trim();
+                if (!String.IsNullOrWhiteSpace(data[40])) physician.Participated_in_Million_Hearts = data[40].Trim();
 
                 physician.LastModifiedDate = DateTime.Now;
 
@@ -576,7 +575,7 @@ namespace Import
         }
 
         private bool checkHeadersPhysician(string[] headers) {
-            string[] sources = new string[] { "NPI", "PAC ID", "Professional Enrollment ID", "Last Name", "First Name", "Middle Name", "Suffix", "Gender", "Credential", "Medical school name", "Graduation year", "Primary specialty", "Secondary specialty 1", "Secondary specialty 2", "Secondary specialty 3", "Secondary specialty 4", "All secondary specialties", "Organization legal name", "Group Practice PAC ID", "Number of Group Practice members", "Line 1 Street Address", "Line 2 Street Address", "Marker of address line 2 suppression", "City", "State", "Zip Code", "Phone Number", "Hospital affiliation CCN 1", "Hospital affiliation LBN 1", "Hospital affiliation CCN 2", "Hospital affiliation LBN 2", "Hospital affiliation CCN 3", "Hospital affiliation LBN 3", "Hospital affiliation CCN 4", "Hospital affiliation LBN 4", "Hospital affiliation CCN 5", "Hospital affiliation LBN 5", "Professional accepts Medicare Assignment", "Reported Quality Measures", "Used electronic health records", "Participated in the Medicare Maintenance of Certification Program.", "Committed to heart health through the Million Hearts® initiative." };
+            string[] sources = new string[] { "NPI", "PAC ID", "Professional Enrollment ID", "Last Name", "First Name", "Middle Name", "Suffix", "Gender", "Credential", "Medical school name", "Graduation year", "Primary specialty", "Secondary specialty 1", "Secondary specialty 2", "Secondary specialty 3", "Secondary specialty 4", "All secondary specialties", "Organization legal name", "Group Practice PAC ID", "Number of Group Practice members", "Line 1 Street Address", "Line 2 Street Address", "Marker of address line 2 suppression", "City", "State", "Zip Code", "Phone Number", "Hospital affiliation CCN 1", "Hospital affiliation LBN 1", "Hospital affiliation CCN 2", "Hospital affiliation LBN 2", "Hospital affiliation CCN 3", "Hospital affiliation LBN 3", "Hospital affiliation CCN 4", "Hospital affiliation LBN 4", "Hospital affiliation CCN 5", "Hospital affiliation LBN 5", "Professional accepts Medicare Assignment", "Reported Quality Measures", "Used electronic health records", "Committed to heart health through the Million Hearts® initiative." };
 
             return headers.SequenceEqual(sources);
         }
