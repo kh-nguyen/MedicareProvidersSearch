@@ -42,6 +42,8 @@
             this.buttonPause = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxLineNumberStart = new System.Windows.Forms.TextBox();
+            this.textBoxCpuThreads = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBoxOutput
@@ -127,7 +129,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 24);
+            this.label3.Location = new System.Drawing.Point(136, 24);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(85, 13);
             this.label3.TabIndex = 8;
@@ -136,7 +138,7 @@
             // comboBoxColumnDelimiters
             // 
             this.comboBoxColumnDelimiters.FormattingEnabled = true;
-            this.comboBoxColumnDelimiters.Location = new System.Drawing.Point(103, 16);
+            this.comboBoxColumnDelimiters.Location = new System.Drawing.Point(228, 16);
             this.comboBoxColumnDelimiters.Name = "comboBoxColumnDelimiters";
             this.comboBoxColumnDelimiters.Size = new System.Drawing.Size(121, 21);
             this.comboBoxColumnDelimiters.TabIndex = 9;
@@ -144,7 +146,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(231, 23);
+            this.label4.Location = new System.Drawing.Point(358, 23);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(55, 13);
             this.label4.TabIndex = 10;
@@ -152,9 +154,9 @@
             // 
             // textBoxDataYear
             // 
-            this.textBoxDataYear.Location = new System.Drawing.Point(293, 16);
+            this.textBoxDataYear.Location = new System.Drawing.Point(418, 16);
             this.textBoxDataYear.Name = "textBoxDataYear";
-            this.textBoxDataYear.Size = new System.Drawing.Size(100, 20);
+            this.textBoxDataYear.Size = new System.Drawing.Size(83, 20);
             this.textBoxDataYear.TabIndex = 11;
             // 
             // buttonPause
@@ -170,7 +172,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(399, 23);
+            this.label5.Location = new System.Drawing.Point(511, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(70, 13);
             this.label5.TabIndex = 13;
@@ -178,16 +180,35 @@
             // 
             // textBoxLineNumberStart
             // 
-            this.textBoxLineNumberStart.Location = new System.Drawing.Point(475, 17);
+            this.textBoxLineNumberStart.Location = new System.Drawing.Point(585, 17);
             this.textBoxLineNumberStart.Name = "textBoxLineNumberStart";
             this.textBoxLineNumberStart.Size = new System.Drawing.Size(100, 20);
             this.textBoxLineNumberStart.TabIndex = 14;
+            // 
+            // textBoxCpuThreads
+            // 
+            this.textBoxCpuThreads.Location = new System.Drawing.Point(82, 17);
+            this.textBoxCpuThreads.Name = "textBoxCpuThreads";
+            this.textBoxCpuThreads.Size = new System.Drawing.Size(39, 20);
+            this.textBoxCpuThreads.TabIndex = 16;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(9, 24);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(71, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "CPU Threads";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(699, 344);
+            this.Controls.Add(this.textBoxCpuThreads);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxLineNumberStart);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.buttonPause);
@@ -229,6 +250,8 @@
         private System.Windows.Forms.Button buttonPause;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxLineNumberStart;
+        private System.Windows.Forms.TextBox textBoxCpuThreads;
+        private System.Windows.Forms.Label label6;
     }
 }
 
