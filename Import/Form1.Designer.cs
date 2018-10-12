@@ -44,6 +44,10 @@
             this.textBoxLineNumberStart = new System.Windows.Forms.TextBox();
             this.textBoxCpuThreads = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.checkBoxOutputOneLine = new System.Windows.Forms.CheckBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabelProcessingSpeed = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxOutput
@@ -52,7 +56,7 @@
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
             this.textBoxOutput.ReadOnly = true;
-            this.textBoxOutput.Size = new System.Drawing.Size(675, 252);
+            this.textBoxOutput.Size = new System.Drawing.Size(675, 211);
             this.textBoxOutput.TabIndex = 0;
             // 
             // buttonRun
@@ -202,11 +206,38 @@
             this.label6.Text = "CPU Threads";
             this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
+            // checkBoxOutputOneLine
+            // 
+            this.checkBoxOutputOneLine.AutoSize = true;
+            this.checkBoxOutputOneLine.Location = new System.Drawing.Point(12, 302);
+            this.checkBoxOutputOneLine.Name = "checkBoxOutputOneLine";
+            this.checkBoxOutputOneLine.Size = new System.Drawing.Size(104, 17);
+            this.checkBoxOutputOneLine.TabIndex = 17;
+            this.checkBoxOutputOneLine.Text = "Output One Line";
+            this.checkBoxOutputOneLine.UseVisualStyleBackColor = true;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabelProcessingSpeed});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 322);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(699, 22);
+            this.statusStrip1.TabIndex = 18;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabelProcessingSpeed
+            // 
+            this.toolStripStatusLabelProcessingSpeed.Name = "toolStripStatusLabelProcessingSpeed";
+            this.toolStripStatusLabelProcessingSpeed.Size = new System.Drawing.Size(0, 17);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(699, 344);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.checkBoxOutputOneLine);
             this.Controls.Add(this.textBoxCpuThreads);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxLineNumberStart);
@@ -226,6 +257,8 @@
             this.Controls.Add(this.textBoxOutput);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,6 +285,9 @@
         private System.Windows.Forms.TextBox textBoxLineNumberStart;
         private System.Windows.Forms.TextBox textBoxCpuThreads;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBoxOutputOneLine;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelProcessingSpeed;
     }
 }
 
