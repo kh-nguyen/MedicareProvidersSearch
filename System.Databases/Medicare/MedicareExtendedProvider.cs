@@ -419,5 +419,11 @@ namespace System.Databases.Medicare
         public string Participating_in_EHR { get; set; }
         public string Received_PQRS_Maintenance_of_Certification_Program_Incentive { get; set; }
         public string Participated_in_Million_Hearts { get; set; }
+        public Nullable<int> ContactID { get; set; }
+        public Nullable<int> InstitutionID { get; set; }
+        public Nullable<long> OpenPaymentsPhysicanProfileID { get; set; }
+        public string Provider_Name { get; set; }
+        public System.Data.Entity.Spatial.DbGeography us_business_practice_location_zip_code_5_point { get; set; }
+        public string Phone_Number { get; set; }
     }
 }

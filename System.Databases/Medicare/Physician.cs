@@ -59,6 +59,7 @@ namespace System.Databases.Medicare
         public string Received_PQRS_Maintenance_of_Certification_Program_Incentive { get; set; }
         public string Participated_in_Million_Hearts { get; set; }
         public Nullable<System.DateTime> LastModifiedDate { get; set; }
+        public Nullable<int> zip_code_5 { get; set; }
     
         public virtual MedicareProvider MedicareProvider { get; set; }
     }

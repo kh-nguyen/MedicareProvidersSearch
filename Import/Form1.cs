@@ -1,12 +1,15 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Databases.Medicare;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Transactions;
 using System.Windows.Forms;
@@ -24,18 +27,23 @@ namespace Import
             "Taxonomy Codes"
         };
 
-        private readonly string[] columnDelimiters = new string[] {
-            "Comma {,}", "Tab {t}"
+        public enum ColumnDelimiters {
+            [Description("Comma {,}")]
+            [DefaultValue(",")]
+            COMMA,
+
+            [Description("Tab {t}")]
+            [DefaultValue("\t")]
+            TAB
         };
 
         const string DEFAULT_FILE_FILTER = "CSV files|*.csv|Text files|*.txt";
-        const string DEFAULT_FAILED_HEADER_CHECK_RESPONSE = "Failed headers check!, you might have selected the wrong column delimiter.";
-        const int DEFAULT_PAUSE_SLEEP_TIME = 1000; // 1 second
-        const int MINIMUM_DATA_YEAR = 2000;
         const int MAX_OUTPUT_LINES = 1000;
 
-        private bool interrupt = false;
-        private bool pause = false;
+        public bool interrupt { get; set; } = false;
+        public bool pause { get; set; } = false;
+
+        private Queue<DataProcessor.Settings> settings = new Queue<DataProcessor.Settings>();
 
         public Form1() {
             InitializeComponent();
@@ -47,7 +55,8 @@ namespace Import
                 ControlStyles.UserPaint |
                 ControlStyles.DoubleBuffer, true);
 
-            columnDelimiters.ToList().ForEach(x => comboBoxColumnDelimiters.Items.Add(x));
+            Enum.GetValues(typeof(ColumnDelimiters)).Cast<ColumnDelimiters>().ToList()
+                .ForEach(x => comboBoxColumnDelimiters.Items.Add(x.GetDescription()));
             comboBoxColumnDelimiters.SelectedIndex = 0;
 
             textBoxCpuThreads.Text = Environment.ProcessorCount.ToString();
@@ -63,7 +72,54 @@ namespace Import
             }
         }
 
-        private int getNumberOfWorkers()
+        public void WriteError(DataProcessor.Settings settings, int lineNumber, string data, string errorMessage)
+        {
+            Invoke((Action)(() => {
+                textBoxOutput.AppendText(errorMessage);
+
+                if (checkBoxErrorsToFiles.Checked) {
+                    var dataFileNameWithoutExtension = Path.GetFileNameWithoutExtension(settings.DataFilePath);
+                    var errorFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "errors");
+                    var errorFilePath = Path.Combine(errorFolderPath, string.Format("{0}-{1}.txt",
+                        dataFileNameWithoutExtension, lineNumber));
+
+                    if (!File.Exists(errorFolderPath)) {
+                        Directory.CreateDirectory(errorFolderPath);
+                    }
+
+                    using (var writer = File.CreateText(errorFilePath)) {
+                        writer.WriteLine(data);
+                        writer.WriteLine(errorMessage);
+                    }
+                }
+            }));
+        }
+
+        public void Write(string text) {
+            if (checkBoxPauseOutput.Checked) {
+                return;
+            }
+
+            if (checkBoxOutputOneLine.Checked) {
+                textBoxOutput.Text = text;
+                return;
+            }
+
+            Invoke((Action)(() => {
+                textBoxOutput.AppendText(text);
+            }));
+        }
+
+        public void WriteLine(string text) {
+            Write(string.Format("{0}{1}", text, Environment.NewLine));
+        }
+
+        public void WriteProcessingSpeed(string message)
+        {
+            toolStripStatusLabelProcessingSpeed.Text = message;
+        }
+
+        public int GetNumberOfWorkers()
         {
             int numberOfWorkers;
 
@@ -73,18 +129,250 @@ namespace Import
             return numberOfWorkers;
         }
 
+        private void Reset(bool clearOutput = true) {
+            interrupt = false;
+            pause = false;
+
+            if (clearOutput)
+                textBoxOutput.ResetText();
+
+            buttonRun.Enabled = true;
+            buttonStop.Enabled = false;
+            buttonPause.Enabled = false;
+
+            buttonPause.Text = "Pause";
+        }
+
+        private string getColumnDelimiter() {
+            string delimiter = null;
+
+            Invoke((Action)(() => {
+                var selectedItem = comboBoxColumnDelimiters.SelectedItem.ToString();
+
+                Enum.GetValues(typeof(ColumnDelimiters)).Cast<ColumnDelimiters>().ToList().ForEach(x => {
+                    if (selectedItem == x.GetDescription()) {
+                        delimiter = x.GetDefaultValue<string>();
+                    }
+                });
+            }));
+
+            return delimiter;
+        }
+
+        private int getSkipToLine()
+        {
+            int skipped = 0;
+
+            Invoke((Action)(() => {
+                if (!string.IsNullOrWhiteSpace(textBoxLineNumberStart.Text))
+                    skipped = int.Parse(textBoxLineNumberStart.Text);
+            }));
+
+            return skipped;
+        }
+
+        private short getDataYear() {
+            short year = 0;
+
+            if (!string.IsNullOrWhiteSpace(textBoxDataYear.Text)) {
+                Invoke((Action)(() => {
+                    year = short.Parse(textBoxDataYear.Text);
+                }));
+            }
+
+            return year;
+        }
+
+        private void RefreshTaskQueue()
+        {
+            Invoke((Action)(() => {
+                textBoxQueue.WordWrap = false;
+                textBoxQueue.Text = string.Join(Environment.NewLine, settings.Select(x => x.ToString()));
+            }));
+        }
+
+        private void buttonRun_Click(object sender, EventArgs e) {
+            Reset();
+
+            buttonRun.Enabled = false;
+            buttonStop.Enabled = true;
+            buttonPause.Enabled = true;
+
+            try {
+                backgroundWorker1.RunWorkerAsync();
+            }
+            catch (Exception ex) {
+                WriteLine(ex.ToString());
+            }
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e) {
+            pause = false;
+            interrupt = true;
+
+            WriteLine("Stop requested!");
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
+            while (settings.Any()) {
+                var item = settings.Dequeue();
+                toolStripStatusCurrentFile.Text = string.Format("File: {0}", item).Replace("\t", " ");
+                RefreshTaskQueue();
+                new DataProcessor(this, item).Execute();
+            }
+
+            Invoke((Action)(() => {
+                Reset(clearOutput: false);
+                WriteLine("done");
+            }));
+        }
+
+        private void buttonPause_Click(object sender, EventArgs e) {
+            pause = !pause;
+
+            if (pause) {
+                WriteLine("Pausing...");
+                buttonPause.Text = "Resume";
+            } else {
+                WriteLine("Resuming...");
+                buttonPause.Text = "Pause";
+            }
+        }
+
+        private void buttonEnqueue_Click(object sender, EventArgs e)
+        {
+            var request = new DataProcessor.Settings {
+                DataType = comboBoxTypes.SelectedItem?.ToString(),
+                DataFilePath = textBoxFile.Text,
+                DataYear = getDataYear(),
+                SkipToLine = getSkipToLine(),
+                ColumnDelimiter = getColumnDelimiter()
+            };
+
+            if (request.IsValid(this)) {
+                settings.Enqueue(request);
+                RefreshTaskQueue();
+            }
+        }
+
+        private void buttonDequeue_Click(object sender, EventArgs e)
+        {
+            if (settings.Any())
+                settings.Dequeue();
+
+            RefreshTaskQueue();
+        }
+    }
+
+    public class DataProcessor
+    {
+        public class Settings
+        {
+            public string DataType { get; set; }
+            public string DataFilePath { get; set; }
+            public short DataYear { get; set; }
+            public int SkipToLine { get; set; }
+            public string ColumnDelimiter { get; set; }
+
+            public override string ToString()
+            {
+                return string.Format("{0}\t{1}\t{2}\t'{3}'\t{4}", DataType,
+                    new FileInfo(DataFilePath).Name,
+                    DataYear, ColumnDelimiter, SkipToLine);
+            }
+
+            public bool IsValid(Form1 OutputForm)
+            {
+                var valid = true;
+
+                if (!(valid &= System.IO.File.Exists(DataFilePath))) {
+                    OutputForm.WriteLine(string.Format("File '{0}' does not exist.", DataFilePath));
+                }
+
+                if ((DataType == "Aggregates" || DataType == "UtilizationAndPayments") && (DataYear <= MINIMUM_DATA_YEAR)) {
+                    OutputForm.WriteLine("Please specify the data year for the data!");
+                }
+
+                return valid;
+            }
+        }
+
+        const string DEFAULT_FAILED_HEADER_CHECK_RESPONSE = "Failed headers check!, you might have selected the wrong column delimiter.";
+        const int DEFAULT_PAUSE_SLEEP_TIME = 1000; // 1 second
+        const int MINIMUM_DATA_YEAR = 2000;
+
+        private Form1 OutputForm { get; set; }
+        private Settings settings { get; set; }
+
+        private bool interrupt {
+            get {
+                return OutputForm.interrupt;
+            }
+            set {
+                OutputForm.interrupt = value;
+            }
+        }
+        private bool pause {
+            get {
+                return OutputForm.pause;
+            }
+            set {
+                OutputForm.pause = value;
+            }
+        }
+        private int GetNumberOfWorkers() {
+            return OutputForm.GetNumberOfWorkers();
+        }
+
+        public DataProcessor(Form1 OutputForm, Settings settings)
+        {
+            this.OutputForm = OutputForm;
+            this.settings = settings;
+        }
+
+        public void Execute()
+        {
+            if (!settings.IsValid(OutputForm))
+                throw new ArgumentException("The settings are not valid!");
+
+            switch (settings.DataType) {
+                case "NPI":
+                    importNPI(settings.DataFilePath);
+                    break;
+                case "Physicians":
+                    importPhysicians(settings.DataFilePath);
+                    break;
+                case "Aggregates":
+                    importAggregates(settings.DataFilePath);
+                    break;
+                case "Utilization & Payments":
+                    importUtilizationAndPayments(settings.DataFilePath);
+                    break;
+                case "Taxonomy Codes":
+                    importTaxonomyCodes(settings.DataFilePath);
+                    break;
+                default:
+                    WriteLine(string.Format("Could not determine file type '{0}'!", settings.DataType));
+                    break;
+            }
+        }
+
         private void importData(TextFieldParser parser, Action<string[], int> action)
         {
-            var counter = seekToDataLine(parser);
+            var delimiters = string.Join(string.Empty, parser.Delimiters);
 
+            var lineNumber = seekToDataLine(parser);
+
+            var errorCount = 0;
             var totalCount = 0;
             var totalTime = TimeSpan.Zero;
 
             while (!parser.EndOfData) {
                 var batches = new List<string[]>();
                 var batchNumber = 0;
-                var locker = new object();
-                var numberOfWorkers = getNumberOfWorkers();
+                var lineNumberLocker = new object();
+                var errorNumberLocker = new object();
+                var numberOfWorkers = GetNumberOfWorkers();
                 var startTime = DateTime.Now;
 
                 // read multiple lines to be processed in parallel
@@ -93,14 +381,24 @@ namespace Import
                 }
 
                 batches.AsParallel().WithDegreeOfParallelism(numberOfWorkers).ForAll(fields => {
+                    int currentLineNumber = 0;
+
                     //Processing row
                     try {
-                        lock (locker) { ++counter; }
+                        lock (lineNumberLocker) {
+                            currentLineNumber = ++lineNumber;
+                        }
 
-                        action?.Invoke(fields, counter);
+                        action?.Invoke(fields, currentLineNumber);
                     }
                     catch (Exception ex) {
-                        Write(ex.ToString());
+                        lock (errorNumberLocker) {
+                            ++errorCount;
+                        }
+
+                        var dataLine = string.Join(delimiters, fields);
+
+                        WriteError(settings, currentLineNumber, dataLine, ex.GetErrorMessage());
                     }
                 });
 
@@ -110,8 +408,9 @@ namespace Import
                 }
                 totalCount += batches.Count;
                 totalTime += DateTime.Now - startTime;
-                toolStripStatusLabelProcessingSpeed.Text = string.Format(
-                    "{0:0.00} lines / second", totalCount / totalTime.TotalMilliseconds * 1000);
+                OutputForm.WriteProcessingSpeed(string.Format(
+                    "{0:0.00} lines / second, errors: {1}",
+                    totalCount / totalTime.TotalMilliseconds * 1000, errorCount));
 
                 if (interrupt)
                     break;
@@ -123,34 +422,49 @@ namespace Import
 
         private int seekToDataLine(TextFieldParser parser)
         {
-            var skipped = 0;
-            var strSkip = textBoxLineNumberStart.Text;
+            if (settings.SkipToLine <= 0)
+                return 0;
 
-            if (!string.IsNullOrEmpty(strSkip)) {
-                skipped = int.Parse(strSkip) - 1;
+            var skipped = settings.SkipToLine - 1;
 
-                for (var i = 0; !parser.EndOfData && i < skipped; ++i) {
-                    WriteLine(string.Format("Seeking at {0} to line #{1}...", i, skipped));
-                    parser.ReadLine();
+            for (var i = 0; !parser.EndOfData && i < skipped; ++i) {
+                WriteLine(string.Format("Seeking at {0} to line #{1}...", i, skipped));
+                parser.ReadLine();
 
-                    if (interrupt)
-                        break;
+                if (interrupt)
+                    break;
 
-                    while (pause)
-                        Thread.Sleep(DEFAULT_PAUSE_SLEEP_TIME);
-                }
-                WriteLine("done");
+                while (pause)
+                    Thread.Sleep(DEFAULT_PAUSE_SLEEP_TIME);
             }
+
+            WriteLine("done");
 
             return skipped;
         }
 
+        public void WriteError(Settings settings, int lineNumber, string data, string errorMessage)
+        {
+            OutputForm.WriteError(settings, lineNumber, data, errorMessage);
+        }
+
+        public void Write(string text)
+        {
+            OutputForm.Write(text);
+        }
+
+        public void WriteLine(string text)
+        {
+            OutputForm.WriteLine(text);
+        }
+
         #region NPI
 
-        public void importNPI(string file) {
+        public void importNPI(string file)
+        {
             using (var parser = new TextFieldParser(file)) {
                 parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(getColumnDelimiter());
+                parser.SetDelimiters(settings.ColumnDelimiter);
                 parser.HasFieldsEnclosedInQuotes = true;
 
                 // read the headers stored on the first line
@@ -169,7 +483,8 @@ namespace Import
             }
         }
 
-        private void processRowNPI(string[] data, int counter) {
+        private void processRowNPI(string[] data, int lineNumber)
+        {
             using (var medicareDatabase = new MedicareEntities()) {
                 int NPI = 0;
 
@@ -527,11 +842,12 @@ namespace Import
 
                 medicareDatabase.SaveChanges();
 
-                WriteLine(string.Format("#{2}\t{0}\t{1}", provider.NPI, exists ? "Updated" : "Added", counter));
+                WriteLine(string.Format("#{2}\t{0}\tNPI\t{1}", provider.NPI, exists ? "Updated" : "Added", lineNumber));
             }
         }
 
-        private bool checkHeadersNPI(string[] headers) {
+        private bool checkHeadersNPI(string[] headers)
+        {
             string[] sources = new string[] { "NPI", "Entity Type Code", "Replacement NPI", "Employer Identification Number (EIN)", "Provider Organization Name (Legal Business Name)", "Provider Last Name (Legal Name)", "Provider First Name", "Provider Middle Name", "Provider Name Prefix Text", "Provider Name Suffix Text", "Provider Credential Text", "Provider Other Organization Name", "Provider Other Organization Name Type Code", "Provider Other Last Name", "Provider Other First Name", "Provider Other Middle Name", "Provider Other Name Prefix Text", "Provider Other Name Suffix Text", "Provider Other Credential Text", "Provider Other Last Name Type Code", "Provider First Line Business Mailing Address", "Provider Second Line Business Mailing Address", "Provider Business Mailing Address City Name", "Provider Business Mailing Address State Name", "Provider Business Mailing Address Postal Code", "Provider Business Mailing Address Country Code (If outside U.S.)", "Provider Business Mailing Address Telephone Number", "Provider Business Mailing Address Fax Number", "Provider First Line Business Practice Location Address", "Provider Second Line Business Practice Location Address", "Provider Business Practice Location Address City Name", "Provider Business Practice Location Address State Name", "Provider Business Practice Location Address Postal Code", "Provider Business Practice Location Address Country Code (If outside U.S.)", "Provider Business Practice Location Address Telephone Number", "Provider Business Practice Location Address Fax Number", "Provider Enumeration Date", "Last Update Date", "NPI Deactivation Reason Code", "NPI Deactivation Date", "NPI Reactivation Date", "Provider Gender Code", "Authorized Official Last Name", "Authorized Official First Name", "Authorized Official Middle Name", "Authorized Official Title or Position", "Authorized Official Telephone Number", "Healthcare Provider Taxonomy Code_1", "Provider License Number_1", "Provider License Number State Code_1", "Healthcare Provider Primary Taxonomy Switch_1", "Healthcare Provider Taxonomy Code_2", "Provider License Number_2", "Provider License Number State Code_2", "Healthcare Provider Primary Taxonomy Switch_2", "Healthcare Provider Taxonomy Code_3", "Provider License Number_3", "Provider License Number State Code_3", "Healthcare Provider Primary Taxonomy Switch_3", "Healthcare Provider Taxonomy Code_4", "Provider License Number_4", "Provider License Number State Code_4", "Healthcare Provider Primary Taxonomy Switch_4", "Healthcare Provider Taxonomy Code_5", "Provider License Number_5", "Provider License Number State Code_5", "Healthcare Provider Primary Taxonomy Switch_5", "Healthcare Provider Taxonomy Code_6", "Provider License Number_6", "Provider License Number State Code_6", "Healthcare Provider Primary Taxonomy Switch_6", "Healthcare Provider Taxonomy Code_7", "Provider License Number_7", "Provider License Number State Code_7", "Healthcare Provider Primary Taxonomy Switch_7", "Healthcare Provider Taxonomy Code_8", "Provider License Number_8", "Provider License Number State Code_8", "Healthcare Provider Primary Taxonomy Switch_8", "Healthcare Provider Taxonomy Code_9", "Provider License Number_9", "Provider License Number State Code_9", "Healthcare Provider Primary Taxonomy Switch_9", "Healthcare Provider Taxonomy Code_10", "Provider License Number_10", "Provider License Number State Code_10", "Healthcare Provider Primary Taxonomy Switch_10", "Healthcare Provider Taxonomy Code_11", "Provider License Number_11", "Provider License Number State Code_11", "Healthcare Provider Primary Taxonomy Switch_11", "Healthcare Provider Taxonomy Code_12", "Provider License Number_12", "Provider License Number State Code_12", "Healthcare Provider Primary Taxonomy Switch_12", "Healthcare Provider Taxonomy Code_13", "Provider License Number_13", "Provider License Number State Code_13", "Healthcare Provider Primary Taxonomy Switch_13", "Healthcare Provider Taxonomy Code_14", "Provider License Number_14", "Provider License Number State Code_14", "Healthcare Provider Primary Taxonomy Switch_14", "Healthcare Provider Taxonomy Code_15", "Provider License Number_15", "Provider License Number State Code_15", "Healthcare Provider Primary Taxonomy Switch_15", "Other Provider Identifier_1", "Other Provider Identifier Type Code_1", "Other Provider Identifier State_1", "Other Provider Identifier Issuer_1", "Other Provider Identifier_2", "Other Provider Identifier Type Code_2", "Other Provider Identifier State_2", "Other Provider Identifier Issuer_2", "Other Provider Identifier_3", "Other Provider Identifier Type Code_3", "Other Provider Identifier State_3", "Other Provider Identifier Issuer_3", "Other Provider Identifier_4", "Other Provider Identifier Type Code_4", "Other Provider Identifier State_4", "Other Provider Identifier Issuer_4", "Other Provider Identifier_5", "Other Provider Identifier Type Code_5", "Other Provider Identifier State_5", "Other Provider Identifier Issuer_5", "Other Provider Identifier_6", "Other Provider Identifier Type Code_6", "Other Provider Identifier State_6", "Other Provider Identifier Issuer_6", "Other Provider Identifier_7", "Other Provider Identifier Type Code_7", "Other Provider Identifier State_7", "Other Provider Identifier Issuer_7", "Other Provider Identifier_8", "Other Provider Identifier Type Code_8", "Other Provider Identifier State_8", "Other Provider Identifier Issuer_8", "Other Provider Identifier_9", "Other Provider Identifier Type Code_9", "Other Provider Identifier State_9", "Other Provider Identifier Issuer_9", "Other Provider Identifier_10", "Other Provider Identifier Type Code_10", "Other Provider Identifier State_10", "Other Provider Identifier Issuer_10", "Other Provider Identifier_11", "Other Provider Identifier Type Code_11", "Other Provider Identifier State_11", "Other Provider Identifier Issuer_11", "Other Provider Identifier_12", "Other Provider Identifier Type Code_12", "Other Provider Identifier State_12", "Other Provider Identifier Issuer_12", "Other Provider Identifier_13", "Other Provider Identifier Type Code_13", "Other Provider Identifier State_13", "Other Provider Identifier Issuer_13", "Other Provider Identifier_14", "Other Provider Identifier Type Code_14", "Other Provider Identifier State_14", "Other Provider Identifier Issuer_14", "Other Provider Identifier_15", "Other Provider Identifier Type Code_15", "Other Provider Identifier State_15", "Other Provider Identifier Issuer_15", "Other Provider Identifier_16", "Other Provider Identifier Type Code_16", "Other Provider Identifier State_16", "Other Provider Identifier Issuer_16", "Other Provider Identifier_17", "Other Provider Identifier Type Code_17", "Other Provider Identifier State_17", "Other Provider Identifier Issuer_17", "Other Provider Identifier_18", "Other Provider Identifier Type Code_18", "Other Provider Identifier State_18", "Other Provider Identifier Issuer_18", "Other Provider Identifier_19", "Other Provider Identifier Type Code_19", "Other Provider Identifier State_19", "Other Provider Identifier Issuer_19", "Other Provider Identifier_20", "Other Provider Identifier Type Code_20", "Other Provider Identifier State_20", "Other Provider Identifier Issuer_20", "Other Provider Identifier_21", "Other Provider Identifier Type Code_21", "Other Provider Identifier State_21", "Other Provider Identifier Issuer_21", "Other Provider Identifier_22", "Other Provider Identifier Type Code_22", "Other Provider Identifier State_22", "Other Provider Identifier Issuer_22", "Other Provider Identifier_23", "Other Provider Identifier Type Code_23", "Other Provider Identifier State_23", "Other Provider Identifier Issuer_23", "Other Provider Identifier_24", "Other Provider Identifier Type Code_24", "Other Provider Identifier State_24", "Other Provider Identifier Issuer_24", "Other Provider Identifier_25", "Other Provider Identifier Type Code_25", "Other Provider Identifier State_25", "Other Provider Identifier Issuer_25", "Other Provider Identifier_26", "Other Provider Identifier Type Code_26", "Other Provider Identifier State_26", "Other Provider Identifier Issuer_26", "Other Provider Identifier_27", "Other Provider Identifier Type Code_27", "Other Provider Identifier State_27", "Other Provider Identifier Issuer_27", "Other Provider Identifier_28", "Other Provider Identifier Type Code_28", "Other Provider Identifier State_28", "Other Provider Identifier Issuer_28", "Other Provider Identifier_29", "Other Provider Identifier Type Code_29", "Other Provider Identifier State_29", "Other Provider Identifier Issuer_29", "Other Provider Identifier_30", "Other Provider Identifier Type Code_30", "Other Provider Identifier State_30", "Other Provider Identifier Issuer_30", "Other Provider Identifier_31", "Other Provider Identifier Type Code_31", "Other Provider Identifier State_31", "Other Provider Identifier Issuer_31", "Other Provider Identifier_32", "Other Provider Identifier Type Code_32", "Other Provider Identifier State_32", "Other Provider Identifier Issuer_32", "Other Provider Identifier_33", "Other Provider Identifier Type Code_33", "Other Provider Identifier State_33", "Other Provider Identifier Issuer_33", "Other Provider Identifier_34", "Other Provider Identifier Type Code_34", "Other Provider Identifier State_34", "Other Provider Identifier Issuer_34", "Other Provider Identifier_35", "Other Provider Identifier Type Code_35", "Other Provider Identifier State_35", "Other Provider Identifier Issuer_35", "Other Provider Identifier_36", "Other Provider Identifier Type Code_36", "Other Provider Identifier State_36", "Other Provider Identifier Issuer_36", "Other Provider Identifier_37", "Other Provider Identifier Type Code_37", "Other Provider Identifier State_37", "Other Provider Identifier Issuer_37", "Other Provider Identifier_38", "Other Provider Identifier Type Code_38", "Other Provider Identifier State_38", "Other Provider Identifier Issuer_38", "Other Provider Identifier_39", "Other Provider Identifier Type Code_39", "Other Provider Identifier State_39", "Other Provider Identifier Issuer_39", "Other Provider Identifier_40", "Other Provider Identifier Type Code_40", "Other Provider Identifier State_40", "Other Provider Identifier Issuer_40", "Other Provider Identifier_41", "Other Provider Identifier Type Code_41", "Other Provider Identifier State_41", "Other Provider Identifier Issuer_41", "Other Provider Identifier_42", "Other Provider Identifier Type Code_42", "Other Provider Identifier State_42", "Other Provider Identifier Issuer_42", "Other Provider Identifier_43", "Other Provider Identifier Type Code_43", "Other Provider Identifier State_43", "Other Provider Identifier Issuer_43", "Other Provider Identifier_44", "Other Provider Identifier Type Code_44", "Other Provider Identifier State_44", "Other Provider Identifier Issuer_44", "Other Provider Identifier_45", "Other Provider Identifier Type Code_45", "Other Provider Identifier State_45", "Other Provider Identifier Issuer_45", "Other Provider Identifier_46", "Other Provider Identifier Type Code_46", "Other Provider Identifier State_46", "Other Provider Identifier Issuer_46", "Other Provider Identifier_47", "Other Provider Identifier Type Code_47", "Other Provider Identifier State_47", "Other Provider Identifier Issuer_47", "Other Provider Identifier_48", "Other Provider Identifier Type Code_48", "Other Provider Identifier State_48", "Other Provider Identifier Issuer_48", "Other Provider Identifier_49", "Other Provider Identifier Type Code_49", "Other Provider Identifier State_49", "Other Provider Identifier Issuer_49", "Other Provider Identifier_50", "Other Provider Identifier Type Code_50", "Other Provider Identifier State_50", "Other Provider Identifier Issuer_50", "Is Sole Proprietor", "Is Organization Subpart", "Parent Organization LBN", "Parent Organization TIN", "Authorized Official Name Prefix Text", "Authorized Official Name Suffix Text", "Authorized Official Credential Text", "Healthcare Provider Taxonomy Group_1", "Healthcare Provider Taxonomy Group_2", "Healthcare Provider Taxonomy Group_3", "Healthcare Provider Taxonomy Group_4", "Healthcare Provider Taxonomy Group_5", "Healthcare Provider Taxonomy Group_6", "Healthcare Provider Taxonomy Group_7", "Healthcare Provider Taxonomy Group_8", "Healthcare Provider Taxonomy Group_9", "Healthcare Provider Taxonomy Group_10", "Healthcare Provider Taxonomy Group_11", "Healthcare Provider Taxonomy Group_12", "Healthcare Provider Taxonomy Group_13", "Healthcare Provider Taxonomy Group_14", "Healthcare Provider Taxonomy Group_15" };
 
             return HeaderComparer.checkHeaders(sources, headers);
@@ -541,10 +857,11 @@ namespace Import
 
         #region Physician
 
-        public void importPhysicians(string file) {
+        public void importPhysicians(string file)
+        {
             using (var parser = new TextFieldParser(file)) {
                 parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(getColumnDelimiter());
+                parser.SetDelimiters(settings.ColumnDelimiter);
                 parser.HasFieldsEnclosedInQuotes = true;
 
                 // read the headers stored on the first line
@@ -567,88 +884,137 @@ namespace Import
             }
         }
 
-        private void processRowPhysician(string[] data, int counter) {
-            using (var medicareDatabase = new MedicareEntities()) {
-                int NPI = 0;
+        private void processRowPhysician(string[] data, int lineNumber)
+        {
+            try {
+                using (var medicareDatabase = new MedicareEntities()) {
+                    int NPI = 0;
 
-                if (!int.TryParse(data[0], out NPI))
-                    return;
+                    if (!int.TryParse(data[0], out NPI))
+                        return;
 
-                var physician = new Physician { NPI = NPI };
+                    var physician = new Physician { NPI = NPI };
 
-                var exists = medicareDatabase.Physicians.Where(x => x.NPI == NPI).Any();
+                    var exists = medicareDatabase.Physicians.Where(x => x.NPI == NPI).Any();
 
-                if (!exists) { // new
-                    medicareDatabase.Physicians.Add(physician);
+                    if (!exists) { // new
+                        medicareDatabase.Physicians.Add(physician);
+                    }
+                    else {
+                        medicareDatabase.Physicians.Attach(physician);
+                        medicareDatabase.Entry(physician).State = System.Data.Entity.EntityState.Modified;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(data[1])) physician.PAC_ID = data[1].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[2])) physician.Professional_Enrollment_ID = data[2].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[3])) physician.Last_Name = data[3].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[4])) physician.First_Name = data[4].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[5])) physician.Middle_Name = data[5].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[6])) physician.Suffix = data[6].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[7])) physician.Gender = data[7].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[8])) physician.Credential = data[8].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[9])) physician.Medical_school_name = data[9].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[10])) physician.Graduation_year = short.Parse(data[10].Trim());
+                    if (!string.IsNullOrWhiteSpace(data[11])) physician.Primary_specialty = data[11].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[12])) physician.Secondary_specialty_1 = data[12].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[13])) physician.Secondary_specialty_2 = data[13].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[14])) physician.Secondary_specialty_3 = data[14].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[15])) physician.Secondary_specialty_4 = data[15].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[16])) physician.All_secondary_specialties = data[16].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[17])) physician.Organization_legal_name = data[17].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[18])) physician.Group_Practice_PAC_ID = data[18].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[19])) physician.Number_of_Group_Practice_members = short.Parse(data[19].Trim());
+                    if (!string.IsNullOrWhiteSpace(data[20])) physician.Line_1_Street_Address = data[20].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[21])) physician.Line_2_Street_Address = data[21].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[22])) physician.Marker_of_address_line_2_suppression = data[22].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[23])) physician.City = data[23].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[24])) physician.State = data[24].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[25])) physician.Zip_Code = data[25].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[26])) physician.Phone_Number = data[26].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[27])) physician.Claims_based_hospital_affiliation_CCN_1 = int.Parse(data[27].Trim());
+                    if (!string.IsNullOrWhiteSpace(data[28])) physician.Claims_based_hospital_affiliation_LBN_1 = data[28].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[29])) physician.Claims_based_hospital_affiliation_CCN_2 = int.Parse(data[29].Trim());
+                    if (!string.IsNullOrWhiteSpace(data[30])) physician.Claims_based_hospital_affiliation_LBN_2 = data[30].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[31])) physician.Claims_based_hospital_affiliation_CCN_3 = int.Parse(data[31].Trim());
+                    if (!string.IsNullOrWhiteSpace(data[32])) physician.Claims_based_hospital_affiliation_LBN_3 = data[32].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[33])) physician.Claims_based_hospital_affiliation_CCN_4 = int.Parse(data[33].Trim());
+                    if (!string.IsNullOrWhiteSpace(data[34])) physician.Claims_based_hospital_affiliation_LBN_4 = data[34].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[35])) physician.Claims_based_hospital_affiliation_CCN_5 = int.Parse(data[35].Trim());
+                    if (!string.IsNullOrWhiteSpace(data[36])) physician.Claims_based_hospital_affiliation_LBN_5 = data[36].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[37])) physician.Professional_accepts_Medicare_Assignment = data[37].Trim();
+                    //if (!string.IsNullOrWhiteSpace(data[38])) physician.Participating_in_eRx = data[38].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[39])) physician.Participating_in_EHR = data[39].Trim();
+                    if (!string.IsNullOrWhiteSpace(data[40])) physician.Participated_in_Million_Hearts = data[40].Trim();
+
+                    physician.LastModifiedDate = DateTime.Now;
+
+                    medicareDatabase.SaveChanges();
+
+                    WriteLine(string.Format("#{2}\t{0}\tPhysician\t{1}", physician.NPI, exists ? "Updated" : "Added", lineNumber));
                 }
-                else {
-                    medicareDatabase.Physicians.Attach(physician);
-                    medicareDatabase.Entry(physician).State = System.Data.Entity.EntityState.Modified;
-                }
+            }
+            catch (DbUpdateException ex) {
+                var errorMessage = ex.GetErrorMessage();
 
-                if (!string.IsNullOrWhiteSpace(data[1])) physician.PAC_ID = data[1].Trim();
-                if (!string.IsNullOrWhiteSpace(data[2])) physician.Professional_Enrollment_ID = data[2].Trim();
-                if (!string.IsNullOrWhiteSpace(data[3])) physician.Last_Name = data[3].Trim();
-                if (!string.IsNullOrWhiteSpace(data[4])) physician.First_Name = data[4].Trim();
-                if (!string.IsNullOrWhiteSpace(data[5])) physician.Middle_Name = data[5].Trim();
-                if (!string.IsNullOrWhiteSpace(data[6])) physician.Suffix = data[6].Trim();
-                if (!string.IsNullOrWhiteSpace(data[7])) physician.Gender = data[7].Trim();
-                if (!string.IsNullOrWhiteSpace(data[8])) physician.Credential = data[8].Trim();
-                if (!string.IsNullOrWhiteSpace(data[9])) physician.Medical_school_name = data[9].Trim();
-                if (!string.IsNullOrWhiteSpace(data[10])) physician.Graduation_year = short.Parse(data[10].Trim());
-                if (!string.IsNullOrWhiteSpace(data[11])) physician.Primary_specialty = data[11].Trim();
-                if (!string.IsNullOrWhiteSpace(data[12])) physician.Secondary_specialty_1 = data[12].Trim();
-                if (!string.IsNullOrWhiteSpace(data[13])) physician.Secondary_specialty_2 = data[13].Trim();
-                if (!string.IsNullOrWhiteSpace(data[14])) physician.Secondary_specialty_3 = data[14].Trim();
-                if (!string.IsNullOrWhiteSpace(data[15])) physician.Secondary_specialty_4 = data[15].Trim();
-                if (!string.IsNullOrWhiteSpace(data[16])) physician.All_secondary_specialties = data[16].Trim();
-                if (!string.IsNullOrWhiteSpace(data[17])) physician.Organization_legal_name = data[17].Trim();
-                if (!string.IsNullOrWhiteSpace(data[18])) physician.Group_Practice_PAC_ID = data[18].Trim();
-                if (!string.IsNullOrWhiteSpace(data[19])) physician.Number_of_Group_Practice_members = short.Parse(data[19].Trim());
-                if (!string.IsNullOrWhiteSpace(data[20])) physician.Line_1_Street_Address = data[20].Trim();
-                if (!string.IsNullOrWhiteSpace(data[21])) physician.Line_2_Street_Address = data[21].Trim();
-                if (!string.IsNullOrWhiteSpace(data[22])) physician.Marker_of_address_line_2_suppression = data[22].Trim();
-                if (!string.IsNullOrWhiteSpace(data[23])) physician.City = data[23].Trim();
-                if (!string.IsNullOrWhiteSpace(data[24])) physician.State = data[24].Trim();
-                if (!string.IsNullOrWhiteSpace(data[25])) physician.Zip_Code = data[25].Trim();
-                if (!string.IsNullOrWhiteSpace(data[26])) physician.Phone_Number = data[26].Trim();
-                if (!string.IsNullOrWhiteSpace(data[27])) physician.Claims_based_hospital_affiliation_CCN_1 = int.Parse(data[27].Trim());
-                if (!string.IsNullOrWhiteSpace(data[28])) physician.Claims_based_hospital_affiliation_LBN_1 = data[28].Trim();
-                if (!string.IsNullOrWhiteSpace(data[29])) physician.Claims_based_hospital_affiliation_CCN_2 = int.Parse(data[29].Trim());
-                if (!string.IsNullOrWhiteSpace(data[30])) physician.Claims_based_hospital_affiliation_LBN_2 = data[30].Trim();
-                if (!string.IsNullOrWhiteSpace(data[31])) physician.Claims_based_hospital_affiliation_CCN_3 = int.Parse(data[31].Trim());
-                if (!string.IsNullOrWhiteSpace(data[32])) physician.Claims_based_hospital_affiliation_LBN_3 = data[32].Trim();
-                if (!string.IsNullOrWhiteSpace(data[33])) physician.Claims_based_hospital_affiliation_CCN_4 = int.Parse(data[33].Trim());
-                if (!string.IsNullOrWhiteSpace(data[34])) physician.Claims_based_hospital_affiliation_LBN_4 = data[34].Trim();
-                if (!string.IsNullOrWhiteSpace(data[35])) physician.Claims_based_hospital_affiliation_CCN_5 = int.Parse(data[35].Trim());
-                if (!string.IsNullOrWhiteSpace(data[36])) physician.Claims_based_hospital_affiliation_LBN_5 = data[36].Trim();
-                if (!string.IsNullOrWhiteSpace(data[37])) physician.Professional_accepts_Medicare_Assignment = data[37].Trim();
-                //if (!string.IsNullOrWhiteSpace(data[38])) physician.Participating_in_eRx = data[38].Trim();
-                if (!string.IsNullOrWhiteSpace(data[39])) physician.Participating_in_EHR = data[39].Trim();
-                if (!string.IsNullOrWhiteSpace(data[40])) physician.Participated_in_Million_Hearts = data[40].Trim();
+                if (!errorMessage.Contains("The INSERT statement conflicted with the FOREIGN KEY constraint \"FK_Physicians_MedicareProviders\""))
+                    throw;
 
-                physician.LastModifiedDate = DateTime.Now;
-
-                medicareDatabase.SaveChanges();
-
-                WriteLine(string.Format("#{2}\t{0}\t{1}", physician.NPI, exists ? "Updated" : "Added", counter));
+                var npiData = convertPhysicianToNPI(data);
+                processRowNPI(npiData, lineNumber);
+                processRowPhysician(data, lineNumber);
             }
         }
 
-        private bool checkHeadersPhysician(string[] headers) {
+        private bool checkHeadersPhysician(string[] headers)
+        {
             string[] sources = new string[] { "NPI", "PAC ID", "Professional Enrollment ID", "Last Name", "First Name", "Middle Name", "Suffix", "Gender", "Credential", "Medical school name", "Graduation year", "Primary specialty", "Secondary specialty 1", "Secondary specialty 2", "Secondary specialty 3", "Secondary specialty 4", "All secondary specialties", "Organization legal name", "Group Practice PAC ID", "Number of Group Practice members", "Line 1 Street Address", "Line 2 Street Address", "Marker of address line 2 suppression", "City", "State", "Zip Code", "Phone Number", "Hospital affiliation CCN 1", "Hospital affiliation LBN 1", "Hospital affiliation CCN 2", "Hospital affiliation LBN 2", "Hospital affiliation CCN 3", "Hospital affiliation LBN 3", "Hospital affiliation CCN 4", "Hospital affiliation LBN 4", "Hospital affiliation CCN 5", "Hospital affiliation LBN 5", "Professional accepts Medicare Assignment", "Reported Quality Measures", "Used electronic health records", "Committed to heart health through the Million Hearts® initiative." };
 
             return HeaderComparer.checkHeaders(sources, headers);
+        }
+
+        private string[] convertPhysicianToNPI(string[] physicianData)
+        {
+            // insert the basic data to the NPI and retry
+            string[] npiData = new string[329];
+
+            npiData[0] = physicianData[0]; // NPI
+            npiData[1] = "1"; // Entity_Type_Code
+            npiData[5] = physicianData[3]; // Provider_Last_Name__Legal_Name_
+            npiData[6] = physicianData[4]; // Provider_First_Name
+            npiData[7] = physicianData[5]; // Provider_Middle_Name
+            npiData[9] = physicianData[6]; // Provider_Name_Suffix_Text
+            npiData[10] = physicianData[8]; // Provider_Credential_Text
+
+            npiData[20] = physicianData[20]; // Provider_First_Line_Business_Mailing_Address
+            npiData[21] = physicianData[21]; // Provider_Second_Line_Business_Mailing_Address
+            npiData[22] = physicianData[23]; // Provider_Business_Mailing_Address_City_Name
+            npiData[23] = physicianData[24]; // Provider_Business_Mailing_Address_State_Name
+            npiData[24] = physicianData[25]; // Provider_Business_Mailing_Address_Postal_Code
+            npiData[25] = "US"; // Provider_Business_Mailing_Address_Country_Code__If_outside_US_
+            npiData[26] = physicianData[26]; // Provider_Business_Mailing_Address_Telephone_Number
+
+            npiData[28] = physicianData[20]; // Provider_First_Line_Business_Practice_Location_Address
+            npiData[29] = physicianData[21]; // Provider_Second_Line_Business_Practice_Location_Address
+            npiData[30] = physicianData[23]; // Provider_Business_Practice_Location_Address_City_Name
+            npiData[31] = physicianData[24]; // Provider_Business_Practice_Location_Address_State_Name
+            npiData[32] = physicianData[25]; // Provider_Business_Practice_Location_Address_Postal_Code
+            npiData[33] = "US"; // Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_
+            npiData[34] = physicianData[26]; // Provider_Business_Practice_Location_Address_Telephone_Number
+
+            npiData[41] = physicianData[7]; // Provider_Gender_Code
+
+            return npiData;
         }
 
         #endregion
 
         #region Aggregates
 
-        public void importAggregates(string file) {
+        public void importAggregates(string file)
+        {
             using (var parser = new TextFieldParser(file)) {
                 parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(getColumnDelimiter());
+                parser.SetDelimiters(settings.ColumnDelimiter);
                 parser.HasFieldsEnclosedInQuotes = true;
 
                 // read the headers stored on the first line
@@ -674,11 +1040,9 @@ namespace Import
             }
         }
 
-        private void processRowAggregate(string[] data, int counter) {
-            var year = getDataYear();
-
-            if (year <= MINIMUM_DATA_YEAR)
-                throw new ArgumentException("Please specify the year of the data!");
+        private void processRowAggregate(string[] data, int lineNumber)
+        {
+            var year = settings.DataYear;
 
             using (var medicareDatabase = new MedicareEntities()) {
                 int NPI = 0;
@@ -757,11 +1121,12 @@ namespace Import
 
                 medicareDatabase.SaveChanges();
 
-                WriteLine(string.Format("#{2}\t{0}\t{1}\t{3}", aggregate.npi, exists ? "Updated" : "Added", counter, year));
+                WriteLine(string.Format("#{2}\t{0}\tAggregates\t{1}\t{3}", aggregate.npi, exists ? "Updated" : "Added", lineNumber, year));
             }
         }
 
-        private bool checkHeadersAggregate(string[] headers) {
+        private bool checkHeadersAggregate(string[] headers)
+        {
             string[] sources = new string[] { "npi", "nppes_provider_last_org_name", "nppes_provider_first_name", "nppes_provider_mi", "nppes_credentials", "nppes_provider_gender", "nppes_entity_code", "nppes_provider_street1", "nppes_provider_street2", "nppes_provider_city", "nppes_provider_zip", "nppes_provider_state", "nppes_provider_country", "provider_type", "medicare_participation_indicator", "number_of_hcpcs", "total_services", "total_unique_benes", "total_submitted_chrg_amt", "total_medicare_allowed_amt", "total_medicare_payment_amt", "total_medicare_stnd_amt", "drug_suppress_indicator", "number_of_drug_hcpcs", "total_drug_services", "total_drug_unique_benes", "total_drug_submitted_chrg_amt", "total_drug_medicare_allowed_amt", "total_drug_medicare_payment_amt", "total_drug_medicare_stnd_amt", "med_suppress_indicator", "number_of_med_hcpcs", "total_med_services", "total_med_unique_benes", "total_med_submitted_chrg_amt", "total_med_medicare_allowed_amt", "total_med_medicare_payment_amt", "total_med_medicare_stnd_amt", "beneficiary_average_age", "beneficiary_age_less_65_count", "beneficiary_age_65_74_count", "beneficiary_age_75_84_count", "beneficiary_age_greater_84_count", "beneficiary_female_count", "beneficiary_male_count", "beneficiary_race_white_count", "beneficiary_race_black_count", "beneficiary_race_api_count", "beneficiary_race_hispanic_count", "beneficiary_race_natind_count", "beneficiary_race_other_count", "beneficiary_nondual_count", "beneficiary_dual_count", "beneficiary_cc_afib_percent", "beneficiary_cc_alzrdsd_percent", "beneficiary_cc_asthma_percent", "beneficiary_cc_cancer_percent", "beneficiary_cc_chf_percent", "beneficiary_cc_ckd_percent", "beneficiary_cc_copd_percent", "beneficiary_cc_depr_percent", "beneficiary_cc_diab_percent", "beneficiary_cc_hyperl_percent", "beneficiary_cc_hypert_percent", "beneficiary_cc_ihd_percent", "beneficiary_cc_ost_percent", "beneficiary_cc_raoa_percent", "beneficiary_cc_schiot_percent", "beneficiary_cc_strk_percent", "Beneficiary_Average_Risk_Score" };
 
             return HeaderComparer.checkHeaders(sources, headers);
@@ -771,10 +1136,11 @@ namespace Import
 
         #region UtilizationAndPayments
 
-        public void importUtilizationAndPayments(string file) {
+        public void importUtilizationAndPayments(string file)
+        {
             using (var parser = new TextFieldParser(file)) {
                 parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(getColumnDelimiter());
+                parser.SetDelimiters(settings.ColumnDelimiter);
                 parser.HasFieldsEnclosedInQuotes = false;
 
                 // read the headers stored on the first line
@@ -796,11 +1162,9 @@ namespace Import
             }
         }
 
-        private void processRowUtilizationAndPayment(string[] data, int counter) {
-            var year = getDataYear();
-
-            if (year <= MINIMUM_DATA_YEAR)
-                throw new ArgumentException("Please specify the year of the data!");
+        private void processRowUtilizationAndPayment(string[] data, int lineNumber)
+        {
+            var year = settings.DataYear;
 
             using (var medicareDatabase = new MedicareEntities()) {
                 int NPI = 0;
@@ -847,11 +1211,12 @@ namespace Import
 
                 medicareDatabase.SaveChanges();
 
-                WriteLine(string.Format("#{2}\t{0}\t{1}\t{3}\t{4}", payment.npi, exists ? "Updated" : "Added", counter, year, hcpcs_code));
+                WriteLine(string.Format("#{2}\t{0}\tUtilizationAndPayments\t{1}\t{3}\t{4}", payment.npi, exists ? "Updated" : "Added", lineNumber, year, hcpcs_code));
             }
         }
 
-        private bool checkHeadersUtilizationAndPayments(string[] headers) {
+        private bool checkHeadersUtilizationAndPayments(string[] headers)
+        {
             string[] sources = new string[] { "NPI", "NPPES_PROVIDER_LAST_ORG_NAME", "NPPES_PROVIDER_FIRST_NAME", "NPPES_PROVIDER_MI", "NPPES_CREDENTIALS", "NPPES_PROVIDER_GENDER", "NPPES_ENTITY_CODE", "NPPES_PROVIDER_STREET1", "NPPES_PROVIDER_STREET2", "NPPES_PROVIDER_CITY", "NPPES_PROVIDER_ZIP", "NPPES_PROVIDER_STATE", "NPPES_PROVIDER_COUNTRY", "PROVIDER_TYPE", "MEDICARE_PARTICIPATION_INDICATOR", "PLACE_OF_SERVICE", "HCPCS_CODE", "HCPCS_DESCRIPTION", "HCPCS_DRUG_INDICATOR", "LINE_SRVC_CNT", "BENE_UNIQUE_CNT", "BENE_DAY_SRVC_CNT", "AVERAGE_MEDICARE_ALLOWED_AMT", "AVERAGE_SUBMITTED_CHRG_AMT", "AVERAGE_MEDICARE_PAYMENT_AMT", "AVERAGE_MEDICARE_STANDARD_AMT" };
 
             return HeaderComparer.checkHeaders(sources, headers);
@@ -896,7 +1261,7 @@ namespace Import
         //{
         //    using (var parser = new TextFieldParser(file)) {
         //        parser.TextFieldType = FieldType.Delimited;
-        //        parser.SetDelimiters(getColumnDelimiter());
+        //        parser.SetDelimiters(settings.ColumnDelimiter);
         //        parser.HasFieldsEnclosedInQuotes = true;
 
         //        // read the headers stored on the first line
@@ -967,10 +1332,11 @@ namespace Import
 
         #region Taxonomy Codes
 
-        public void importTaxonomyCodes(string file) {
+        public void importTaxonomyCodes(string file)
+        {
             using (var parser = new TextFieldParser(file)) {
                 parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(getColumnDelimiter());
+                parser.SetDelimiters(settings.ColumnDelimiter);
                 parser.HasFieldsEnclosedInQuotes = true;
 
                 // read the headers stored on the first line
@@ -1014,7 +1380,8 @@ namespace Import
             }
         }
 
-        private void processRowTaxonomyCode(string[] data, int counter) {
+        private void processRowTaxonomyCode(string[] data, int lineNumber)
+        {
             using (var medicareDatabase = new MedicareEntities()) {
                 string code = data[0];
 
@@ -1039,11 +1406,12 @@ namespace Import
 
                 medicareDatabase.SaveChanges();
 
-                WriteLine(string.Format("#{2}\t{0}\t{1}", taxonomyCode.Code, exists ? "Updated" : "Added", counter));
+                WriteLine(string.Format("#{2}\t{0}\tTaxonomy Codes\t{1}", taxonomyCode.Code, exists ? "Updated" : "Added", lineNumber));
             }
         }
 
-        private bool checkHeadersTaxonomyCodes(string[] headers) {
+        private bool checkHeadersTaxonomyCodes(string[] headers)
+        {
             string[] sources = new string[] { "Code", "Grouping", "Classification", "Specialization", "Definition", "Notes" };
 
             return HeaderComparer.checkHeaders(sources, headers);
@@ -1068,133 +1436,85 @@ namespace Import
                 return source.SequenceEqual(match, new HeaderComparer());
             }
         }
+    }
 
-        private void Write(string text) {
-            if (checkBoxOutputOneLine.Checked) {
-                textBoxOutput.Text = text;
-                return;
-            }
-
-            Invoke((Action)(() => {
-                textBoxOutput.AppendText(text);
-            }));
-        }
-
-        private void WriteLine(string text) {
-            Write(string.Format("{0}{1}", text, Environment.NewLine));
-        }
-
-        private void Reset(bool clearOutput = true) {
-            interrupt = false;
-            pause = false;
-
-            if (clearOutput)
-                textBoxOutput.ResetText();
-
-            buttonRun.Enabled = true;
-            buttonStop.Enabled = false;
-            buttonPause.Enabled = false;
-
-            buttonPause.Text = "Pause";
-        }
-
-        private string getColumnDelimiter() {
-            string delimiter = null;
-
-            Invoke((Action)(() => {
-                switch (comboBoxColumnDelimiters.SelectedItem.ToString()) {
-                    case "Comma {,}":
-                        delimiter = ",";
-                        break;
-                    case "Tab {t}":
-                        delimiter = "\t";
-                        break;
-                }
-            }));
-
-            return delimiter;
-        }
-
-        private short getDataYear() {
-            short year = 0;
-
-            if (!string.IsNullOrWhiteSpace(textBoxDataYear.Text)) {
-                Invoke((Action)(() => {
-                    year = short.Parse(textBoxDataYear.Text);
-                }));
-            }
-
-            return year;
-        }
-
-        private void buttonRun_Click(object sender, EventArgs e) {
-            Reset();
-
-            buttonRun.Enabled = false;
-            buttonStop.Enabled = true;
-            buttonPause.Enabled = true;
-
-            try {
-                backgroundWorker1.RunWorkerAsync(comboBoxTypes.SelectedItem);
-            }
-            catch (Exception ex) {
-                WriteLine(ex.ToString());
-            }
-        }
-
-        private void buttonStop_Click(object sender, EventArgs e) {
-            pause = false;
-            interrupt = true;
-
-            WriteLine("Stop requested!");
-        }
-
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
-            var fileType = e.Argument.ToString();
-            var filePath = textBoxFile.Text;
-
-            switch (fileType) {
-                case "NPI":
-                    importNPI(filePath);
-                    break;
-                case "Physicians":
-                    importPhysicians(filePath);
-                    break;
-                case "Aggregates":
-                    importAggregates(filePath);
-                    break;
-                case "Utilization & Payments":
-                    importUtilizationAndPayments(filePath);
-                    break;
-                case "Taxonomy Codes":
-                    importTaxonomyCodes(filePath);
-                    break;
-                default:
-                    WriteLine(string.Format("Could not determine file type '{0}'!", fileType));
-                    break;
-            }
-
-            Invoke((Action)(() => {
-                Reset(clearOutput: false);
-                WriteLine("done");
-            }));
-        }
-
-        private void buttonPause_Click(object sender, EventArgs e) {
-            pause = !pause;
-
-            if (pause) {
-                WriteLine("Pausing...");
-                buttonPause.Text = "Resume";
-            } else {
-                WriteLine("Resuming...");
-                buttonPause.Text = "Pause";
-            }
-        }
-
-        private void label6_Click(object sender, EventArgs e)
+    public static partial class Extensions
+    {
+        /// <summary>
+        /// Returns the description value of the given object
+        /// </summary>
+        public static string GetDescription(this object value)
         {
+            DescriptionAttribute attribute = value.GetType()
+                .GetField(value.ToString())
+                .GetCustomAttributes(typeof(DescriptionAttribute), false)
+                .SingleOrDefault() as DescriptionAttribute;
 
+            return attribute == null ? value.ToString() : attribute.Description;
+        }
+
+        public static T GetDefaultValue<T>(this object value)
+        {
+            var attribute = value.GetType()
+                .GetField(value.ToString())
+                .GetCustomAttribute(typeof(DefaultValueAttribute))
+                    as DefaultValueAttribute;
+
+            if (attribute != null) {
+                return (T)attribute.Value;
+            }
+
+            return default(T);
+        }
+
+        public static string GetErrorMessage(this Exception ex)
+        {
+            if (ex == null)
+                return null;
+
+            StringBuilder errorMessage = new StringBuilder();
+
+            errorMessage.Append(ex);
+
+            if (ex is DbEntityValidationException)
+                errorMessage.Append(new FormattedDbEntityValidationException(ex as DbEntityValidationException));
+
+            return string.Format("{0}\r\n{1}", errorMessage, GetErrorMessage(ex.InnerException));
+        }
+
+        public class FormattedDbEntityValidationException : Exception
+        {
+            public FormattedDbEntityValidationException(DbEntityValidationException exception) :
+                base(null, exception)
+            { }
+
+            public override string Message {
+                get {
+                    var innerException = InnerException as DbEntityValidationException;
+
+                    if (innerException != null) {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine();
+                        sb.AppendLine();
+                        foreach (var eve in innerException.EntityValidationErrors) {
+                            sb.AppendLine(string.Format("- Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                                eve.Entry.Entity.GetType().FullName, eve.Entry.State));
+                            foreach (var ve in eve.ValidationErrors) {
+                                sb.AppendLine(string.Format("-- Property: \"{0}\", Value: \"{1}\", Error: \"{2}\"",
+                                    ve.PropertyName,
+                                    eve.Entry.CurrentValues.GetValue<object>(ve.PropertyName),
+                                    ve.ErrorMessage));
+                            }
+                        }
+                        sb.AppendLine();
+
+                        return sb.ToString();
+                    }
+
+                    return base.Message;
+                }
+            }
         }
     }
 }

@@ -369,28 +369,28 @@
           <Property Name="npi" Type="int" Nullable="false" />
           <Property Name="year" Type="smallint" Nullable="false" />
           <Property Name="number_of_hcpcs" Type="int" />
-          <Property Name="total_services" Type="real" />
+          <Property Name="total_services" Type="float" />
           <Property Name="total_unique_benes" Type="int" />
-          <Property Name="total_submitted_chrg_amt" Type="real" />
-          <Property Name="total_medicare_allowed_amt" Type="real" />
-          <Property Name="total_medicare_payment_amt" Type="real" />
-          <Property Name="total_medicare_stnd_amt" Type="real" />
+          <Property Name="total_submitted_chrg_amt" Type="float" />
+          <Property Name="total_medicare_allowed_amt" Type="float" />
+          <Property Name="total_medicare_payment_amt" Type="float" />
+          <Property Name="total_medicare_stnd_amt" Type="float" />
           <Property Name="drug_suppress_indicator" Type="varchar" MaxLength="1" />
           <Property Name="number_of_drug_hcpcs" Type="int" />
-          <Property Name="total_drug_services" Type="real" />
+          <Property Name="total_drug_services" Type="float" />
           <Property Name="total_drug_unique_benes" Type="int" />
-          <Property Name="total_drug_submitted_chrg_amt" Type="real" />
-          <Property Name="total_drug_medicare_allowed_amt" Type="real" />
-          <Property Name="total_drug_medicare_payment_amt" Type="real" />
-          <Property Name="total_drug_medicare_stnd_amt" Type="real" />
+          <Property Name="total_drug_submitted_chrg_amt" Type="float" />
+          <Property Name="total_drug_medicare_allowed_amt" Type="float" />
+          <Property Name="total_drug_medicare_payment_amt" Type="float" />
+          <Property Name="total_drug_medicare_stnd_amt" Type="float" />
           <Property Name="med_suppress_indicator" Type="varchar" MaxLength="1" />
           <Property Name="number_of_med_hcpcs" Type="int" />
-          <Property Name="total_med_services" Type="real" />
+          <Property Name="total_med_services" Type="float" />
           <Property Name="total_med_unique_benes" Type="int" />
-          <Property Name="total_med_submitted_chrg_amt" Type="real" />
-          <Property Name="total_med_medicare_allowed_amt" Type="real" />
-          <Property Name="total_med_medicare_payment_amt" Type="real" />
-          <Property Name="total_med_medicare_stnd_amt" Type="real" />
+          <Property Name="total_med_submitted_chrg_amt" Type="float" />
+          <Property Name="total_med_medicare_allowed_amt" Type="float" />
+          <Property Name="total_med_medicare_payment_amt" Type="float" />
+          <Property Name="total_med_medicare_stnd_amt" Type="float" />
           <Property Name="beneficiary_average_age" Type="smallint" />
           <Property Name="beneficiary_age_less_65_count" Type="int" />
           <Property Name="beneficiary_age_65_74_count" Type="int" />
@@ -422,7 +422,7 @@
           <Property Name="beneficiary_cc_raoa_percent" Type="smallint" />
           <Property Name="beneficiary_cc_schiot_percent" Type="smallint" />
           <Property Name="beneficiary_cc_strk_percent" Type="smallint" />
-          <Property Name="beneficiary_average_risk_score" Type="real" />
+          <Property Name="beneficiary_average_risk_score" Type="float" />
         </EntityType>
         <EntityType Name="MedicareProvidersUtilizationAndPayments">
           <Key>
@@ -479,15 +479,15 @@
           <Property Name="Zip Code" Type="varchar" MaxLength="9" />
           <Property Name="Phone Number" Type="varchar" MaxLength="20" />
           <Property Name="Claims based hospital affiliation CCN 1" Type="int" />
-          <Property Name="Claims based hospital affiliation LBN 1" Type="varchar" MaxLength="70" />
+          <Property Name="Claims based hospital affiliation LBN 1" Type="varchar" MaxLength="100" />
           <Property Name="Claims based hospital affiliation CCN 2" Type="int" />
-          <Property Name="Claims based hospital affiliation LBN 2" Type="varchar" MaxLength="70" />
+          <Property Name="Claims based hospital affiliation LBN 2" Type="varchar" MaxLength="100" />
           <Property Name="Claims based hospital affiliation CCN 3" Type="int" />
-          <Property Name="Claims based hospital affiliation LBN 3" Type="varchar" MaxLength="70" />
+          <Property Name="Claims based hospital affiliation LBN 3" Type="varchar" MaxLength="100" />
           <Property Name="Claims based hospital affiliation CCN 4" Type="int" />
-          <Property Name="Claims based hospital affiliation LBN 4" Type="varchar" MaxLength="70" />
+          <Property Name="Claims based hospital affiliation LBN 4" Type="varchar" MaxLength="100" />
           <Property Name="Claims based hospital affiliation CCN 5" Type="int" />
-          <Property Name="Claims based hospital affiliation LBN 5" Type="varchar" MaxLength="70" />
+          <Property Name="Claims based hospital affiliation LBN 5" Type="varchar" MaxLength="100" />
           <Property Name="Professional accepts Medicare Assignment" Type="varchar" MaxLength="1" />
           <Property Name="Participating in eRx" Type="varchar" MaxLength="1" />
           <Property Name="Participating in PQRS" Type="varchar" MaxLength="1" />
@@ -495,6 +495,7 @@
           <Property Name="Received PQRS Maintenance of Certification Program Incentive" Type="varchar" MaxLength="1" />
           <Property Name="Participated in Million Hearts" Type="varchar" MaxLength="1" />
           <Property Name="LastModifiedDate" Type="datetime" />
+          <Property Name="zip_code_5" Type="int" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="TaxonomyCodes">
           <Key>
@@ -521,7 +522,7 @@
           <Property Name="point" Type="geography" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'Medicare.dbo.MedicareExtendedPhysicians' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'MainDatabase.dbo.MedicareExtendedPhysicians' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="MedicareExtendedPhysicians">
           <Key>
             <PropertyRef Name="NPI" />
@@ -571,17 +572,22 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedPhysicians' does not 
           <Property Name="Received PQRS Maintenance of Certification Program Incentive" Type="varchar" MaxLength="1" />
           <Property Name="Participated in Million Hearts" Type="varchar" MaxLength="1" />
           <Property Name="LastModifiedDate" Type="datetime" />
+          <Property Name="zip_code_5" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'MainDatabase.dbo.MedicareExtendedProviders' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="MedicareExtendedProviders">
           <Key>
             <PropertyRef Name="NPI" />
           </Key>
           <Property Name="NPI" Type="int" Nullable="false" />
+          <Property Name="ContactID" Type="int" />
+          <Property Name="InstitutionID" Type="int" />
           <Property Name="Entity Type Code" Type="smallint" />
           <Property Name="Replacement NPI" Type="int" />
           <Property Name="Employer Identification Number (EIN)" Type="varchar" MaxLength="10" />
+          <Property Name="OpenPaymentsPhysicanProfileID" Type="bigint" />
+          <Property Name="Provider Name" Type="varchar" MaxLength="70" />
           <Property Name="Provider Organization Name (Legal Business Name)" Type="varchar" MaxLength="70" />
           <Property Name="Provider Last Name (Legal Name)" Type="varchar" MaxLength="35" />
           <Property Name="Provider First Name" Type="varchar" MaxLength="20" />
@@ -602,7 +608,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider Second Line Business Mailing Address" Type="varchar" MaxLength="55" />
           <Property Name="Provider Business Mailing Address City Name" Type="varchar" MaxLength="40" />
           <Property Name="Provider Business Mailing Address State Name" Type="varchar" MaxLength="40" />
-          <Property Name="Provider Business Mailing Address Postal Code" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Business Mailing Address Postal Code" Type="varchar" MaxLength="21" />
           <Property Name="Provider Business Mailing Address Country Code (If outside US)" Type="varchar" MaxLength="2" />
           <Property Name="Provider Business Mailing Address Telephone Number" Type="varchar" MaxLength="20" />
           <Property Name="Provider Business Mailing Address Fax Number" Type="varchar" MaxLength="20" />
@@ -610,7 +616,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider Second Line Business Practice Location Address" Type="varchar" MaxLength="55" />
           <Property Name="Provider Business Practice Location Address City Name" Type="varchar" MaxLength="40" />
           <Property Name="Provider Business Practice Location Address State Name" Type="varchar" MaxLength="40" />
-          <Property Name="Provider Business Practice Location Address Postal Code" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Business Practice Location Address Postal Code" Type="varchar" MaxLength="21" />
           <Property Name="Provider Business Practice Location Address Country Code (If outside US)" Type="varchar" MaxLength="2" />
           <Property Name="Provider Business Practice Location Address Telephone Number" Type="varchar" MaxLength="20" />
           <Property Name="Provider Business Practice Location Address Fax Number" Type="varchar" MaxLength="20" />
@@ -625,6 +631,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Authorized Official Middle Name" Type="varchar" MaxLength="20" />
           <Property Name="Authorized Official Title or Position" Type="varchar" MaxLength="35" />
           <Property Name="Authorized Official Telephone Number" Type="varchar" MaxLength="20" />
+          <Property Name="Healthcare Provider Taxonomy Group_1" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_1" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_1" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_1" Type="varchar" MaxLength="100" />
@@ -632,6 +639,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_1" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_1" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_1" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_2" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_2" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_2" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_2" Type="varchar" MaxLength="100" />
@@ -639,6 +647,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_2" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_2" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_2" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_3" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_3" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_3" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_3" Type="varchar" MaxLength="100" />
@@ -646,6 +655,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_3" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_3" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_3" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_4" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_4" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_4" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_4" Type="varchar" MaxLength="100" />
@@ -653,6 +663,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_4" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_4" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_4" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_5" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_5" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_5" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_5" Type="varchar" MaxLength="100" />
@@ -660,6 +671,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_5" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_5" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_5" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_6" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_6" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_6" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_6" Type="varchar" MaxLength="100" />
@@ -667,6 +679,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_6" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_6" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_6" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_7" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_7" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_7" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_7" Type="varchar" MaxLength="100" />
@@ -674,6 +687,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_7" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_7" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_7" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_8" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_8" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_8" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_8" Type="varchar" MaxLength="100" />
@@ -681,6 +695,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_8" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_8" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_8" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_9" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_9" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_9" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_9" Type="varchar" MaxLength="100" />
@@ -688,6 +703,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_9" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_9" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_9" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_10" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_10" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_10" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_10" Type="varchar" MaxLength="100" />
@@ -695,6 +711,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_10" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_10" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_10" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_11" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_11" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_11" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_11" Type="varchar" MaxLength="100" />
@@ -702,6 +719,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_11" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_11" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_11" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_12" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_12" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_12" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_12" Type="varchar" MaxLength="100" />
@@ -709,6 +727,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_12" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_12" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_12" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_13" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_13" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_13" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_13" Type="varchar" MaxLength="100" />
@@ -716,6 +735,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_13" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_13" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_13" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_14" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_14" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_14" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_14" Type="varchar" MaxLength="100" />
@@ -723,6 +743,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Provider License Number_14" Type="varchar" MaxLength="20" />
           <Property Name="Provider License Number State Code_14" Type="varchar" MaxLength="2" />
           <Property Name="Healthcare Provider Primary Taxonomy Switch_14" Type="varchar" MaxLength="1" />
+          <Property Name="Healthcare Provider Taxonomy Group_15" Type="varchar" MaxLength="70" />
           <Property Name="Healthcare Provider Taxonomy Code_15" Type="varchar" MaxLength="10" />
           <Property Name="Healthcare Provider Taxonomy Code Classification_15" Type="varchar" MaxLength="100" />
           <Property Name="Healthcare Provider Taxonomy Code Specialization_15" Type="varchar" MaxLength="100" />
@@ -937,22 +958,8 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Authorized Official Name Prefix Text" Type="varchar" MaxLength="5" />
           <Property Name="Authorized Official Name Suffix Text" Type="varchar" MaxLength="5" />
           <Property Name="Authorized Official Credential Text" Type="varchar" MaxLength="20" />
-          <Property Name="Healthcare Provider Taxonomy Group_1" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_2" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_3" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_4" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_5" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_6" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_7" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_8" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_9" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_10" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_11" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_12" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_13" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_14" Type="varchar" MaxLength="70" />
-          <Property Name="Healthcare Provider Taxonomy Group_15" Type="varchar" MaxLength="70" />
           <Property Name="us_business_practice_location_zip_code_5" Type="int" />
+          <Property Name="us_business_practice_location_zip_code_5_point" Type="geography" />
           <Property Name="PAC ID" Type="varchar" MaxLength="10" />
           <Property Name="Professional Enrollment ID" Type="varchar" MaxLength="15" />
           <Property Name="Medical school name" Type="varchar" MaxLength="100" />
@@ -967,6 +974,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Organization DBA name" Type="varchar" MaxLength="70" />
           <Property Name="Group Practice PAC ID" Type="varchar" MaxLength="10" />
           <Property Name="Number of Group Practice members" Type="smallint" />
+          <Property Name="Phone Number" Type="varchar" MaxLength="20" />
           <Property Name="Claims based hospital affiliation CCN 1" Type="int" />
           <Property Name="Claims based hospital affiliation LBN 1" Type="varchar" MaxLength="70" />
           <Property Name="Claims based hospital affiliation CCN 2" Type="int" />
@@ -985,7 +993,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProviders' does not h
           <Property Name="Participated in Million Hearts" Type="varchar" MaxLength="1" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProvidersAggregates' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'MainDatabase.dbo.MedicareExtendedProvidersAggregates' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="MedicareExtendedProvidersAggregates">
           <Key>
             <PropertyRef Name="npi" />
@@ -994,28 +1002,28 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProvidersAggregates' 
           <Property Name="npi" Type="int" Nullable="false" />
           <Property Name="year" Type="smallint" Nullable="false" />
           <Property Name="number_of_hcpcs" Type="int" />
-          <Property Name="total_services" Type="real" />
+          <Property Name="total_services" Type="float" />
           <Property Name="total_unique_benes" Type="int" />
-          <Property Name="total_submitted_chrg_amt" Type="real" />
-          <Property Name="total_medicare_allowed_amt" Type="real" />
-          <Property Name="total_medicare_payment_amt" Type="real" />
-          <Property Name="total_medicare_stnd_amt" Type="real" />
+          <Property Name="total_submitted_chrg_amt" Type="float" />
+          <Property Name="total_medicare_allowed_amt" Type="float" />
+          <Property Name="total_medicare_payment_amt" Type="float" />
+          <Property Name="total_medicare_stnd_amt" Type="float" />
           <Property Name="drug_suppress_indicator" Type="varchar" MaxLength="1" />
           <Property Name="number_of_drug_hcpcs" Type="int" />
-          <Property Name="total_drug_services" Type="real" />
+          <Property Name="total_drug_services" Type="float" />
           <Property Name="total_drug_unique_benes" Type="int" />
-          <Property Name="total_drug_submitted_chrg_amt" Type="real" />
-          <Property Name="total_drug_medicare_allowed_amt" Type="real" />
-          <Property Name="total_drug_medicare_payment_amt" Type="real" />
-          <Property Name="total_drug_medicare_stnd_amt" Type="real" />
+          <Property Name="total_drug_submitted_chrg_amt" Type="float" />
+          <Property Name="total_drug_medicare_allowed_amt" Type="float" />
+          <Property Name="total_drug_medicare_payment_amt" Type="float" />
+          <Property Name="total_drug_medicare_stnd_amt" Type="float" />
           <Property Name="med_suppress_indicator" Type="varchar" MaxLength="1" />
           <Property Name="number_of_med_hcpcs" Type="int" />
-          <Property Name="total_med_services" Type="real" />
+          <Property Name="total_med_services" Type="float" />
           <Property Name="total_med_unique_benes" Type="int" />
-          <Property Name="total_med_submitted_chrg_amt" Type="real" />
-          <Property Name="total_med_medicare_allowed_amt" Type="real" />
-          <Property Name="total_med_medicare_payment_amt" Type="real" />
-          <Property Name="total_med_medicare_stnd_amt" Type="real" />
+          <Property Name="total_med_submitted_chrg_amt" Type="float" />
+          <Property Name="total_med_medicare_allowed_amt" Type="float" />
+          <Property Name="total_med_medicare_payment_amt" Type="float" />
+          <Property Name="total_med_medicare_stnd_amt" Type="float" />
           <Property Name="beneficiary_average_age" Type="smallint" />
           <Property Name="beneficiary_age_less_65_count" Type="int" />
           <Property Name="beneficiary_age_65_74_count" Type="int" />
@@ -1047,10 +1055,36 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedProvidersAggregates' 
           <Property Name="beneficiary_cc_raoa_percent" Type="smallint" />
           <Property Name="beneficiary_cc_schiot_percent" Type="smallint" />
           <Property Name="beneficiary_cc_strk_percent" Type="smallint" />
-          <Property Name="beneficiary_average_risk_score" Type="real" />
+          <Property Name="beneficiary_average_risk_score" Type="float" />
+          <Property Name="Entity Type Code" Type="smallint" />
+          <Property Name="Provider Organization Name (Legal Business Name)" Type="varchar" MaxLength="70" />
+          <Property Name="Provider Last Name (Legal Name)" Type="varchar" MaxLength="35" />
+          <Property Name="Provider First Name" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Middle Name" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Name Prefix Text" Type="varchar" MaxLength="5" />
+          <Property Name="Provider Name Suffix Text" Type="varchar" MaxLength="5" />
+          <Property Name="Provider Credential Text" Type="varchar" MaxLength="20" />
+          <Property Name="Provider First Line Business Mailing Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Second Line Business Mailing Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Business Mailing Address City Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Mailing Address State Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Mailing Address Postal Code" Type="varchar" MaxLength="21" />
+          <Property Name="Provider Business Mailing Address Country Code (If outside US)" Type="varchar" MaxLength="2" />
+          <Property Name="Provider Business Mailing Address Telephone Number" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Business Mailing Address Fax Number" Type="varchar" MaxLength="20" />
+          <Property Name="Provider First Line Business Practice Location Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Second Line Business Practice Location Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Business Practice Location Address City Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Practice Location Address State Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Practice Location Address Postal Code" Type="varchar" MaxLength="21" />
+          <Property Name="Provider Business Practice Location Address Country Code (If outside US)" Type="varchar" MaxLength="2" />
+          <Property Name="Provider Business Practice Location Address Telephone Number" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Business Practice Location Address Fax Number" Type="varchar" MaxLength="20" />
+          <Property Name="Primary specialty" Type="varchar" MaxLength="50" />
+          <Property Name="All secondary specialties" Type="varchar" MaxLength="200" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayments' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'MainDatabase.dbo.MedicareExtendedUtilizationAndPayments' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="MedicareExtendedUtilizationAndPayments">
           <Key>
             <PropertyRef Name="npi" />
@@ -1075,6 +1109,35 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="ShortDescription" Type="nvarchar" MaxLength="255" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="DrugIndicator" Type="varchar" MaxLength="1" />
+          <Property Name="Entity Type Code" Type="smallint" />
+          <Property Name="Provider Name" Type="varchar" MaxLength="70" />
+          <Property Name="Provider Organization Name (Legal Business Name)" Type="varchar" MaxLength="70" />
+          <Property Name="Provider Last Name (Legal Name)" Type="varchar" MaxLength="35" />
+          <Property Name="Provider First Name" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Middle Name" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Name Prefix Text" Type="varchar" MaxLength="5" />
+          <Property Name="Provider Name Suffix Text" Type="varchar" MaxLength="5" />
+          <Property Name="Provider Credential Text" Type="varchar" MaxLength="20" />
+          <Property Name="Provider First Line Business Mailing Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Second Line Business Mailing Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Business Mailing Address City Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Mailing Address State Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Mailing Address Postal Code" Type="varchar" MaxLength="21" />
+          <Property Name="Provider Business Mailing Address Country Code (If outside US)" Type="varchar" MaxLength="2" />
+          <Property Name="Provider Business Mailing Address Telephone Number" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Business Mailing Address Fax Number" Type="varchar" MaxLength="20" />
+          <Property Name="Provider First Line Business Practice Location Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Second Line Business Practice Location Address" Type="varchar" MaxLength="55" />
+          <Property Name="Provider Business Practice Location Address City Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Practice Location Address State Name" Type="varchar" MaxLength="40" />
+          <Property Name="Provider Business Practice Location Address Postal Code" Type="varchar" MaxLength="21" />
+          <Property Name="Provider Business Practice Location Address Country Code (If outside US)" Type="varchar" MaxLength="2" />
+          <Property Name="Provider Business Practice Location Address Telephone Number" Type="varchar" MaxLength="20" />
+          <Property Name="Provider Business Practice Location Address Fax Number" Type="varchar" MaxLength="20" />
+          <Property Name="us_business_practice_location_zip_code_5" Type="int" />
+          <Property Name="us_business_practice_location_zip_code_5_point" Type="geography" />
+          <Property Name="Primary specialty" Type="varchar" MaxLength="50" />
+          <Property Name="All secondary specialties" Type="varchar" MaxLength="200" />
         </EntityType>
         <Association Name="FK_MedicareProvidersAggregates_MedicareProviders">
           <End Role="MedicareProviders" Type="Self.MedicareProviders" Multiplicity="1" />
@@ -1084,18 +1147,6 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
               <PropertyRef Name="NPI" />
             </Principal>
             <Dependent Role="MedicareProvidersAggregates">
-              <PropertyRef Name="npi" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MedicareProvidersUtilizationAndPayments_MedicareProviders">
-          <End Role="MedicareProviders" Type="Self.MedicareProviders" Multiplicity="1" />
-          <End Role="MedicareProvidersUtilizationAndPayments" Type="Self.MedicareProvidersUtilizationAndPayments" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MedicareProviders">
-              <PropertyRef Name="NPI" />
-            </Principal>
-            <Dependent Role="MedicareProvidersUtilizationAndPayments">
               <PropertyRef Name="npi" />
             </Dependent>
           </ReferentialConstraint>
@@ -1167,15 +1218,20 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedPhysicians].[Participating in EHR] AS [Participating in EHR], 
     [MedicareExtendedPhysicians].[Received PQRS Maintenance of Certification Program Incentive] AS [Received PQRS Maintenance of Certification Program Incentive], 
     [MedicareExtendedPhysicians].[Participated in Million Hearts] AS [Participated in Million Hearts], 
-    [MedicareExtendedPhysicians].[LastModifiedDate] AS [LastModifiedDate]
+    [MedicareExtendedPhysicians].[LastModifiedDate] AS [LastModifiedDate], 
+    [MedicareExtendedPhysicians].[zip_code_5] AS [zip_code_5]
     FROM [dbo].[MedicareExtendedPhysicians] AS [MedicareExtendedPhysicians]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="MedicareExtendedProviders" EntityType="Self.MedicareExtendedProviders" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [MedicareExtendedProviders].[NPI] AS [NPI], 
+    [MedicareExtendedProviders].[ContactID] AS [ContactID], 
+    [MedicareExtendedProviders].[InstitutionID] AS [InstitutionID], 
     [MedicareExtendedProviders].[Entity Type Code] AS [Entity Type Code], 
     [MedicareExtendedProviders].[Replacement NPI] AS [Replacement NPI], 
     [MedicareExtendedProviders].[Employer Identification Number (EIN)] AS [Employer Identification Number (EIN)], 
+    [MedicareExtendedProviders].[OpenPaymentsPhysicanProfileID] AS [OpenPaymentsPhysicanProfileID], 
+    [MedicareExtendedProviders].[Provider Name] AS [Provider Name], 
     [MedicareExtendedProviders].[Provider Organization Name (Legal Business Name)] AS [Provider Organization Name (Legal Business Name)], 
     [MedicareExtendedProviders].[Provider Last Name (Legal Name)] AS [Provider Last Name (Legal Name)], 
     [MedicareExtendedProviders].[Provider First Name] AS [Provider First Name], 
@@ -1219,6 +1275,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Authorized Official Middle Name] AS [Authorized Official Middle Name], 
     [MedicareExtendedProviders].[Authorized Official Title or Position] AS [Authorized Official Title or Position], 
     [MedicareExtendedProviders].[Authorized Official Telephone Number] AS [Authorized Official Telephone Number], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_1] AS [Healthcare Provider Taxonomy Group_1], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_1] AS [Healthcare Provider Taxonomy Code_1], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_1] AS [Healthcare Provider Taxonomy Code Classification_1], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_1] AS [Healthcare Provider Taxonomy Code Specialization_1], 
@@ -1226,6 +1283,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_1] AS [Provider License Number_1], 
     [MedicareExtendedProviders].[Provider License Number State Code_1] AS [Provider License Number State Code_1], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_1] AS [Healthcare Provider Primary Taxonomy Switch_1], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_2] AS [Healthcare Provider Taxonomy Group_2], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_2] AS [Healthcare Provider Taxonomy Code_2], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_2] AS [Healthcare Provider Taxonomy Code Classification_2], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_2] AS [Healthcare Provider Taxonomy Code Specialization_2], 
@@ -1233,6 +1291,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_2] AS [Provider License Number_2], 
     [MedicareExtendedProviders].[Provider License Number State Code_2] AS [Provider License Number State Code_2], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_2] AS [Healthcare Provider Primary Taxonomy Switch_2], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_3] AS [Healthcare Provider Taxonomy Group_3], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_3] AS [Healthcare Provider Taxonomy Code_3], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_3] AS [Healthcare Provider Taxonomy Code Classification_3], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_3] AS [Healthcare Provider Taxonomy Code Specialization_3], 
@@ -1240,6 +1299,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_3] AS [Provider License Number_3], 
     [MedicareExtendedProviders].[Provider License Number State Code_3] AS [Provider License Number State Code_3], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_3] AS [Healthcare Provider Primary Taxonomy Switch_3], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_4] AS [Healthcare Provider Taxonomy Group_4], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_4] AS [Healthcare Provider Taxonomy Code_4], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_4] AS [Healthcare Provider Taxonomy Code Classification_4], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_4] AS [Healthcare Provider Taxonomy Code Specialization_4], 
@@ -1247,6 +1307,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_4] AS [Provider License Number_4], 
     [MedicareExtendedProviders].[Provider License Number State Code_4] AS [Provider License Number State Code_4], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_4] AS [Healthcare Provider Primary Taxonomy Switch_4], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_5] AS [Healthcare Provider Taxonomy Group_5], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_5] AS [Healthcare Provider Taxonomy Code_5], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_5] AS [Healthcare Provider Taxonomy Code Classification_5], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_5] AS [Healthcare Provider Taxonomy Code Specialization_5], 
@@ -1254,6 +1315,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_5] AS [Provider License Number_5], 
     [MedicareExtendedProviders].[Provider License Number State Code_5] AS [Provider License Number State Code_5], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_5] AS [Healthcare Provider Primary Taxonomy Switch_5], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_6] AS [Healthcare Provider Taxonomy Group_6], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_6] AS [Healthcare Provider Taxonomy Code_6], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_6] AS [Healthcare Provider Taxonomy Code Classification_6], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_6] AS [Healthcare Provider Taxonomy Code Specialization_6], 
@@ -1261,6 +1323,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_6] AS [Provider License Number_6], 
     [MedicareExtendedProviders].[Provider License Number State Code_6] AS [Provider License Number State Code_6], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_6] AS [Healthcare Provider Primary Taxonomy Switch_6], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_7] AS [Healthcare Provider Taxonomy Group_7], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_7] AS [Healthcare Provider Taxonomy Code_7], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_7] AS [Healthcare Provider Taxonomy Code Classification_7], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_7] AS [Healthcare Provider Taxonomy Code Specialization_7], 
@@ -1268,6 +1331,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_7] AS [Provider License Number_7], 
     [MedicareExtendedProviders].[Provider License Number State Code_7] AS [Provider License Number State Code_7], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_7] AS [Healthcare Provider Primary Taxonomy Switch_7], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_8] AS [Healthcare Provider Taxonomy Group_8], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_8] AS [Healthcare Provider Taxonomy Code_8], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_8] AS [Healthcare Provider Taxonomy Code Classification_8], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_8] AS [Healthcare Provider Taxonomy Code Specialization_8], 
@@ -1275,6 +1339,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_8] AS [Provider License Number_8], 
     [MedicareExtendedProviders].[Provider License Number State Code_8] AS [Provider License Number State Code_8], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_8] AS [Healthcare Provider Primary Taxonomy Switch_8], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_9] AS [Healthcare Provider Taxonomy Group_9], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_9] AS [Healthcare Provider Taxonomy Code_9], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_9] AS [Healthcare Provider Taxonomy Code Classification_9], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_9] AS [Healthcare Provider Taxonomy Code Specialization_9], 
@@ -1282,6 +1347,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_9] AS [Provider License Number_9], 
     [MedicareExtendedProviders].[Provider License Number State Code_9] AS [Provider License Number State Code_9], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_9] AS [Healthcare Provider Primary Taxonomy Switch_9], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_10] AS [Healthcare Provider Taxonomy Group_10], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_10] AS [Healthcare Provider Taxonomy Code_10], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_10] AS [Healthcare Provider Taxonomy Code Classification_10], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_10] AS [Healthcare Provider Taxonomy Code Specialization_10], 
@@ -1289,6 +1355,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_10] AS [Provider License Number_10], 
     [MedicareExtendedProviders].[Provider License Number State Code_10] AS [Provider License Number State Code_10], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_10] AS [Healthcare Provider Primary Taxonomy Switch_10], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_11] AS [Healthcare Provider Taxonomy Group_11], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_11] AS [Healthcare Provider Taxonomy Code_11], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_11] AS [Healthcare Provider Taxonomy Code Classification_11], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_11] AS [Healthcare Provider Taxonomy Code Specialization_11], 
@@ -1296,6 +1363,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_11] AS [Provider License Number_11], 
     [MedicareExtendedProviders].[Provider License Number State Code_11] AS [Provider License Number State Code_11], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_11] AS [Healthcare Provider Primary Taxonomy Switch_11], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_12] AS [Healthcare Provider Taxonomy Group_12], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_12] AS [Healthcare Provider Taxonomy Code_12], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_12] AS [Healthcare Provider Taxonomy Code Classification_12], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_12] AS [Healthcare Provider Taxonomy Code Specialization_12], 
@@ -1303,6 +1371,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_12] AS [Provider License Number_12], 
     [MedicareExtendedProviders].[Provider License Number State Code_12] AS [Provider License Number State Code_12], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_12] AS [Healthcare Provider Primary Taxonomy Switch_12], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_13] AS [Healthcare Provider Taxonomy Group_13], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_13] AS [Healthcare Provider Taxonomy Code_13], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_13] AS [Healthcare Provider Taxonomy Code Classification_13], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_13] AS [Healthcare Provider Taxonomy Code Specialization_13], 
@@ -1310,6 +1379,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_13] AS [Provider License Number_13], 
     [MedicareExtendedProviders].[Provider License Number State Code_13] AS [Provider License Number State Code_13], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_13] AS [Healthcare Provider Primary Taxonomy Switch_13], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_14] AS [Healthcare Provider Taxonomy Group_14], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_14] AS [Healthcare Provider Taxonomy Code_14], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_14] AS [Healthcare Provider Taxonomy Code Classification_14], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_14] AS [Healthcare Provider Taxonomy Code Specialization_14], 
@@ -1317,6 +1387,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Provider License Number_14] AS [Provider License Number_14], 
     [MedicareExtendedProviders].[Provider License Number State Code_14] AS [Provider License Number State Code_14], 
     [MedicareExtendedProviders].[Healthcare Provider Primary Taxonomy Switch_14] AS [Healthcare Provider Primary Taxonomy Switch_14], 
+    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_15] AS [Healthcare Provider Taxonomy Group_15], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code_15] AS [Healthcare Provider Taxonomy Code_15], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Classification_15] AS [Healthcare Provider Taxonomy Code Classification_15], 
     [MedicareExtendedProviders].[Healthcare Provider Taxonomy Code Specialization_15] AS [Healthcare Provider Taxonomy Code Specialization_15], 
@@ -1531,22 +1602,8 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Authorized Official Name Prefix Text] AS [Authorized Official Name Prefix Text], 
     [MedicareExtendedProviders].[Authorized Official Name Suffix Text] AS [Authorized Official Name Suffix Text], 
     [MedicareExtendedProviders].[Authorized Official Credential Text] AS [Authorized Official Credential Text], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_1] AS [Healthcare Provider Taxonomy Group_1], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_2] AS [Healthcare Provider Taxonomy Group_2], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_3] AS [Healthcare Provider Taxonomy Group_3], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_4] AS [Healthcare Provider Taxonomy Group_4], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_5] AS [Healthcare Provider Taxonomy Group_5], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_6] AS [Healthcare Provider Taxonomy Group_6], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_7] AS [Healthcare Provider Taxonomy Group_7], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_8] AS [Healthcare Provider Taxonomy Group_8], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_9] AS [Healthcare Provider Taxonomy Group_9], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_10] AS [Healthcare Provider Taxonomy Group_10], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_11] AS [Healthcare Provider Taxonomy Group_11], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_12] AS [Healthcare Provider Taxonomy Group_12], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_13] AS [Healthcare Provider Taxonomy Group_13], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_14] AS [Healthcare Provider Taxonomy Group_14], 
-    [MedicareExtendedProviders].[Healthcare Provider Taxonomy Group_15] AS [Healthcare Provider Taxonomy Group_15], 
     [MedicareExtendedProviders].[us_business_practice_location_zip_code_5] AS [us_business_practice_location_zip_code_5], 
+    [MedicareExtendedProviders].[us_business_practice_location_zip_code_5_point] AS [us_business_practice_location_zip_code_5_point], 
     [MedicareExtendedProviders].[PAC ID] AS [PAC ID], 
     [MedicareExtendedProviders].[Professional Enrollment ID] AS [Professional Enrollment ID], 
     [MedicareExtendedProviders].[Medical school name] AS [Medical school name], 
@@ -1561,6 +1618,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProviders].[Organization DBA name] AS [Organization DBA name], 
     [MedicareExtendedProviders].[Group Practice PAC ID] AS [Group Practice PAC ID], 
     [MedicareExtendedProviders].[Number of Group Practice members] AS [Number of Group Practice members], 
+    [MedicareExtendedProviders].[Phone Number] AS [Phone Number], 
     [MedicareExtendedProviders].[Claims based hospital affiliation CCN 1] AS [Claims based hospital affiliation CCN 1], 
     [MedicareExtendedProviders].[Claims based hospital affiliation LBN 1] AS [Claims based hospital affiliation LBN 1], 
     [MedicareExtendedProviders].[Claims based hospital affiliation CCN 2] AS [Claims based hospital affiliation CCN 2], 
@@ -1637,7 +1695,33 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedProvidersAggregates].[beneficiary_cc_raoa_percent] AS [beneficiary_cc_raoa_percent], 
     [MedicareExtendedProvidersAggregates].[beneficiary_cc_schiot_percent] AS [beneficiary_cc_schiot_percent], 
     [MedicareExtendedProvidersAggregates].[beneficiary_cc_strk_percent] AS [beneficiary_cc_strk_percent], 
-    [MedicareExtendedProvidersAggregates].[beneficiary_average_risk_score] AS [beneficiary_average_risk_score]
+    [MedicareExtendedProvidersAggregates].[beneficiary_average_risk_score] AS [beneficiary_average_risk_score], 
+    [MedicareExtendedProvidersAggregates].[Entity Type Code] AS [Entity Type Code], 
+    [MedicareExtendedProvidersAggregates].[Provider Organization Name (Legal Business Name)] AS [Provider Organization Name (Legal Business Name)], 
+    [MedicareExtendedProvidersAggregates].[Provider Last Name (Legal Name)] AS [Provider Last Name (Legal Name)], 
+    [MedicareExtendedProvidersAggregates].[Provider First Name] AS [Provider First Name], 
+    [MedicareExtendedProvidersAggregates].[Provider Middle Name] AS [Provider Middle Name], 
+    [MedicareExtendedProvidersAggregates].[Provider Name Prefix Text] AS [Provider Name Prefix Text], 
+    [MedicareExtendedProvidersAggregates].[Provider Name Suffix Text] AS [Provider Name Suffix Text], 
+    [MedicareExtendedProvidersAggregates].[Provider Credential Text] AS [Provider Credential Text], 
+    [MedicareExtendedProvidersAggregates].[Provider First Line Business Mailing Address] AS [Provider First Line Business Mailing Address], 
+    [MedicareExtendedProvidersAggregates].[Provider Second Line Business Mailing Address] AS [Provider Second Line Business Mailing Address], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Mailing Address City Name] AS [Provider Business Mailing Address City Name], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Mailing Address State Name] AS [Provider Business Mailing Address State Name], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Mailing Address Postal Code] AS [Provider Business Mailing Address Postal Code], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Mailing Address Country Code (If outside US)] AS [Provider Business Mailing Address Country Code (If outside US)], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Mailing Address Telephone Number] AS [Provider Business Mailing Address Telephone Number], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Mailing Address Fax Number] AS [Provider Business Mailing Address Fax Number], 
+    [MedicareExtendedProvidersAggregates].[Provider First Line Business Practice Location Address] AS [Provider First Line Business Practice Location Address], 
+    [MedicareExtendedProvidersAggregates].[Provider Second Line Business Practice Location Address] AS [Provider Second Line Business Practice Location Address], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Practice Location Address City Name] AS [Provider Business Practice Location Address City Name], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Practice Location Address State Name] AS [Provider Business Practice Location Address State Name], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Practice Location Address Postal Code] AS [Provider Business Practice Location Address Postal Code], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Practice Location Address Country Code (If outside US)] AS [Provider Business Practice Location Address Country Code (If outside US)], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Practice Location Address Telephone Number] AS [Provider Business Practice Location Address Telephone Number], 
+    [MedicareExtendedProvidersAggregates].[Provider Business Practice Location Address Fax Number] AS [Provider Business Practice Location Address Fax Number], 
+    [MedicareExtendedProvidersAggregates].[Primary specialty] AS [Primary specialty], 
+    [MedicareExtendedProvidersAggregates].[All secondary specialties] AS [All secondary specialties]
     FROM [dbo].[MedicareExtendedProvidersAggregates] AS [MedicareExtendedProvidersAggregates]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="MedicareExtendedUtilizationAndPayments" EntityType="Self.MedicareExtendedUtilizationAndPayments" store:Type="Views" store:Schema="dbo">
@@ -1658,16 +1742,41 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
     [MedicareExtendedUtilizationAndPayments].[average_medicare_standard_amt] AS [average_medicare_standard_amt], 
     [MedicareExtendedUtilizationAndPayments].[ShortDescription] AS [ShortDescription], 
     [MedicareExtendedUtilizationAndPayments].[Description] AS [Description], 
-    [MedicareExtendedUtilizationAndPayments].[DrugIndicator] AS [DrugIndicator]
+    [MedicareExtendedUtilizationAndPayments].[DrugIndicator] AS [DrugIndicator], 
+    [MedicareExtendedUtilizationAndPayments].[Entity Type Code] AS [Entity Type Code], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Name] AS [Provider Name], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Organization Name (Legal Business Name)] AS [Provider Organization Name (Legal Business Name)], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Last Name (Legal Name)] AS [Provider Last Name (Legal Name)], 
+    [MedicareExtendedUtilizationAndPayments].[Provider First Name] AS [Provider First Name], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Middle Name] AS [Provider Middle Name], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Name Prefix Text] AS [Provider Name Prefix Text], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Name Suffix Text] AS [Provider Name Suffix Text], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Credential Text] AS [Provider Credential Text], 
+    [MedicareExtendedUtilizationAndPayments].[Provider First Line Business Mailing Address] AS [Provider First Line Business Mailing Address], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Second Line Business Mailing Address] AS [Provider Second Line Business Mailing Address], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Mailing Address City Name] AS [Provider Business Mailing Address City Name], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Mailing Address State Name] AS [Provider Business Mailing Address State Name], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Mailing Address Postal Code] AS [Provider Business Mailing Address Postal Code], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Mailing Address Country Code (If outside US)] AS [Provider Business Mailing Address Country Code (If outside US)], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Mailing Address Telephone Number] AS [Provider Business Mailing Address Telephone Number], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Mailing Address Fax Number] AS [Provider Business Mailing Address Fax Number], 
+    [MedicareExtendedUtilizationAndPayments].[Provider First Line Business Practice Location Address] AS [Provider First Line Business Practice Location Address], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Second Line Business Practice Location Address] AS [Provider Second Line Business Practice Location Address], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Practice Location Address City Name] AS [Provider Business Practice Location Address City Name], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Practice Location Address State Name] AS [Provider Business Practice Location Address State Name], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Practice Location Address Postal Code] AS [Provider Business Practice Location Address Postal Code], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Practice Location Address Country Code (If outside US)] AS [Provider Business Practice Location Address Country Code (If outside US)], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Practice Location Address Telephone Number] AS [Provider Business Practice Location Address Telephone Number], 
+    [MedicareExtendedUtilizationAndPayments].[Provider Business Practice Location Address Fax Number] AS [Provider Business Practice Location Address Fax Number], 
+    [MedicareExtendedUtilizationAndPayments].[us_business_practice_location_zip_code_5] AS [us_business_practice_location_zip_code_5], 
+    [MedicareExtendedUtilizationAndPayments].[us_business_practice_location_zip_code_5_point] AS [us_business_practice_location_zip_code_5_point], 
+    [MedicareExtendedUtilizationAndPayments].[Primary specialty] AS [Primary specialty], 
+    [MedicareExtendedUtilizationAndPayments].[All secondary specialties] AS [All secondary specialties]
     FROM [dbo].[MedicareExtendedUtilizationAndPayments] AS [MedicareExtendedUtilizationAndPayments]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_MedicareProvidersAggregates_MedicareProviders" Association="Self.FK_MedicareProvidersAggregates_MedicareProviders">
             <End Role="MedicareProviders" EntitySet="MedicareProviders" />
             <End Role="MedicareProvidersAggregates" EntitySet="MedicareProvidersAggregates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MedicareProvidersUtilizationAndPayments_MedicareProviders" Association="Self.FK_MedicareProvidersUtilizationAndPayments_MedicareProviders">
-            <End Role="MedicareProviders" EntitySet="MedicareProviders" />
-            <End Role="MedicareProvidersUtilizationAndPayments" EntitySet="MedicareProvidersUtilizationAndPayments" />
           </AssociationSet>
           <AssociationSet Name="FK_Physicians_MedicareProviders" Association="Self.FK_Physicians_MedicareProviders">
             <End Role="MedicareProviders" EntitySet="MedicareProviders" />
@@ -1794,15 +1903,15 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="Zip_Code" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="Phone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Claims_based_hospital_affiliation_CCN_1" Type="Int32" />
-          <Property Name="Claims_based_hospital_affiliation_LBN_1" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Claims_based_hospital_affiliation_LBN_1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Claims_based_hospital_affiliation_CCN_2" Type="Int32" />
-          <Property Name="Claims_based_hospital_affiliation_LBN_2" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Claims_based_hospital_affiliation_LBN_2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Claims_based_hospital_affiliation_CCN_3" Type="Int32" />
-          <Property Name="Claims_based_hospital_affiliation_LBN_3" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Claims_based_hospital_affiliation_LBN_3" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Claims_based_hospital_affiliation_CCN_4" Type="Int32" />
-          <Property Name="Claims_based_hospital_affiliation_LBN_4" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Claims_based_hospital_affiliation_LBN_4" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Claims_based_hospital_affiliation_CCN_5" Type="Int32" />
-          <Property Name="Claims_based_hospital_affiliation_LBN_5" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Claims_based_hospital_affiliation_LBN_5" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Professional_accepts_Medicare_Assignment" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="Participating_in_eRx" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="Participating_in_PQRS" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
@@ -1811,6 +1920,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="Participated_in_Million_Hearts" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="LastModifiedDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="MedicareProvider" Relationship="MedicareModel.FK_Physicians_MedicareProviders" FromRole="Physician" ToRole="MedicareProvider" />
+          <Property Name="zip_code_5" Type="Int32" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="TaxonomyCode">
           <Key>
@@ -2274,6 +2384,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="Received_PQRS_Maintenance_of_Certification_Program_Incentive" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="Participated_in_Million_Hearts" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="LastModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="zip_code_5" Type="Int32" />
         </EntityType>
         <EntityType Name="MedicareExtendedProvider">
           <Key>
@@ -2303,7 +2414,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="Provider_Second_Line_Business_Mailing_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Mailing_Address_City_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Mailing_Address_State_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="Provider_Business_Mailing_Address_Postal_Code" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Postal_Code" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Mailing_Address_Country_Code__If_outside_US_" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Mailing_Address_Telephone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Mailing_Address_Fax_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -2311,7 +2422,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="Provider_Second_Line_Business_Practice_Location_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Practice_Location_Address_City_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Practice_Location_Address_State_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="Provider_Business_Practice_Location_Address_Postal_Code" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Postal_Code" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Practice_Location_Address_Telephone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Provider_Business_Practice_Location_Address_Fax_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -2684,6 +2795,12 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="Participating_in_EHR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="Received_PQRS_Maintenance_of_Certification_Program_Incentive" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="Participated_in_Million_Hearts" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="ContactID" Type="Int32" />
+          <Property Name="InstitutionID" Type="Int32" />
+          <Property Name="OpenPaymentsPhysicanProfileID" Type="Int64" />
+          <Property Name="Provider_Name" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="us_business_practice_location_zip_code_5_point" Type="Geography" />
+          <Property Name="Phone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="MedicareExtendedProvidersAggregate">
           <Key>
@@ -2747,6 +2864,32 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="beneficiary_cc_schiot_percent" Type="Int16" />
           <Property Name="beneficiary_cc_strk_percent" Type="Int16" />
           <Property Name="beneficiary_average_risk_score" Type="Single" />
+          <Property Name="Entity_Type_Code" Type="Int16" />
+          <Property Name="Provider_Organization_Name__Legal_Business_Name_" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Last_Name__Legal_Name_" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_First_Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Middle_Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Name_Prefix_Text" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Name_Suffix_Text" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Credential_Text" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_First_Line_Business_Mailing_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Second_Line_Business_Mailing_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_City_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_State_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Postal_Code" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Country_Code__If_outside_US_" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Telephone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Fax_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_First_Line_Business_Practice_Location_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Second_Line_Business_Practice_Location_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_City_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_State_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Postal_Code" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Telephone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Fax_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Primary_specialty" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="All_secondary_specialties" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="MedicareExtendedUtilizationAndPayment">
           <Key>
@@ -2772,6 +2915,35 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <Property Name="ShortDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DrugIndicator" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Entity_Type_Code" Type="Int16" />
+          <Property Name="Provider_Name" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Organization_Name__Legal_Business_Name_" Type="String" MaxLength="70" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Last_Name__Legal_Name_" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_First_Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Middle_Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Name_Prefix_Text" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Name_Suffix_Text" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Credential_Text" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_First_Line_Business_Mailing_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Second_Line_Business_Mailing_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_City_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_State_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Postal_Code" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Country_Code__If_outside_US_" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Telephone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Mailing_Address_Fax_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_First_Line_Business_Practice_Location_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Second_Line_Business_Practice_Location_Address" Type="String" MaxLength="55" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_City_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_State_Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Postal_Code" Type="String" MaxLength="21" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Telephone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Provider_Business_Practice_Location_Address_Fax_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="us_business_practice_location_zip_code_5" Type="Int32" />
+          <Property Name="us_business_practice_location_zip_code_5_point" Type="Geography" />
+          <Property Name="Primary_specialty" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="All_secondary_specialties" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_MedicareProvidersAggregates_MedicareProviders">
           <End Type="MedicareModel.MedicareProvider" Role="MedicareProvider" Multiplicity="1" />
@@ -2875,6 +3047,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <EntitySetMapping Name="Physicians">
             <EntityTypeMapping TypeName="MedicareModel.Physician">
               <MappingFragment StoreEntitySet="Physicians">
+                <ScalarProperty Name="zip_code_5" ColumnName="zip_code_5" />
                 <ScalarProperty Name="LastModifiedDate" ColumnName="LastModifiedDate" />
                 <ScalarProperty Name="Participated_in_Million_Hearts" ColumnName="Participated in Million Hearts" />
                 <ScalarProperty Name="Received_PQRS_Maintenance_of_Certification_Program_Incentive" ColumnName="Received PQRS Maintenance of Certification Program Incentive" />
@@ -3337,6 +3510,7 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <EntitySetMapping Name="MedicareExtendedPhysicians">
             <EntityTypeMapping TypeName="MedicareModel.MedicareExtendedPhysician">
               <MappingFragment StoreEntitySet="MedicareExtendedPhysicians">
+                <ScalarProperty Name="zip_code_5" ColumnName="zip_code_5" />
                 <ScalarProperty Name="LastModifiedDate" ColumnName="LastModifiedDate" />
                 <ScalarProperty Name="Participated_in_Million_Hearts" ColumnName="Participated in Million Hearts" />
                 <ScalarProperty Name="Received_PQRS_Maintenance_of_Certification_Program_Incentive" ColumnName="Received PQRS Maintenance of Certification Program Incentive" />
@@ -3388,6 +3562,12 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <EntitySetMapping Name="MedicareExtendedProviders">
             <EntityTypeMapping TypeName="MedicareModel.MedicareExtendedProvider">
               <MappingFragment StoreEntitySet="MedicareExtendedProviders">
+                <ScalarProperty Name="Phone_Number" ColumnName="Phone Number" />
+                <ScalarProperty Name="us_business_practice_location_zip_code_5_point" ColumnName="us_business_practice_location_zip_code_5_point" />
+                <ScalarProperty Name="Provider_Name" ColumnName="Provider Name" />
+                <ScalarProperty Name="OpenPaymentsPhysicanProfileID" ColumnName="OpenPaymentsPhysicanProfileID" />
+                <ScalarProperty Name="InstitutionID" ColumnName="InstitutionID" />
+                <ScalarProperty Name="ContactID" ColumnName="ContactID" />
                 <ScalarProperty Name="Participated_in_Million_Hearts" ColumnName="Participated in Million Hearts" />
                 <ScalarProperty Name="Received_PQRS_Maintenance_of_Certification_Program_Incentive" ColumnName="Received PQRS Maintenance of Certification Program Incentive" />
                 <ScalarProperty Name="Participating_in_EHR" ColumnName="Participating in EHR" />
@@ -3799,6 +3979,32 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <EntitySetMapping Name="MedicareExtendedProvidersAggregates">
             <EntityTypeMapping TypeName="MedicareModel.MedicareExtendedProvidersAggregate">
               <MappingFragment StoreEntitySet="MedicareExtendedProvidersAggregates">
+                <ScalarProperty Name="All_secondary_specialties" ColumnName="All secondary specialties" />
+                <ScalarProperty Name="Primary_specialty" ColumnName="Primary specialty" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Fax_Number" ColumnName="Provider Business Practice Location Address Fax Number" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Telephone_Number" ColumnName="Provider Business Practice Location Address Telephone Number" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_" ColumnName="Provider Business Practice Location Address Country Code (If outside US)" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Postal_Code" ColumnName="Provider Business Practice Location Address Postal Code" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_State_Name" ColumnName="Provider Business Practice Location Address State Name" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_City_Name" ColumnName="Provider Business Practice Location Address City Name" />
+                <ScalarProperty Name="Provider_Second_Line_Business_Practice_Location_Address" ColumnName="Provider Second Line Business Practice Location Address" />
+                <ScalarProperty Name="Provider_First_Line_Business_Practice_Location_Address" ColumnName="Provider First Line Business Practice Location Address" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Fax_Number" ColumnName="Provider Business Mailing Address Fax Number" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Telephone_Number" ColumnName="Provider Business Mailing Address Telephone Number" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Country_Code__If_outside_US_" ColumnName="Provider Business Mailing Address Country Code (If outside US)" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Postal_Code" ColumnName="Provider Business Mailing Address Postal Code" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_State_Name" ColumnName="Provider Business Mailing Address State Name" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_City_Name" ColumnName="Provider Business Mailing Address City Name" />
+                <ScalarProperty Name="Provider_Second_Line_Business_Mailing_Address" ColumnName="Provider Second Line Business Mailing Address" />
+                <ScalarProperty Name="Provider_First_Line_Business_Mailing_Address" ColumnName="Provider First Line Business Mailing Address" />
+                <ScalarProperty Name="Provider_Credential_Text" ColumnName="Provider Credential Text" />
+                <ScalarProperty Name="Provider_Name_Suffix_Text" ColumnName="Provider Name Suffix Text" />
+                <ScalarProperty Name="Provider_Name_Prefix_Text" ColumnName="Provider Name Prefix Text" />
+                <ScalarProperty Name="Provider_Middle_Name" ColumnName="Provider Middle Name" />
+                <ScalarProperty Name="Provider_First_Name" ColumnName="Provider First Name" />
+                <ScalarProperty Name="Provider_Last_Name__Legal_Name_" ColumnName="Provider Last Name (Legal Name)" />
+                <ScalarProperty Name="Provider_Organization_Name__Legal_Business_Name_" ColumnName="Provider Organization Name (Legal Business Name)" />
+                <ScalarProperty Name="Entity_Type_Code" ColumnName="Entity Type Code" />
                 <ScalarProperty Name="beneficiary_average_risk_score" ColumnName="beneficiary_average_risk_score" />
                 <ScalarProperty Name="beneficiary_cc_strk_percent" ColumnName="beneficiary_cc_strk_percent" />
                 <ScalarProperty Name="beneficiary_cc_schiot_percent" ColumnName="beneficiary_cc_schiot_percent" />
@@ -3862,6 +4068,35 @@ warning 6002: The table/view 'Medicare.dbo.MedicareExtendedUtilizationAndPayment
           <EntitySetMapping Name="MedicareExtendedUtilizationAndPayments">
             <EntityTypeMapping TypeName="MedicareModel.MedicareExtendedUtilizationAndPayment">
               <MappingFragment StoreEntitySet="MedicareExtendedUtilizationAndPayments">
+                <ScalarProperty Name="All_secondary_specialties" ColumnName="All secondary specialties" />
+                <ScalarProperty Name="Primary_specialty" ColumnName="Primary specialty" />
+                <ScalarProperty Name="us_business_practice_location_zip_code_5_point" ColumnName="us_business_practice_location_zip_code_5_point" />
+                <ScalarProperty Name="us_business_practice_location_zip_code_5" ColumnName="us_business_practice_location_zip_code_5" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Fax_Number" ColumnName="Provider Business Practice Location Address Fax Number" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Telephone_Number" ColumnName="Provider Business Practice Location Address Telephone Number" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_" ColumnName="Provider Business Practice Location Address Country Code (If outside US)" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_Postal_Code" ColumnName="Provider Business Practice Location Address Postal Code" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_State_Name" ColumnName="Provider Business Practice Location Address State Name" />
+                <ScalarProperty Name="Provider_Business_Practice_Location_Address_City_Name" ColumnName="Provider Business Practice Location Address City Name" />
+                <ScalarProperty Name="Provider_Second_Line_Business_Practice_Location_Address" ColumnName="Provider Second Line Business Practice Location Address" />
+                <ScalarProperty Name="Provider_First_Line_Business_Practice_Location_Address" ColumnName="Provider First Line Business Practice Location Address" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Fax_Number" ColumnName="Provider Business Mailing Address Fax Number" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Telephone_Number" ColumnName="Provider Business Mailing Address Telephone Number" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Country_Code__If_outside_US_" ColumnName="Provider Business Mailing Address Country Code (If outside US)" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_Postal_Code" ColumnName="Provider Business Mailing Address Postal Code" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_State_Name" ColumnName="Provider Business Mailing Address State Name" />
+                <ScalarProperty Name="Provider_Business_Mailing_Address_City_Name" ColumnName="Provider Business Mailing Address City Name" />
+                <ScalarProperty Name="Provider_Second_Line_Business_Mailing_Address" ColumnName="Provider Second Line Business Mailing Address" />
+                <ScalarProperty Name="Provider_First_Line_Business_Mailing_Address" ColumnName="Provider First Line Business Mailing Address" />
+                <ScalarProperty Name="Provider_Credential_Text" ColumnName="Provider Credential Text" />
+                <ScalarProperty Name="Provider_Name_Suffix_Text" ColumnName="Provider Name Suffix Text" />
+                <ScalarProperty Name="Provider_Name_Prefix_Text" ColumnName="Provider Name Prefix Text" />
+                <ScalarProperty Name="Provider_Middle_Name" ColumnName="Provider Middle Name" />
+                <ScalarProperty Name="Provider_First_Name" ColumnName="Provider First Name" />
+                <ScalarProperty Name="Provider_Last_Name__Legal_Name_" ColumnName="Provider Last Name (Legal Name)" />
+                <ScalarProperty Name="Provider_Organization_Name__Legal_Business_Name_" ColumnName="Provider Organization Name (Legal Business Name)" />
+                <ScalarProperty Name="Provider_Name" ColumnName="Provider Name" />
+                <ScalarProperty Name="Entity_Type_Code" ColumnName="Entity Type Code" />
                 <ScalarProperty Name="DrugIndicator" ColumnName="DrugIndicator" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />

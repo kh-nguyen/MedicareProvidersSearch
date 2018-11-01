@@ -47,6 +47,12 @@
             this.checkBoxOutputOneLine = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelProcessingSpeed = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusCurrentFile = new System.Windows.Forms.ToolStripStatusLabel();
+            this.textBoxQueue = new System.Windows.Forms.TextBox();
+            this.buttonEnqueue = new System.Windows.Forms.Button();
+            this.buttonDequeue = new System.Windows.Forms.Button();
+            this.checkBoxPauseOutput = new System.Windows.Forms.CheckBox();
+            this.checkBoxErrorsToFiles = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,16 +62,16 @@
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
             this.textBoxOutput.ReadOnly = true;
-            this.textBoxOutput.Size = new System.Drawing.Size(675, 211);
+            this.textBoxOutput.Size = new System.Drawing.Size(458, 211);
             this.textBoxOutput.TabIndex = 0;
             // 
             // buttonRun
             // 
-            this.buttonRun.Location = new System.Drawing.Point(590, 54);
+            this.buttonRun.Location = new System.Drawing.Point(476, 268);
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(50, 23);
             this.buttonRun.TabIndex = 1;
-            this.buttonRun.Text = "Import";
+            this.buttonRun.Text = "Start";
             this.buttonRun.UseVisualStyleBackColor = true;
             this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
             // 
@@ -118,7 +124,7 @@
             // 
             // buttonStop
             // 
-            this.buttonStop.Location = new System.Drawing.Point(646, 54);
+            this.buttonStop.Location = new System.Drawing.Point(587, 268);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(41, 23);
             this.buttonStop.TabIndex = 7;
@@ -150,7 +156,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(358, 23);
+            this.label4.Location = new System.Drawing.Point(549, 23);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(55, 13);
             this.label4.TabIndex = 10;
@@ -158,14 +164,14 @@
             // 
             // textBoxDataYear
             // 
-            this.textBoxDataYear.Location = new System.Drawing.Point(418, 16);
+            this.textBoxDataYear.Location = new System.Drawing.Point(609, 16);
             this.textBoxDataYear.Name = "textBoxDataYear";
             this.textBoxDataYear.Size = new System.Drawing.Size(83, 20);
             this.textBoxDataYear.TabIndex = 11;
             // 
             // buttonPause
             // 
-            this.buttonPause.Location = new System.Drawing.Point(534, 54);
+            this.buttonPause.Location = new System.Drawing.Point(531, 268);
             this.buttonPause.Name = "buttonPause";
             this.buttonPause.Size = new System.Drawing.Size(50, 23);
             this.buttonPause.TabIndex = 12;
@@ -176,7 +182,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(511, 23);
+            this.label5.Location = new System.Drawing.Point(364, 24);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(70, 13);
             this.label5.TabIndex = 13;
@@ -184,7 +190,7 @@
             // 
             // textBoxLineNumberStart
             // 
-            this.textBoxLineNumberStart.Location = new System.Drawing.Point(585, 17);
+            this.textBoxLineNumberStart.Location = new System.Drawing.Point(438, 18);
             this.textBoxLineNumberStart.Name = "textBoxLineNumberStart";
             this.textBoxLineNumberStart.Size = new System.Drawing.Size(100, 20);
             this.textBoxLineNumberStart.TabIndex = 14;
@@ -204,7 +210,6 @@
             this.label6.Size = new System.Drawing.Size(71, 13);
             this.label6.TabIndex = 15;
             this.label6.Text = "CPU Threads";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // checkBoxOutputOneLine
             // 
@@ -219,7 +224,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabelProcessingSpeed});
+            this.toolStripStatusLabelProcessingSpeed,
+            this.toolStripStatusCurrentFile});
             this.statusStrip1.Location = new System.Drawing.Point(0, 322);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(699, 22);
@@ -231,11 +237,74 @@
             this.toolStripStatusLabelProcessingSpeed.Name = "toolStripStatusLabelProcessingSpeed";
             this.toolStripStatusLabelProcessingSpeed.Size = new System.Drawing.Size(0, 17);
             // 
+            // toolStripStatusCurrentFile
+            // 
+            this.toolStripStatusCurrentFile.Name = "toolStripStatusCurrentFile";
+            this.toolStripStatusCurrentFile.Size = new System.Drawing.Size(0, 17);
+            // 
+            // textBoxQueue
+            // 
+            this.textBoxQueue.Location = new System.Drawing.Point(476, 80);
+            this.textBoxQueue.Multiline = true;
+            this.textBoxQueue.Name = "textBoxQueue";
+            this.textBoxQueue.ReadOnly = true;
+            this.textBoxQueue.Size = new System.Drawing.Size(211, 182);
+            this.textBoxQueue.TabIndex = 19;
+            this.textBoxQueue.Text = "Select a file and then use the Enqueue button to add to the queue box before impo" +
+    "rting the data using the Start button.";
+            // 
+            // buttonEnqueue
+            // 
+            this.buttonEnqueue.Location = new System.Drawing.Point(535, 54);
+            this.buttonEnqueue.Name = "buttonEnqueue";
+            this.buttonEnqueue.Size = new System.Drawing.Size(75, 23);
+            this.buttonEnqueue.TabIndex = 20;
+            this.buttonEnqueue.Text = "Enqueue";
+            this.buttonEnqueue.UseVisualStyleBackColor = true;
+            this.buttonEnqueue.Click += new System.EventHandler(this.buttonEnqueue_Click);
+            // 
+            // buttonDequeue
+            // 
+            this.buttonDequeue.Location = new System.Drawing.Point(617, 54);
+            this.buttonDequeue.Name = "buttonDequeue";
+            this.buttonDequeue.Size = new System.Drawing.Size(75, 23);
+            this.buttonDequeue.TabIndex = 21;
+            this.buttonDequeue.Text = "Dequeue";
+            this.buttonDequeue.UseVisualStyleBackColor = true;
+            this.buttonDequeue.Click += new System.EventHandler(this.buttonDequeue_Click);
+            // 
+            // checkBoxPauseOutput
+            // 
+            this.checkBoxPauseOutput.AutoSize = true;
+            this.checkBoxPauseOutput.Location = new System.Drawing.Point(117, 302);
+            this.checkBoxPauseOutput.Name = "checkBoxPauseOutput";
+            this.checkBoxPauseOutput.Size = new System.Drawing.Size(91, 17);
+            this.checkBoxPauseOutput.TabIndex = 22;
+            this.checkBoxPauseOutput.Text = "Pause Output";
+            this.checkBoxPauseOutput.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxErrorsToFiles
+            // 
+            this.checkBoxErrorsToFiles.AutoSize = true;
+            this.checkBoxErrorsToFiles.Checked = true;
+            this.checkBoxErrorsToFiles.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxErrorsToFiles.Location = new System.Drawing.Point(214, 302);
+            this.checkBoxErrorsToFiles.Name = "checkBoxErrorsToFiles";
+            this.checkBoxErrorsToFiles.Size = new System.Drawing.Size(93, 17);
+            this.checkBoxErrorsToFiles.TabIndex = 23;
+            this.checkBoxErrorsToFiles.Text = "Errors To Files";
+            this.checkBoxErrorsToFiles.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(699, 344);
+            this.Controls.Add(this.checkBoxErrorsToFiles);
+            this.Controls.Add(this.checkBoxPauseOutput);
+            this.Controls.Add(this.buttonDequeue);
+            this.Controls.Add(this.buttonEnqueue);
+            this.Controls.Add(this.textBoxQueue);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.checkBoxOutputOneLine);
             this.Controls.Add(this.textBoxCpuThreads);
@@ -288,6 +357,12 @@
         private System.Windows.Forms.CheckBox checkBoxOutputOneLine;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelProcessingSpeed;
+        private System.Windows.Forms.TextBox textBoxQueue;
+        private System.Windows.Forms.Button buttonEnqueue;
+        private System.Windows.Forms.Button buttonDequeue;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusCurrentFile;
+        private System.Windows.Forms.CheckBox checkBoxPauseOutput;
+        private System.Windows.Forms.CheckBox checkBoxErrorsToFiles;
     }
 }
 

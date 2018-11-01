@@ -31,5 +31,34 @@ namespace System.Databases.Medicare
         public string ShortDescription { get; set; }
         public string Description { get; set; }
         public string DrugIndicator { get; set; }
+        public Nullable<short> Entity_Type_Code { get; set; }
+        public string Provider_Name { get; set; }
+        public string Provider_Organization_Name__Legal_Business_Name_ { get; set; }
+        public string Provider_Last_Name__Legal_Name_ { get; set; }
+        public string Provider_First_Name { get; set; }
+        public string Provider_Middle_Name { get; set; }
+        public string Provider_Name_Prefix_Text { get; set; }
+        public string Provider_Name_Suffix_Text { get; set; }
+        public string Provider_Credential_Text { get; set; }
+        public string Provider_First_Line_Business_Mailing_Address { get; set; }
+        public string Provider_Second_Line_Business_Mailing_Address { get; set; }
+        public string Provider_Business_Mailing_Address_City_Name { get; set; }
+        public string Provider_Business_Mailing_Address_State_Name { get; set; }
+        public string Provider_Business_Mailing_Address_Postal_Code { get; set; }
+        public string Provider_Business_Mailing_Address_Country_Code__If_outside_US_ { get; set; }
+        public string Provider_Business_Mailing_Address_Telephone_Number { get; set; }
+        public string Provider_Business_Mailing_Address_Fax_Number { get; set; }
+        public string Provider_First_Line_Business_Practice_Location_Address { get; set; }
+        public string Provider_Second_Line_Business_Practice_Location_Address { get; set; }
+        public string Provider_Business_Practice_Location_Address_City_Name { get; set; }
+        public string Provider_Business_Practice_Location_Address_State_Name { get; set; }
+        public string Provider_Business_Practice_Location_Address_Postal_Code { get; set; }
+        public string Provider_Business_Practice_Location_Address_Country_Code__If_outside_US_ { get; set; }
+        public string Provider_Business_Practice_Location_Address_Telephone_Number { get; set; }
+        public string Provider_Business_Practice_Location_Address_Fax_Number { get; set; }
+        public Nullable<int> us_business_practice_location_zip_code_5 { get; set; }
+        public System.Data.Entity.Spatial.DbGeography us_business_practice_location_zip_code_5_point { get; set; }
+        public string Primary_specialty { get; set; }
+        public string All_secondary_specialties { get; set; }
     }
 }
