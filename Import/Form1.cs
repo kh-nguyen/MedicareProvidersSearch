@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Transactions;
 using System.Windows.Forms;
 
@@ -27,7 +28,8 @@ namespace Import
             "Taxonomy Codes"
         };
 
-        public enum ColumnDelimiters {
+        public enum ColumnDelimiters
+        {
             [Description("Comma {,}")]
             [DefaultValue(",")]
             COMMA,
@@ -37,15 +39,16 @@ namespace Import
             TAB
         };
 
-        const string DEFAULT_FILE_FILTER = "CSV files|*.csv|Text files|*.txt";
-        const int MAX_OUTPUT_LINES = 1000;
+        private const string DEFAULT_FILE_FILTER = "CSV files|*.csv|Text files|*.txt";
+        private const int MAX_OUTPUT_LINES = 1000;
 
         public bool interrupt { get; set; } = false;
         public bool pause { get; set; } = false;
 
         private Queue<DataProcessor.Settings> settings = new Queue<DataProcessor.Settings>();
 
-        public Form1() {
+        public Form1()
+        {
             InitializeComponent();
 
             fileTypes.ToList().ForEach(x => comboBoxTypes.Items.Add(x));
@@ -64,7 +67,8 @@ namespace Import
             Reset();
         }
 
-        private void buttonSelect_Click(object sender, EventArgs e) {
+        private void buttonSelect_Click(object sender, EventArgs e)
+        {
             openFileDialog1.Reset();
             openFileDialog1.Filter = DEFAULT_FILE_FILTER;
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
@@ -95,7 +99,8 @@ namespace Import
             }));
         }
 
-        public void Write(string text) {
+        public void Write(string text)
+        {
             if (checkBoxPauseOutput.Checked) {
                 return;
             }
@@ -110,7 +115,8 @@ namespace Import
             }));
         }
 
-        public void WriteLine(string text) {
+        public void WriteLine(string text)
+        {
             Write(string.Format("{0}{1}", text, Environment.NewLine));
         }
 
@@ -129,7 +135,8 @@ namespace Import
             return numberOfWorkers;
         }
 
-        private void Reset(bool clearOutput = true) {
+        private void Reset(bool clearOutput = true)
+        {
             interrupt = false;
             pause = false;
 
@@ -143,7 +150,8 @@ namespace Import
             buttonPause.Text = "Pause";
         }
 
-        private string getColumnDelimiter() {
+        private string getColumnDelimiter()
+        {
             string delimiter = null;
 
             Invoke((Action)(() => {
@@ -171,7 +179,8 @@ namespace Import
             return skipped;
         }
 
-        private short getDataYear() {
+        private short getDataYear()
+        {
             short year = 0;
 
             if (!string.IsNullOrWhiteSpace(textBoxDataYear.Text)) {
@@ -191,7 +200,8 @@ namespace Import
             }));
         }
 
-        private void buttonRun_Click(object sender, EventArgs e) {
+        private void buttonRun_Click(object sender, EventArgs e)
+        {
             Reset();
 
             buttonRun.Enabled = false;
@@ -206,14 +216,16 @@ namespace Import
             }
         }
 
-        private void buttonStop_Click(object sender, EventArgs e) {
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
             pause = false;
             interrupt = true;
 
             WriteLine("Stop requested!");
         }
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
             while (settings.Any()) {
                 var item = settings.Dequeue();
                 toolStripStatusCurrentFile.Text = string.Format("File: {0}", item).Replace("\t", " ");
@@ -227,13 +239,15 @@ namespace Import
             }));
         }
 
-        private void buttonPause_Click(object sender, EventArgs e) {
+        private void buttonPause_Click(object sender, EventArgs e)
+        {
             pause = !pause;
 
             if (pause) {
                 WriteLine("Pausing...");
                 buttonPause.Text = "Resume";
-            } else {
+            }
+            else {
                 WriteLine("Resuming...");
                 buttonPause.Text = "Pause";
             }
@@ -297,9 +311,9 @@ namespace Import
             }
         }
 
-        const string DEFAULT_FAILED_HEADER_CHECK_RESPONSE = "Failed headers check!, you might have selected the wrong column delimiter.";
-        const int DEFAULT_PAUSE_SLEEP_TIME = 1000; // 1 second
-        const int MINIMUM_DATA_YEAR = 2000;
+        private const string DEFAULT_FAILED_HEADER_CHECK_RESPONSE = "Failed headers check!, you might have selected the wrong column delimiter.";
+        private const int DEFAULT_PAUSE_SLEEP_TIME = 1000; // 1 second
+        private const int MINIMUM_DATA_YEAR = 2000;
 
         private Form1 OutputForm { get; set; }
         private Settings settings { get; set; }
@@ -312,6 +326,7 @@ namespace Import
                 OutputForm.interrupt = value;
             }
         }
+
         private bool pause {
             get {
                 return OutputForm.pause;
@@ -320,7 +335,9 @@ namespace Import
                 OutputForm.pause = value;
             }
         }
-        private int GetNumberOfWorkers() {
+
+        private int GetNumberOfWorkers()
+        {
             return OutputForm.GetNumberOfWorkers();
         }
 
@@ -339,18 +356,23 @@ namespace Import
                 case "NPI":
                     importNPI(settings.DataFilePath);
                     break;
+
                 case "Physicians":
                     importPhysicians(settings.DataFilePath);
                     break;
+
                 case "Aggregates":
                     importAggregates(settings.DataFilePath);
                     break;
+
                 case "Utilization & Payments":
                     importUtilizationAndPayments(settings.DataFilePath);
                     break;
+
                 case "Taxonomy Codes":
                     importTaxonomyCodes(settings.DataFilePath);
                     break;
+
                 default:
                     WriteLine(string.Format("Could not determine file type '{0}'!", settings.DataType));
                     break;
@@ -367,12 +389,15 @@ namespace Import
             var totalCount = 0;
             var totalTime = TimeSpan.Zero;
 
+            const int MAX_ERROR_RETRIES = 2;
+
             while (!parser.EndOfData) {
                 var batches = new List<string[]>();
                 var batchNumber = 0;
                 var lineNumberLocker = new object();
                 var errorNumberLocker = new object();
                 var numberOfWorkers = GetNumberOfWorkers();
+                var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = numberOfWorkers };
                 var startTime = DateTime.Now;
 
                 // read multiple lines to be processed in parallel
@@ -380,25 +405,37 @@ namespace Import
                     batches.Add(parser.ReadFields());
                 }
 
-                batches.AsParallel().WithDegreeOfParallelism(numberOfWorkers).ForAll(fields => {
+                Parallel.ForEach(batches, parallelOptions, fields => {
                     int currentLineNumber = 0;
+                    var currentErrorCount = 0;
 
-                    //Processing row
-                    try {
-                        lock (lineNumberLocker) {
-                            currentLineNumber = ++lineNumber;
-                        }
-
-                        action?.Invoke(fields, currentLineNumber);
+                    lock (lineNumberLocker) {
+                        currentLineNumber = ++lineNumber;
                     }
-                    catch (Exception ex) {
-                        lock (errorNumberLocker) {
-                            ++errorCount;
+
+                    while (true) {
+                        try {
+                            //Processing row data
+                            action?.Invoke(fields, currentLineNumber);
+
+                            // exit the while loop when done
+                            break;
                         }
+                        catch (Exception ex) {
+                            // if the max number of errors has reached,
+                            // then print the error and exit the while loop
+                            if (++currentErrorCount >= MAX_ERROR_RETRIES) {
+                                lock (errorNumberLocker) {
+                                    ++errorCount;
+                                }
 
-                        var dataLine = string.Join(delimiters, fields);
+                                var data = string.Join(delimiters, fields);
 
-                        WriteError(settings, currentLineNumber, dataLine, ex.GetErrorMessage());
+                                WriteError(settings, currentLineNumber, data, ex.GetErrorMessage());
+
+                                break;
+                            }
+                        }
                     }
                 });
 
@@ -428,7 +465,7 @@ namespace Import
             var skipped = settings.SkipToLine - 1;
 
             for (var i = 0; !parser.EndOfData && i < skipped; ++i) {
-                WriteLine(string.Format("Seeking at {0} to line #{1}...", i, skipped));
+                //WriteLine(string.Format("Seeking at {0} to line #{1}...", i, skipped));
                 parser.ReadLine();
 
                 if (interrupt)
@@ -438,7 +475,7 @@ namespace Import
                     Thread.Sleep(DEFAULT_PAUSE_SLEEP_TIME);
             }
 
-            WriteLine("done");
+            WriteLine(string.Format("done seeking to line {0}", settings.SkipToLine));
 
             return skipped;
         }
@@ -453,7 +490,7 @@ namespace Import
             OutputForm.Write(text);
         }
 
-        public void WriteLine(string text)
+        public void WriteLine(string text = "")
         {
             OutputForm.WriteLine(text);
         }
@@ -491,13 +528,17 @@ namespace Import
                 if (!int.TryParse(data[0], out NPI))
                     return;
 
+                // disable detection of changes to improve performance
+                medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
+
                 //var provider = new MedicareProvider { NPI = NPI };
 
                 //var exists = medicareDatabase.MedicareProviders.Where(x => x.NPI == NPI).Any();
 
                 //if (!exists) { // new
                 //    medicareDatabase.MedicareProviders.Add(provider);
-                //} else {
+                //}
+                //else {
                 //    medicareDatabase.MedicareProviders.Attach(provider);
                 //    medicareDatabase.Entry(provider).State = System.Data.Entity.EntityState.Modified;
                 //}
@@ -853,7 +894,7 @@ namespace Import
             return HeaderComparer.checkHeaders(sources, headers);
         }
 
-        #endregion
+        #endregion NPI
 
         #region Physician
 
@@ -886,12 +927,17 @@ namespace Import
 
         private void processRowPhysician(string[] data, int lineNumber)
         {
+            const string FOREIGN_KEY_CONFLICT = "The INSERT statement conflicted with the FOREIGN KEY constraint \"FK_Physicians_MedicareProviders\"";
+
             try {
                 using (var medicareDatabase = new MedicareEntities()) {
                     int NPI = 0;
 
                     if (!int.TryParse(data[0], out NPI))
                         return;
+
+                    // disable detection of changes to improve performance
+                    medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
 
                     var physician = new Physician { NPI = NPI };
 
@@ -956,7 +1002,7 @@ namespace Import
             catch (DbUpdateException ex) {
                 var errorMessage = ex.GetErrorMessage();
 
-                if (!errorMessage.Contains("The INSERT statement conflicted with the FOREIGN KEY constraint \"FK_Physicians_MedicareProviders\""))
+                if (!errorMessage.Contains(FOREIGN_KEY_CONFLICT))
                     throw;
 
                 var npiData = convertPhysicianToNPI(data);
@@ -968,8 +1014,10 @@ namespace Import
         private bool checkHeadersPhysician(string[] headers)
         {
             string[] sources = new string[] { "NPI", "PAC ID", "Professional Enrollment ID", "Last Name", "First Name", "Middle Name", "Suffix", "Gender", "Credential", "Medical school name", "Graduation year", "Primary specialty", "Secondary specialty 1", "Secondary specialty 2", "Secondary specialty 3", "Secondary specialty 4", "All secondary specialties", "Organization legal name", "Group Practice PAC ID", "Number of Group Practice members", "Line 1 Street Address", "Line 2 Street Address", "Marker of address line 2 suppression", "City", "State", "Zip Code", "Phone Number", "Hospital affiliation CCN 1", "Hospital affiliation LBN 1", "Hospital affiliation CCN 2", "Hospital affiliation LBN 2", "Hospital affiliation CCN 3", "Hospital affiliation LBN 3", "Hospital affiliation CCN 4", "Hospital affiliation LBN 4", "Hospital affiliation CCN 5", "Hospital affiliation LBN 5", "Professional accepts Medicare Assignment", "Reported Quality Measures", "Used electronic health records", "Committed to heart health through the Million Hearts® initiative." };
+            string[] sources2 = new string[] { "NPI", "Ind_PAC_ID", "Ind_enrl_ID", "lst_nm", "frst_nm", "mid_nm", "suff", "gndr", "Cred", "Med_sch", "Grd_yr", "pri_spec", "sec_spec_1", "sec_spec_2", "sec_spec_3", "sec_spec_4", "sec_spec_all", "org_nm", "org_pac_id", "num_org_mem", "adr_ln_1", "adr_ln_2", "ln_2_sprs", "cty", "st", "zip", "phn_numbr", "hosp_afl_1", "hosp_afl_lbn_1", "hosp_afl_2", "hosp_afl_lbn_2", "hosp_afl_3", "hosp_afl_lbn_3", "hosp_afl_4", "hosp_afl_lbn_4", "hosp_afl_5", "hosp_afl_lbn_5", "assgn", "PQRS", "EHR", "MHI" };
 
-            return HeaderComparer.checkHeaders(sources, headers);
+            return HeaderComparer.checkHeaders(sources, headers)
+                || HeaderComparer.checkHeaders(sources2, headers);
         }
 
         private string[] convertPhysicianToNPI(string[] physicianData)
@@ -1006,7 +1054,7 @@ namespace Import
             return npiData;
         }
 
-        #endregion
+        #endregion Physician
 
         #region Aggregates
 
@@ -1020,17 +1068,18 @@ namespace Import
                 // read the headers stored on the first line
                 var headers = parser.ReadFields();
 
-                //WriteLine(string.Join(",", headers.Select(header => string.Format("\"{0}\"", header)))); return;
-
-                //for (var i = 0; i < headers.Count(); ++i) {
-                //    WriteLine(string.Format(
-                //        "if (!string.IsNullOrWhiteSpace(data[{1}])) aggregate.{0} = data[{1}].Trim();",
-                //        headers[i].Replace(' ', '_'), i));
-                //}
-                //return;
-
                 if (!checkHeadersAggregate(headers)) {
                     WriteLine(DEFAULT_FAILED_HEADER_CHECK_RESPONSE);
+
+                    WriteLine("Headers from the source:");
+                    WriteLine(string.Join(",", headers.Select(header => string.Format("\"{0}\"", header))));
+                    WriteLine();
+
+                    for (var i = 0; i < headers.Count(); ++i) {
+                        WriteLine(string.Format(
+                            "if (!string.IsNullOrWhiteSpace(data[{1}])) aggregate.{0} = data[{1}].Trim();",
+                            headers[i].Replace(' ', '_'), i));
+                    }
 
                     // stop processing
                     return;
@@ -1045,10 +1094,12 @@ namespace Import
             var year = settings.DataYear;
 
             using (var medicareDatabase = new MedicareEntities()) {
-                int NPI = 0;
 
-                if (!int.TryParse(data[0], out NPI))
+                if (!int.TryParse(data[0], out int NPI))
                     return;
+
+                // disable detection of changes to improve performance
+                medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
 
                 var aggregate = new MedicareProvidersAggregate { npi = NPI, year = year };
 
@@ -1063,61 +1114,61 @@ namespace Import
                     medicareDatabase.Entry(aggregate).State = System.Data.Entity.EntityState.Modified;
                 }
 
-                if (!string.IsNullOrWhiteSpace(data[15])) aggregate.number_of_hcpcs = int.Parse(data[15].Trim());
-                if (!string.IsNullOrWhiteSpace(data[16])) aggregate.total_services = float.Parse(data[16].Trim());
-                if (!string.IsNullOrWhiteSpace(data[17])) aggregate.total_unique_benes = int.Parse(data[17].Trim());
-                if (!string.IsNullOrWhiteSpace(data[18])) aggregate.total_submitted_chrg_amt = float.Parse(data[18].Trim());
-                if (!string.IsNullOrWhiteSpace(data[19])) aggregate.total_medicare_allowed_amt = float.Parse(data[19].Trim());
-                if (!string.IsNullOrWhiteSpace(data[20])) aggregate.total_medicare_payment_amt = float.Parse(data[20].Trim());
-                if (!string.IsNullOrWhiteSpace(data[21])) aggregate.total_medicare_stnd_amt = float.Parse(data[21].Trim());
-                if (!string.IsNullOrWhiteSpace(data[22])) aggregate.drug_suppress_indicator = data[22].Trim();
-                if (!string.IsNullOrWhiteSpace(data[23])) aggregate.number_of_drug_hcpcs = int.Parse(data[23].Trim());
-                if (!string.IsNullOrWhiteSpace(data[24])) aggregate.total_drug_services = float.Parse(data[24].Trim());
-                if (!string.IsNullOrWhiteSpace(data[25])) aggregate.total_drug_unique_benes = int.Parse(data[25].Trim());
-                if (!string.IsNullOrWhiteSpace(data[26])) aggregate.total_drug_submitted_chrg_amt = float.Parse(data[26].Trim());
-                if (!string.IsNullOrWhiteSpace(data[27])) aggregate.total_drug_medicare_allowed_amt = float.Parse(data[27].Trim());
-                if (!string.IsNullOrWhiteSpace(data[28])) aggregate.total_drug_medicare_payment_amt = float.Parse(data[28].Trim());
-                if (!string.IsNullOrWhiteSpace(data[29])) aggregate.total_drug_medicare_stnd_amt = float.Parse(data[29].Trim());
-                if (!string.IsNullOrWhiteSpace(data[30])) aggregate.med_suppress_indicator = data[30].Trim();
-                if (!string.IsNullOrWhiteSpace(data[31])) aggregate.number_of_med_hcpcs = int.Parse(data[31].Trim());
-                if (!string.IsNullOrWhiteSpace(data[32])) aggregate.total_med_services = float.Parse(data[32].Trim());
-                if (!string.IsNullOrWhiteSpace(data[33])) aggregate.total_med_unique_benes = int.Parse(data[33].Trim());
-                if (!string.IsNullOrWhiteSpace(data[34])) aggregate.total_med_submitted_chrg_amt = float.Parse(data[34].Trim());
-                if (!string.IsNullOrWhiteSpace(data[35])) aggregate.total_med_medicare_allowed_amt = float.Parse(data[35].Trim());
-                if (!string.IsNullOrWhiteSpace(data[36])) aggregate.total_med_medicare_payment_amt = float.Parse(data[36].Trim());
-                if (!string.IsNullOrWhiteSpace(data[37])) aggregate.total_med_medicare_stnd_amt = float.Parse(data[37].Trim());
-                if (!string.IsNullOrWhiteSpace(data[38])) aggregate.beneficiary_average_age = short.Parse(data[38].Trim());
-                if (!string.IsNullOrWhiteSpace(data[39])) aggregate.beneficiary_age_less_65_count = int.Parse(data[39].Trim());
-                if (!string.IsNullOrWhiteSpace(data[40])) aggregate.beneficiary_age_65_74_count = int.Parse(data[40].Trim());
-                if (!string.IsNullOrWhiteSpace(data[41])) aggregate.beneficiary_age_75_84_count = int.Parse(data[41].Trim());
-                if (!string.IsNullOrWhiteSpace(data[42])) aggregate.beneficiary_age_greater_84_count = int.Parse(data[42].Trim());
-                if (!string.IsNullOrWhiteSpace(data[43])) aggregate.beneficiary_female_count = int.Parse(data[43].Trim());
-                if (!string.IsNullOrWhiteSpace(data[44])) aggregate.beneficiary_male_count = int.Parse(data[44].Trim());
-                if (!string.IsNullOrWhiteSpace(data[45])) aggregate.beneficiary_race_white_count = int.Parse(data[45].Trim());
-                if (!string.IsNullOrWhiteSpace(data[46])) aggregate.beneficiary_race_black_count = int.Parse(data[46].Trim());
-                if (!string.IsNullOrWhiteSpace(data[47])) aggregate.beneficiary_race_api_count = int.Parse(data[47].Trim());
-                if (!string.IsNullOrWhiteSpace(data[48])) aggregate.beneficiary_race_hispanic_count = int.Parse(data[48].Trim());
-                if (!string.IsNullOrWhiteSpace(data[49])) aggregate.beneficiary_race_natind_count = int.Parse(data[49].Trim());
-                if (!string.IsNullOrWhiteSpace(data[50])) aggregate.beneficiary_race_other_count = int.Parse(data[50].Trim());
-                if (!string.IsNullOrWhiteSpace(data[51])) aggregate.beneficiary_nondual_count = int.Parse(data[51].Trim());
-                if (!string.IsNullOrWhiteSpace(data[52])) aggregate.beneficiary_dual_count = int.Parse(data[52].Trim());
-                if (!string.IsNullOrWhiteSpace(data[53])) aggregate.beneficiary_cc_afib_percent = short.Parse(data[53].Trim());
-                if (!string.IsNullOrWhiteSpace(data[54])) aggregate.beneficiary_cc_alzrdsd_percent = short.Parse(data[54].Trim());
-                if (!string.IsNullOrWhiteSpace(data[55])) aggregate.beneficiary_cc_asthma_percent = short.Parse(data[55].Trim());
-                if (!string.IsNullOrWhiteSpace(data[56])) aggregate.beneficiary_cc_cancer_percent = short.Parse(data[56].Trim());
-                if (!string.IsNullOrWhiteSpace(data[57])) aggregate.beneficiary_cc_chf_percent = short.Parse(data[57].Trim());
-                if (!string.IsNullOrWhiteSpace(data[58])) aggregate.beneficiary_cc_ckd_percent = short.Parse(data[58].Trim());
-                if (!string.IsNullOrWhiteSpace(data[59])) aggregate.beneficiary_cc_copd_percent = short.Parse(data[59].Trim());
-                if (!string.IsNullOrWhiteSpace(data[60])) aggregate.beneficiary_cc_depr_percent = short.Parse(data[60].Trim());
-                if (!string.IsNullOrWhiteSpace(data[61])) aggregate.beneficiary_cc_diab_percent = short.Parse(data[61].Trim());
-                if (!string.IsNullOrWhiteSpace(data[62])) aggregate.beneficiary_cc_hyperl_percent = short.Parse(data[62].Trim());
-                if (!string.IsNullOrWhiteSpace(data[63])) aggregate.beneficiary_cc_hypert_percent = short.Parse(data[63].Trim());
-                if (!string.IsNullOrWhiteSpace(data[64])) aggregate.beneficiary_cc_ihd_percent = short.Parse(data[64].Trim());
-                if (!string.IsNullOrWhiteSpace(data[65])) aggregate.beneficiary_cc_ost_percent = short.Parse(data[65].Trim());
-                if (!string.IsNullOrWhiteSpace(data[66])) aggregate.beneficiary_cc_raoa_percent = short.Parse(data[66].Trim());
-                if (!string.IsNullOrWhiteSpace(data[67])) aggregate.beneficiary_cc_schiot_percent = short.Parse(data[67].Trim());
-                if (!string.IsNullOrWhiteSpace(data[68])) aggregate.beneficiary_cc_strk_percent = short.Parse(data[68].Trim());
-                if (!string.IsNullOrWhiteSpace(data[69])) aggregate.beneficiary_average_risk_score = float.Parse(data[69].Trim());
+                if (!string.IsNullOrWhiteSpace(data[16])) aggregate.number_of_hcpcs = int.Parse(data[16].Trim());
+                if (!string.IsNullOrWhiteSpace(data[17])) aggregate.total_services = float.Parse(data[17].Trim());
+                if (!string.IsNullOrWhiteSpace(data[18])) aggregate.total_unique_benes = int.Parse(data[18].Trim());
+                if (!string.IsNullOrWhiteSpace(data[19])) aggregate.total_submitted_chrg_amt = float.Parse(data[19].Trim());
+                if (!string.IsNullOrWhiteSpace(data[20])) aggregate.total_medicare_allowed_amt = float.Parse(data[20].Trim());
+                if (!string.IsNullOrWhiteSpace(data[21])) aggregate.total_medicare_payment_amt = float.Parse(data[21].Trim());
+                if (!string.IsNullOrWhiteSpace(data[22])) aggregate.total_medicare_stnd_amt = float.Parse(data[22].Trim());
+                if (!string.IsNullOrWhiteSpace(data[23])) aggregate.drug_suppress_indicator = data[23].Trim();
+                if (!string.IsNullOrWhiteSpace(data[24])) aggregate.number_of_drug_hcpcs = int.Parse(data[24].Trim());
+                if (!string.IsNullOrWhiteSpace(data[25])) aggregate.total_drug_services = float.Parse(data[25].Trim());
+                if (!string.IsNullOrWhiteSpace(data[26])) aggregate.total_drug_unique_benes = int.Parse(data[26].Trim());
+                if (!string.IsNullOrWhiteSpace(data[27])) aggregate.total_drug_submitted_chrg_amt = float.Parse(data[27].Trim());
+                if (!string.IsNullOrWhiteSpace(data[28])) aggregate.total_drug_medicare_allowed_amt = float.Parse(data[28].Trim());
+                if (!string.IsNullOrWhiteSpace(data[29])) aggregate.total_drug_medicare_payment_amt = float.Parse(data[29].Trim());
+                if (!string.IsNullOrWhiteSpace(data[30])) aggregate.total_drug_medicare_stnd_amt = float.Parse(data[30].Trim());
+                if (!string.IsNullOrWhiteSpace(data[31])) aggregate.med_suppress_indicator = data[31].Trim();
+                if (!string.IsNullOrWhiteSpace(data[32])) aggregate.number_of_med_hcpcs = int.Parse(data[32].Trim());
+                if (!string.IsNullOrWhiteSpace(data[33])) aggregate.total_med_services = float.Parse(data[33].Trim());
+                if (!string.IsNullOrWhiteSpace(data[34])) aggregate.total_med_unique_benes = int.Parse(data[34].Trim());
+                if (!string.IsNullOrWhiteSpace(data[35])) aggregate.total_med_submitted_chrg_amt = float.Parse(data[35].Trim());
+                if (!string.IsNullOrWhiteSpace(data[36])) aggregate.total_med_medicare_allowed_amt = float.Parse(data[36].Trim());
+                if (!string.IsNullOrWhiteSpace(data[37])) aggregate.total_med_medicare_payment_amt = float.Parse(data[37].Trim());
+                if (!string.IsNullOrWhiteSpace(data[38])) aggregate.total_med_medicare_stnd_amt = float.Parse(data[38].Trim());
+                if (!string.IsNullOrWhiteSpace(data[39])) aggregate.beneficiary_average_age = short.Parse(data[39].Trim());
+                if (!string.IsNullOrWhiteSpace(data[40])) aggregate.beneficiary_age_less_65_count = int.Parse(data[40].Trim());
+                if (!string.IsNullOrWhiteSpace(data[41])) aggregate.beneficiary_age_65_74_count = int.Parse(data[41].Trim());
+                if (!string.IsNullOrWhiteSpace(data[42])) aggregate.beneficiary_age_75_84_count = int.Parse(data[42].Trim());
+                if (!string.IsNullOrWhiteSpace(data[43])) aggregate.beneficiary_age_greater_84_count = int.Parse(data[43].Trim());
+                if (!string.IsNullOrWhiteSpace(data[44])) aggregate.beneficiary_female_count = int.Parse(data[44].Trim());
+                if (!string.IsNullOrWhiteSpace(data[45])) aggregate.beneficiary_male_count = int.Parse(data[45].Trim());
+                if (!string.IsNullOrWhiteSpace(data[46])) aggregate.beneficiary_race_white_count = int.Parse(data[46].Trim());
+                if (!string.IsNullOrWhiteSpace(data[47])) aggregate.beneficiary_race_black_count = int.Parse(data[47].Trim());
+                if (!string.IsNullOrWhiteSpace(data[48])) aggregate.beneficiary_race_api_count = int.Parse(data[48].Trim());
+                if (!string.IsNullOrWhiteSpace(data[49])) aggregate.beneficiary_race_hispanic_count = int.Parse(data[49].Trim());
+                if (!string.IsNullOrWhiteSpace(data[50])) aggregate.beneficiary_race_natind_count = int.Parse(data[50].Trim());
+                if (!string.IsNullOrWhiteSpace(data[51])) aggregate.beneficiary_race_other_count = int.Parse(data[51].Trim());
+                if (!string.IsNullOrWhiteSpace(data[52])) aggregate.beneficiary_nondual_count = int.Parse(data[52].Trim());
+                if (!string.IsNullOrWhiteSpace(data[53])) aggregate.beneficiary_dual_count = int.Parse(data[53].Trim());
+                if (!string.IsNullOrWhiteSpace(data[54])) aggregate.beneficiary_cc_afib_percent = short.Parse(data[54].Trim());
+                if (!string.IsNullOrWhiteSpace(data[55])) aggregate.beneficiary_cc_alzrdsd_percent = short.Parse(data[55].Trim());
+                if (!string.IsNullOrWhiteSpace(data[56])) aggregate.beneficiary_cc_asthma_percent = short.Parse(data[56].Trim());
+                if (!string.IsNullOrWhiteSpace(data[57])) aggregate.beneficiary_cc_cancer_percent = short.Parse(data[57].Trim());
+                if (!string.IsNullOrWhiteSpace(data[58])) aggregate.beneficiary_cc_chf_percent = short.Parse(data[58].Trim());
+                if (!string.IsNullOrWhiteSpace(data[59])) aggregate.beneficiary_cc_ckd_percent = short.Parse(data[59].Trim());
+                if (!string.IsNullOrWhiteSpace(data[60])) aggregate.beneficiary_cc_copd_percent = short.Parse(data[60].Trim());
+                if (!string.IsNullOrWhiteSpace(data[61])) aggregate.beneficiary_cc_depr_percent = short.Parse(data[61].Trim());
+                if (!string.IsNullOrWhiteSpace(data[62])) aggregate.beneficiary_cc_diab_percent = short.Parse(data[62].Trim());
+                if (!string.IsNullOrWhiteSpace(data[63])) aggregate.beneficiary_cc_hyperl_percent = short.Parse(data[63].Trim());
+                if (!string.IsNullOrWhiteSpace(data[64])) aggregate.beneficiary_cc_hypert_percent = short.Parse(data[64].Trim());
+                if (!string.IsNullOrWhiteSpace(data[65])) aggregate.beneficiary_cc_ihd_percent = short.Parse(data[65].Trim());
+                if (!string.IsNullOrWhiteSpace(data[66])) aggregate.beneficiary_cc_ost_percent = short.Parse(data[66].Trim());
+                if (!string.IsNullOrWhiteSpace(data[67])) aggregate.beneficiary_cc_raoa_percent = short.Parse(data[67].Trim());
+                if (!string.IsNullOrWhiteSpace(data[68])) aggregate.beneficiary_cc_schiot_percent = short.Parse(data[68].Trim());
+                if (!string.IsNullOrWhiteSpace(data[69])) aggregate.beneficiary_cc_strk_percent = short.Parse(data[69].Trim());
+                if (!string.IsNullOrWhiteSpace(data[70])) aggregate.beneficiary_average_risk_score = float.Parse(data[70].Trim());
 
                 medicareDatabase.SaveChanges();
 
@@ -1127,12 +1178,12 @@ namespace Import
 
         private bool checkHeadersAggregate(string[] headers)
         {
-            string[] sources = new string[] { "npi", "nppes_provider_last_org_name", "nppes_provider_first_name", "nppes_provider_mi", "nppes_credentials", "nppes_provider_gender", "nppes_entity_code", "nppes_provider_street1", "nppes_provider_street2", "nppes_provider_city", "nppes_provider_zip", "nppes_provider_state", "nppes_provider_country", "provider_type", "medicare_participation_indicator", "number_of_hcpcs", "total_services", "total_unique_benes", "total_submitted_chrg_amt", "total_medicare_allowed_amt", "total_medicare_payment_amt", "total_medicare_stnd_amt", "drug_suppress_indicator", "number_of_drug_hcpcs", "total_drug_services", "total_drug_unique_benes", "total_drug_submitted_chrg_amt", "total_drug_medicare_allowed_amt", "total_drug_medicare_payment_amt", "total_drug_medicare_stnd_amt", "med_suppress_indicator", "number_of_med_hcpcs", "total_med_services", "total_med_unique_benes", "total_med_submitted_chrg_amt", "total_med_medicare_allowed_amt", "total_med_medicare_payment_amt", "total_med_medicare_stnd_amt", "beneficiary_average_age", "beneficiary_age_less_65_count", "beneficiary_age_65_74_count", "beneficiary_age_75_84_count", "beneficiary_age_greater_84_count", "beneficiary_female_count", "beneficiary_male_count", "beneficiary_race_white_count", "beneficiary_race_black_count", "beneficiary_race_api_count", "beneficiary_race_hispanic_count", "beneficiary_race_natind_count", "beneficiary_race_other_count", "beneficiary_nondual_count", "beneficiary_dual_count", "beneficiary_cc_afib_percent", "beneficiary_cc_alzrdsd_percent", "beneficiary_cc_asthma_percent", "beneficiary_cc_cancer_percent", "beneficiary_cc_chf_percent", "beneficiary_cc_ckd_percent", "beneficiary_cc_copd_percent", "beneficiary_cc_depr_percent", "beneficiary_cc_diab_percent", "beneficiary_cc_hyperl_percent", "beneficiary_cc_hypert_percent", "beneficiary_cc_ihd_percent", "beneficiary_cc_ost_percent", "beneficiary_cc_raoa_percent", "beneficiary_cc_schiot_percent", "beneficiary_cc_strk_percent", "Beneficiary_Average_Risk_Score" };
+            string[] sources = new string[] { "npi", "nppes_provider_last_org_name", "nppes_provider_first_name", "nppes_provider_mi", "nppes_credentials", "nppes_provider_gender", "nppes_entity_code", "nppes_provider_street1", "nppes_provider_street2", "nppes_provider_city", "nppes_provider_zip", "nppes_provider_ruca", "nppes_provider_state", "nppes_provider_country", "provider_type", "medicare_participation_indicator", "number_of_hcpcs", "total_services", "total_unique_benes", "total_submitted_chrg_amt", "total_medicare_allowed_amt", "total_medicare_payment_amt", "total_medicare_stnd_amt", "drug_suppress_indicator", "number_of_drug_hcpcs", "total_drug_services", "total_drug_unique_benes", "total_drug_submitted_chrg_amt", "total_drug_medicare_allowed_amt", "total_drug_medicare_payment_amt", "total_drug_medicare_stnd_amt", "med_suppress_indicator", "number_of_med_hcpcs", "total_med_services", "total_med_unique_benes", "total_med_submitted_chrg_amt", "total_med_medicare_allowed_amt", "total_med_medicare_payment_amt", "total_med_medicare_stnd_amt", "beneficiary_average_age", "beneficiary_age_less_65_count", "beneficiary_age_65_74_count", "beneficiary_age_75_84_count", "beneficiary_age_greater_84_count", "beneficiary_female_count", "beneficiary_male_count", "beneficiary_race_white_count", "beneficiary_race_black_count", "beneficiary_race_api_count", "beneficiary_race_hispanic_count", "beneficiary_race_natind_count", "beneficiary_race_other_count", "beneficiary_nondual_count", "beneficiary_dual_count", "beneficiary_cc_afib_percent", "beneficiary_cc_alzrdsd_percent", "beneficiary_cc_asthma_percent", "beneficiary_cc_cancer_percent", "beneficiary_cc_chf_percent", "beneficiary_cc_ckd_percent", "beneficiary_cc_copd_percent", "beneficiary_cc_depr_percent", "beneficiary_cc_diab_percent", "beneficiary_cc_hyperl_percent", "beneficiary_cc_hypert_percent", "beneficiary_cc_ihd_percent", "beneficiary_cc_ost_percent", "beneficiary_cc_raoa_percent", "beneficiary_cc_schiot_percent", "beneficiary_cc_strk_percent", "Beneficiary_Average_Risk_Score" };
 
             return HeaderComparer.checkHeaders(sources, headers);
         }
 
-        #endregion
+        #endregion Aggregates
 
         #region UtilizationAndPayments
 
@@ -1146,13 +1197,15 @@ namespace Import
                 // read the headers stored on the first line
                 var headers = parser.ReadFields();
 
-                //for (var i = 0; i < headers.Count(); ++i) { WriteLine(string.Format(
-                //    "if (!string.IsNullOrWhiteSpace(data[{1}])) payment.{0} = data[{1}].Trim();",
-                //    headers[i].Replace(' ', '_'), i)); } return;
-
                 if (!checkHeadersUtilizationAndPayments(headers)) {
                     WriteLine(DEFAULT_FAILED_HEADER_CHECK_RESPONSE);
                     WriteLine(string.Join(",", headers.Select(header => string.Format("\"{0}\"", header))));
+
+                    for (var i = 0; i < headers.Count(); ++i) {
+                        WriteLine(string.Format(
+                            "if (!string.IsNullOrWhiteSpace(data[{1}])) payment.{0} = data[{1}].Trim();",
+                            headers[i].Replace(' ', '_'), i));
+                    }
 
                     // stop processing
                     return;
@@ -1171,6 +1224,9 @@ namespace Import
 
                 if (!int.TryParse(data[0], out NPI))
                     return;
+
+                // disable detection of changes to improve performance
+                medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
 
                 var hcpcs_code = data[16].Trim();
                 var hcpcs_description = data[17].Trim();
@@ -1248,7 +1304,7 @@ namespace Import
             }
         }
 
-        #endregion
+        #endregion UtilizationAndPayments
 
         //#region Provider of Services - Other
 
@@ -1388,6 +1444,9 @@ namespace Import
                 if (string.IsNullOrWhiteSpace(code))
                     return;
 
+                // disable detection of changes to improve performance
+                medicareDatabase.Configuration.AutoDetectChangesEnabled = false;
+
                 var taxonomyCode = medicareDatabase.TaxonomyCodes.Find(code);
 
                 var exists = taxonomyCode != null;
@@ -1417,9 +1476,9 @@ namespace Import
             return HeaderComparer.checkHeaders(sources, headers);
         }
 
-        #endregion
+        #endregion Taxonomy Codes
 
-        class HeaderComparer : IEqualityComparer<string>
+        private class HeaderComparer : IEqualityComparer<string>
         {
             bool IEqualityComparer<string>.Equals(string x, string y)
             {
